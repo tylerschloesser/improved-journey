@@ -9,4 +9,7 @@ export function render({
 
   context.fillStyle = 'pink'
   context.fillRect(0, 0, canvas.width, canvas.height)
+
+  context.strokeStyle = 'black'
+  context.strokeRect(0, 0, 100, 100)
 }
