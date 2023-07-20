@@ -6,6 +6,18 @@ export class Vec2 {
     this.x = x
     this.y = y
   }
+
+  sub(v: Vec2): Vec2 {
+    return new Vec2(this.x - v.x, this.y - v.y)
+  }
+
+  add(v: Vec2): Vec2 {
+    return new Vec2(this.x + v.x, this.y + v.y)
+  }
+
+  toString() {
+    return `[${this.x.toFixed(0)},${this.y.toFixed(0)}]`
+  }
 }
 
 export interface GameState {

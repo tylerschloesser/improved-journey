@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './home.module.scss'
 import invariant from 'tiny-invariant'
 import { render } from '../render.js'
+import { initInput } from '../input.js'
 
 type SetCanvasFn = React.Dispatch<
   React.SetStateAction<HTMLCanvasElement | null>
@@ -20,6 +21,8 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
     const abortController = new AbortController()
     const context = canvas.getContext('2d')
     invariant(context)
+
+    initInput({ canvas, signal: abortController.signal })
 
     function onFrame() {
       if (abortController.signal.aborted) {
