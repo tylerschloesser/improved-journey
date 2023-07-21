@@ -1,3 +1,4 @@
+import { curry } from 'lodash-es'
 import { Vec2, gameState } from './game-state.js'
 
 function toVec2(ev: PointerEvent): Vec2 {
@@ -10,7 +11,7 @@ interface PointerState {
   pointerMoveCache: Map<PointerId, PointerEvent[]>
 }
 
-function onPointerMove(state: PointerState, ev: PointerEvent) {
+const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
   let cache = state.pointerMoveCache.get(ev.pointerId)
   if (!cache) {
     cache = []
@@ -24,9 +25,9 @@ function onPointerMove(state: PointerState, ev: PointerEvent) {
     const dp = toVec2(ev).sub(toVec2(prev)).mul(-1)
     gameState.position = gameState.position.add(dp)
   }
-}
+})
 
-function onPointerUp(state: PointerState, ev: PointerEvent) {
+const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   const now = ev.timeStamp
 
   const cache = state.pointerMoveCache.get(ev.pointerId) ?? []
@@ -81,7 +82,7 @@ function onPointerUp(state: PointerState, ev: PointerEvent) {
     window.requestAnimationFrame(dampen)
   }
   dampen()
-}
+})
 
 export function initInput({
   canvas,
