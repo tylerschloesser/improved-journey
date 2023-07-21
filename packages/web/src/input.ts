@@ -1,5 +1,9 @@
 import { Vec2, gameState } from './game-state.js'
 
+function toVec2(ev: PointerEvent): Vec2 {
+  return new Vec2(ev.clientX, ev.clientY)
+}
+
 function handleMove({
   prev,
   next,
@@ -7,10 +11,7 @@ function handleMove({
   prev: PointerEvent
   next: PointerEvent
 }) {
-  const d = new Vec2(next.clientX, next.clientY).sub(
-    new Vec2(prev.clientX, prev.clientY),
-  )
-
+  const d = toVec2(next).sub(toVec2(prev))
   gameState.position = gameState.position.add(d)
 }
 
