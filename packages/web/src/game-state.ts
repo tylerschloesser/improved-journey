@@ -32,8 +32,14 @@ export class Vec2 {
     return new Vec2(this.x / l, this.y / l)
   }
 
-  toString() {
-    return `[${this.x.toFixed(0)},${this.y.toFixed(0)}]`
+  angle(): number {
+    return Math.atan2(this.y, this.x)
+  }
+
+  toString(fractionDigits: number = 0) {
+    const x = this.x.toFixed(fractionDigits)
+    const y = this.y.toFixed(fractionDigits)
+    return `[${x},${y}]`
   }
 }
 
