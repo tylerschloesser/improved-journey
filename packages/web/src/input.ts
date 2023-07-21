@@ -95,19 +95,6 @@ export function initInput({
     pointerMoveCache: new Map(),
   }
 
-  canvas.addEventListener(
-    'pointermove',
-    (ev) => {
-      onPointerMove(state, ev)
-    },
-    { signal },
-  )
-
-  canvas.addEventListener(
-    'pointerup',
-    (ev) => {
-      onPointerUp(state, ev)
-    },
-    { signal },
-  )
+  canvas.addEventListener('pointermove', onPointerMove(state), { signal })
+  canvas.addEventListener('pointerup', onPointerUp(state), { signal })
 }
