@@ -13,7 +13,13 @@ type SetCanvasFn = React.Dispatch<
   React.SetStateAction<HTMLCanvasElement | null>
 >
 
-function initGrid({ app, rect }: { app: Application<ICanvas>; rect: DOMRect }) {
+function initCellGrid({
+  app,
+  rect,
+}: {
+  app: Application<ICanvas>
+  rect: DOMRect
+}) {
   let obj = new Graphics()
 
   obj.lineStyle(2, 'hsl(0, 0%, 30%)')
@@ -39,6 +45,10 @@ function initGrid({ app, rect }: { app: Application<ICanvas>; rect: DOMRect }) {
       mod(position.y, cellSize) - cellSize,
     )
   })
+}
+
+function initGrid({ app, rect }: { app: Application<ICanvas>; rect: DOMRect }) {
+  initCellGrid({ app, rect })
 }
 
 function useCanvas(): { setCanvas: SetCanvasFn } {
