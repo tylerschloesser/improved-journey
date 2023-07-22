@@ -36,6 +36,10 @@ export class Vec2 {
     return Math.atan2(this.y, this.x)
   }
 
+  equals(v: Vec2): boolean {
+    return this.x === v.x && this.y === v.y
+  }
+
   toString(fractionDigits: number = 0) {
     const x = this.x.toFixed(fractionDigits)
     const y = this.y.toFixed(fractionDigits)
