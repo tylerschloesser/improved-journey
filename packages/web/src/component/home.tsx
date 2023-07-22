@@ -5,6 +5,7 @@ import { render } from '../render.js'
 import styles from './home.module.scss'
 
 import { Application, Graphics } from 'pixi.js'
+import { gameState } from '../game-state.js'
 
 type SetCanvasFn = React.Dispatch<
   React.SetStateAction<HTMLCanvasElement | null>
@@ -50,6 +51,10 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
 
     // Add it to the stage to render
     app.stage.addChild(obj)
+
+    app.ticker.add(() => {
+      obj.position.set(gameState.position.x, gameState.position.y)
+    })
 
     // function onFrame() {
     //   if (abortController.signal.aborted) {
