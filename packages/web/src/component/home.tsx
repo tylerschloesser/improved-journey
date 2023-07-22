@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import styles from './home.module.scss'
 import invariant from 'tiny-invariant'
-import { render } from '../render.js'
 import { initInput } from '../input.js'
+import { render } from '../render.js'
+import styles from './home.module.scss'
+
+import { Application, Graphics } from 'pixi.js'
 
 type SetCanvasFn = React.Dispatch<
   React.SetStateAction<HTMLCanvasElement | null>
@@ -15,28 +17,53 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
     if (!canvas) return
 
     const rect = canvas.getBoundingClientRect()
-    canvas.width = rect.width
-    canvas.height = rect.height
+    const app = new Application({
+      view: canvas,
+      width: rect.width,
+      height: rect.height,
+    })
 
     const abortController = new AbortController()
-    const context = canvas.getContext('2d')
-    invariant(context)
+    // const context = canvas.getContext('2d')
+    // invariant(context)
 
     initInput({ canvas, signal: abortController.signal })
 
-    function onFrame() {
-      if (abortController.signal.aborted) {
-        console.log('stopping request animation frame loop')
-        return
-      }
+    let obj = new Graphics()
+    obj.beginFill(0xff0000)
+    obj.drawRect(0, 0, 100, 100)
 
-      invariant(canvas)
-      invariant(context)
-      render({ canvas, context })
+    obj.lineStyle(2, 'white')
 
-      requestAnimationFrame(onFrame)
+    const cellSize = 40
+
+    const rows = Math.ceil(rect.height / cellSize)
+    const cols = Math.ceil(rect.width / cellSize)
+
+    for (let x = 0; x < cols; x++) {
+      obj.moveTo(x * cellSize, 0).lineTo(x * cellSize, rect.height)
     }
-    requestAnimationFrame(onFrame)
+
+    for (let y = 0; y < rows; y++) {
+      obj.moveTo(0, y * cellSize).lineTo(rect.width, y * cellSize)
+    }
+
+    // Add it to the stage to render
+    app.stage.addChild(obj)
+
+    // function onFrame() {
+    //   if (abortController.signal.aborted) {
+    //     console.log('stopping request animation frame loop')
+    //     return
+    //   }
+
+    //   invariant(canvas)
+    //   invariant(context)
+    //   render({ canvas, context })
+
+    //   requestAnimationFrame(onFrame)
+    // }
+    // requestAnimationFrame(onFrame)
 
     return () => {
       abortController.abort()
