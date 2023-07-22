@@ -22,7 +22,7 @@ const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
   cache.push(ev)
 
   if (prev && prev.pressure > 0 && ev.pressure > 0) {
-    const dp = toVec2(ev).sub(toVec2(prev)).mul(-1)
+    const dp = toVec2(ev).sub(toVec2(prev))
     gameState.position = gameState.position.add(dp)
   }
 })
@@ -55,7 +55,7 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
     vavg = vavg.add(dp.div(dt))
   }
 
-  vavg = vavg.div(latest.length - 1).mul(-1)
+  vavg = vavg.div(latest.length - 1)
 
   let v = vavg
   let lastUpdate = last.timeStamp
