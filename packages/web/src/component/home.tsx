@@ -51,10 +51,10 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
 
     app.stage.addChild(obj)
 
-    app.ticker.add(() => {
+    gameState.position$.subscribe((position) => {
       obj.position.set(
-        mod(gameState.position.x, cellSize) - cellSize,
-        mod(gameState.position.y, cellSize) - cellSize,
+        mod(position.x, cellSize) - cellSize,
+        mod(position.y, cellSize) - cellSize,
       )
     })
 

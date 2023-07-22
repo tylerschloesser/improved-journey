@@ -1,3 +1,5 @@
+import { BehaviorSubject, ReplaySubject } from 'rxjs'
+
 export class Vec2 {
   readonly x: number
   readonly y: number
@@ -48,9 +50,9 @@ export class Vec2 {
 }
 
 export interface GameState {
-  position: Vec2
+  position$: BehaviorSubject<Vec2>
 }
 
 export let gameState: GameState = {
-  position: new Vec2(0, 0),
+  position$: new BehaviorSubject<Vec2>(new Vec2(0, 0)),
 }

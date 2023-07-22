@@ -23,7 +23,7 @@ const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
 
   if (prev && prev.pressure > 0 && ev.pressure > 0) {
     const dp = toVec2(ev).sub(toVec2(prev))
-    gameState.position = gameState.position.add(dp)
+    gameState.position$.next(gameState.position$.value.add(dp))
   }
 })
 
@@ -77,7 +77,7 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 
     if (startAngle !== endAngle) return
 
-    gameState.position = gameState.position.add(v.mul(dt))
+    gameState.position$.next(gameState.position$.value.add(v.mul(dt)))
 
     window.requestAnimationFrame(dampen)
   }
