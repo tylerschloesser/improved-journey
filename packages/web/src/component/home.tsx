@@ -49,7 +49,6 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
       obj.moveTo(0, y * cellSize).lineTo(cellSize * cols, y * cellSize)
     }
 
-    // Add it to the stage to render
     app.stage.addChild(obj)
 
     app.ticker.add(() => {
@@ -58,20 +57,6 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
         mod(gameState.position.y, cellSize) - cellSize,
       )
     })
-
-    // function onFrame() {
-    //   if (abortController.signal.aborted) {
-    //     console.log('stopping request animation frame loop')
-    //     return
-    //   }
-
-    //   invariant(canvas)
-    //   invariant(context)
-    //   render({ canvas, context })
-
-    //   requestAnimationFrame(onFrame)
-    // }
-    // requestAnimationFrame(onFrame)
 
     return () => {
       abortController.abort()
