@@ -22,7 +22,7 @@ function initCellGrid({
 }) {
   let obj = new Graphics()
 
-  obj.lineStyle(2, 'hsl(0, 0%, 30%)')
+  obj.lineStyle(2, 'hsl(0, 0%, 10%)')
 
   const cellSize = 40
 
@@ -47,8 +47,47 @@ function initCellGrid({
   })
 }
 
+function initChunkGrid({
+  app,
+  rect,
+}: {
+  app: Application<ICanvas>
+  rect: DOMRect
+}) {
+  let obj = new Graphics()
+
+  obj.lineStyle(2, 'hsl(0, 0%, 30%)')
+  const cellSize = 40
+  const chunkSize = 10
+
+  const rows = Math.ceil(rect.height / cellSize / chunkSize) + 1
+  const cols = Math.ceil(rect.width / cellSize / chunkSize) + 1
+
+  for (let x = 0; x < cols; x++) {
+    obj
+      .moveTo(x * cellSize * chunkSize, 0)
+      .lineTo(x * cellSize * chunkSize, cellSize * chunkSize * rows)
+  }
+
+  for (let y = 0; y < rows; y++) {
+    obj
+      .moveTo(0, y * cellSize * chunkSize)
+      .lineTo(cellSize * chunkSize * cols, y * cellSize * chunkSize)
+  }
+
+  app.stage.addChild(obj)
+
+  gameState.position$.subscribe((position) => {
+    obj.position.set(
+      mod(position.x, cellSize * chunkSize) - cellSize * chunkSize,
+      mod(position.y, cellSize * chunkSize) - cellSize * chunkSize,
+    )
+  })
+}
+
 function initGrid({ app, rect }: { app: Application<ICanvas>; rect: DOMRect }) {
   initCellGrid({ app, rect })
+  initChunkGrid({ app, rect })
 }
 
 function useCanvas(): { setCanvas: SetCanvasFn } {
