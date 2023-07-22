@@ -60,7 +60,7 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   let v = vavg
   let lastUpdate = last.timeStamp
 
-  const acceleration = v.mul(-1).div(100)
+  const acceleration = v.mul(-1).div(200)
 
   function dampen() {
     const now = window.performance.now()
