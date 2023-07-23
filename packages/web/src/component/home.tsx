@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { initInput } from '../input.js'
 import styles from './home.module.scss'
 
-import { Application, Graphics, ICanvas } from 'pixi.js'
+import { Application, Container, Graphics, ICanvas, Text } from 'pixi.js'
 import { gameState } from '../game-state.js'
 
 function mod(n: number, m: number) {
@@ -77,8 +77,29 @@ function initChunkGrid({
 
   app.stage.addChild(obj)
 
+  const container = new Container()
+  app.stage.addChild(container)
+
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      const text = new Text(`[${x},${y}]`, {
+        fontFamily: 'monospace',
+        fill: 'hsl(0, 0%, 30%)',
+      })
+      text.x = x * cellSize * chunkSize
+      text.y = y * cellSize * chunkSize
+
+      container.addChild(text)
+    }
+  }
+
   gameState.position$.subscribe((position) => {
     obj.position.set(
+      mod(position.x, cellSize * chunkSize) - cellSize * chunkSize,
+      mod(position.y, cellSize * chunkSize) - cellSize * chunkSize,
+    )
+
+    container.position.set(
       mod(position.x, cellSize * chunkSize) - cellSize * chunkSize,
       mod(position.y, cellSize * chunkSize) - cellSize * chunkSize,
     )
