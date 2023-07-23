@@ -1,5 +1,6 @@
 import { curry } from 'lodash-es'
 import { Vec2, gameState } from './game-state.js'
+import invariant from 'tiny-invariant'
 
 function toVec2(ev: PointerEvent): Vec2 {
   return new Vec2(ev.clientX, ev.clientY)
@@ -46,18 +47,28 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 
   if (latest.length < 2) return
 
-  let vavg = new Vec2(0, 0)
+  const velocities: Vec2[] = []
+
   for (let i = 1; i < latest.length; i++) {
     const a = latest[i - 1]
     const b = latest[i]
     const dt = b.timeStamp - a.timeStamp
     const dp = toVec2(b).sub(toVec2(a))
-    vavg = vavg.add(dp.div(dt))
+    velocities.push(dp.div(dt))
   }
 
-  vavg = vavg.div(latest.length - 1)
+  let vavg = velocities
+    .reduce((acc, v) => acc.add(v), new Vec2(0, 0))
+    .div(velocities.length)
 
-  let v = vavg
+  const exitVelocity = velocities.at(-1)
+  invariant(exitVelocity)
+
+  // final velocity that we will use for decceleration is the
+  // direction of the most recent 2 pointer events, and the average
+  // speed of pointer over the last several hundred ms
+  let v = exitVelocity.norm().mul(vavg.len())
+
   let lastUpdate = last.timeStamp
 
   const acceleration = v.mul(-1).div(200)
