@@ -1,4 +1,4 @@
-import { BehaviorSubject, ReplaySubject } from 'rxjs'
+import { BehaviorSubject, Subject } from 'rxjs'
 
 export class Vec2 {
   readonly x: number
@@ -51,8 +51,33 @@ export class Vec2 {
 
 export interface GameState {
   position$: BehaviorSubject<Vec2>
+  surfaces: {
+    main: Subject<Surface>
+    build: Subject<Surface>
+  }
+}
+
+type EntityId = string
+type SurfaceId = string
+type ChunkId = string
+
+interface Chunk {
+  id: ChunkId
+  tiles: (EntityId | null)[]
+}
+
+type Entity = unknown
+
+interface Surface {
+  id: SurfaceId
+  chunks: Map<ChunkId, Chunk>
+  entities: Map<EntityId, Entity>
 }
 
 export let gameState: GameState = {
   position$: new BehaviorSubject<Vec2>(new Vec2(0, 0)),
+  surfaces: {
+    main: new Subject<Surface>(),
+    build: new Subject<Surface>(),
+  },
 }
