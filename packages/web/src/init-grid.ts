@@ -1,12 +1,6 @@
 import { Application, Container, Graphics, ICanvas } from 'pixi.js'
 import { combineLatest } from 'rxjs'
-import {
-  cellSize$,
-  position$,
-  translate$,
-  Vec2,
-  viewport$,
-} from './game-state.js'
+import { cellSize$, position$, viewport$, zoom$ } from './game-state.js'
 
 function initCellGrid({ app }: { app: Application<ICanvas> }) {
   const container = new Container()
@@ -46,6 +40,11 @@ function initCellGrid({ app }: { app: Application<ICanvas> }) {
       container.position.set(x, y)
     },
   )
+
+  // hide the cell grid when fully zoomed out
+  zoom$.subscribe((zoom) => {
+    container.alpha = zoom
+  })
 }
 
 function initChunkGrid({ app }: { app: Application<ICanvas> }) {
