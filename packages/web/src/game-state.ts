@@ -89,25 +89,36 @@ export const position$ = new BehaviorSubject(new Vec2(0, 0))
 export const move$ = new Subject<Vec2>()
 export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 
-wheel$
-  .pipe(withLatestFrom(viewport$))
-  .subscribe(([{ deltaY, position }, viewport]) => {
-    console.log('todo consider mouse position', position)
-    const nextZoom = clamp(zoom$.value + (deltaY / 4_000) * -1, 0, 1)
-    zoom$.next(nextZoom)
-  })
-
 const MAX_CELL_SIZE = 100
 const MIN_CELL_SIZE = 10
 
-export const cellSize$ = zoom$.pipe(
-  map((zoom) => {
-    return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
-  }),
-)
+function zoomToCellSize(zoom: number) {
+  return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
+}
+
+export const cellSize$ = zoom$.pipe(map(zoomToCellSize))
+
 move$.pipe(withLatestFrom(cellSize$)).subscribe(([move, cellSize]) => {
   position$.next(position$.value.add(move.div(cellSize)))
 })
+
+wheel$
+  .pipe(withLatestFrom(viewport$))
+  .subscribe(([{ deltaY, position }, viewport]) => {
+    const zoom = zoom$.value
+
+    const nextZoom = clamp(zoom + (deltaY / 4_000) * -1, 0, 1)
+
+    if (zoom === nextZoom) return
+
+    const anchor = position.sub(viewport.div(2))
+    const adjust = anchor
+      .div(zoomToCellSize(nextZoom))
+      .sub(anchor.div(zoomToCellSize(zoom)))
+    position$.next(position$.value.add(adjust))
+
+    zoom$.next(nextZoom)
+  })
 
 export const translate$ = combineLatest([position$, viewport$, cellSize$]).pipe(
   map(([position, viewport, cellSize]) => {
