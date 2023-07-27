@@ -95,10 +95,15 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   //   }
   // }
 
-  combineLatest([cellSize$, viewport$, translate$]).subscribe(
-    ([cellSize, viewport, translate]) => {
-      const position = translate(new Vec2(0, 0))
-      container.position.set(position.x, position.y)
+  combineLatest([position$, viewport$, cellSize$]).subscribe(
+    ([position, viewport, cellSize]) => {
+      const { x, y } = position
+        .add(viewport.div(cellSize).div(2))
+        .div(chunkSize)
+        .mod(1)
+        .sub(1)
+        .mul(cellSize * chunkSize)
+      container.position.set(x, y)
     },
   )
 }
