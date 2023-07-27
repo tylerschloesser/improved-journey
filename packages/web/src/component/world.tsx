@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styles from './home.module.scss'
+import styles from './world.module.scss'
 
 import { Application } from 'pixi.js'
 import { Vec2, viewport$ } from '../game-state.js'
@@ -45,7 +45,7 @@ function useInitCanvas(canvas: HTMLCanvasElement | null) {
   }, [canvas])
 }
 
-export function Home() {
+export function World() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useResizeObserver(canvas)
   useInitCanvas(canvas)
