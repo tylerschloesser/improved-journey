@@ -1,5 +1,6 @@
 import { Application, Container, Graphics, ICanvas, Text } from 'pixi.js'
-import { gameState } from './game-state.js'
+import { zip } from 'rxjs'
+import { position$, viewport$, zoom$ } from './game-state.js'
 
 function mod(n: number, m: number) {
   return ((n % m) + m) % m
@@ -12,27 +13,39 @@ function initCellGrid({
   app: Application<ICanvas>
   rect: DOMRect
 }) {
-  let obj = new Graphics()
+  const container = new Container()
+  app.stage.addChild(container)
 
-  obj.lineStyle(2, 'hsl(0, 0%, 10%)')
+  let lines: Graphics | null = null
 
   const cellSize = 40
 
-  const rows = Math.ceil(rect.height / cellSize) + 1
-  const cols = Math.ceil(rect.width / cellSize) + 1
+  zip(viewport$, zoom$).subscribe(([viewport, zoom]) => {
+    console.log('updating lines')
 
-  for (let x = 0; x < cols; x++) {
-    obj.moveTo(x * cellSize, 0).lineTo(x * cellSize, cellSize * rows)
-  }
+    if (lines) {
+      container.removeChild(lines)
+      lines.destroy()
+    }
 
-  for (let y = 0; y < rows; y++) {
-    obj.moveTo(0, y * cellSize).lineTo(cellSize * cols, y * cellSize)
-  }
+    lines = new Graphics()
+    container.addChild(lines)
+    lines.lineStyle(2, 'hsl(0, 0%, 10%)')
 
-  app.stage.addChild(obj)
+    const rows = Math.ceil(viewport.y / cellSize) + 1
+    const cols = Math.ceil(viewport.x / cellSize) + 1
 
-  gameState.position$.subscribe((position) => {
-    obj.position.set(
+    for (let x = 0; x < cols; x++) {
+      lines.moveTo(x * cellSize, 0).lineTo(x * cellSize, cellSize * rows)
+    }
+
+    for (let y = 0; y < rows; y++) {
+      lines.moveTo(0, y * cellSize).lineTo(cellSize * cols, y * cellSize)
+    }
+  })
+
+  position$.subscribe((position) => {
+    container.position.set(
       mod(position.x, cellSize) - cellSize,
       mod(position.y, cellSize) - cellSize,
     )
@@ -46,6 +59,9 @@ function initChunkGrid({
   app: Application<ICanvas>
   rect: DOMRect
 }) {
+  const container = new Container()
+  app.stage.addChild(container)
+
   let obj = new Graphics()
 
   obj.lineStyle(2, 'hsl(0, 0%, 30%)')
@@ -69,9 +85,6 @@ function initChunkGrid({
 
   app.stage.addChild(obj)
 
-  const container = new Container()
-  app.stage.addChild(container)
-
   for (let x = 0; x < cols; x++) {
     for (let y = 0; y < rows; y++) {
       const text = new Text(`[${x},${y}]`, {
@@ -80,12 +93,13 @@ function initChunkGrid({
       })
       text.x = x * cellSize * chunkSize
       text.y = y * cellSize * chunkSize
+      text.text
 
       container.addChild(text)
     }
   }
 
-  gameState.position$.subscribe((position) => {
+  position$.subscribe((position) => {
     obj.position.set(
       mod(position.x, cellSize * chunkSize) - cellSize * chunkSize,
       mod(position.y, cellSize * chunkSize) - cellSize * chunkSize,

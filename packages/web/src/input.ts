@@ -1,5 +1,5 @@
 import { curry } from 'lodash-es'
-import { Vec2, gameState } from './game-state.js'
+import { Vec2, gameState, position$, move$ } from './game-state.js'
 import invariant from 'tiny-invariant'
 
 function toVec2(ev: PointerEvent): Vec2 {
@@ -24,7 +24,7 @@ const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
 
   if (prev && prev.pressure > 0 && ev.pressure > 0) {
     const dp = toVec2(ev).sub(toVec2(prev))
-    gameState.position$.next(gameState.position$.value.add(dp))
+    move$.next(dp)
   }
 })
 
@@ -88,7 +88,7 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 
     if (startAngle !== endAngle) return
 
-    gameState.position$.next(gameState.position$.value.add(v.mul(dt)))
+    move$.next(v.mul(dt))
 
     window.requestAnimationFrame(dampen)
   }

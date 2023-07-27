@@ -57,6 +57,23 @@ export interface GameState {
   }
 }
 
+export const viewport$ = new Subject<Vec2>()
+export const zoom$ = new Subject<number>()
+
+export const position$ = new BehaviorSubject(new Vec2(0, 0))
+
+export const move$ = new Subject<Vec2>()
+
+move$.subscribe((move) => {
+  position$.next(position$.value.add(move))
+})
+
+export interface RenderState {
+  viewport: Vec2
+  zoom: number
+  position: Vec2
+}
+
 type EntityId = string
 type SurfaceId = string
 type ChunkId = string
@@ -81,3 +98,5 @@ export let gameState: GameState = {
     build: new Subject<Surface>(),
   },
 }
+
+export const renderState$ = new Subject<RenderState>()
