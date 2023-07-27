@@ -1,6 +1,6 @@
 import { curry } from 'lodash-es'
-import { Vec2, gameState, position$, move$ } from './game-state.js'
 import invariant from 'tiny-invariant'
+import { move$, Vec2, zoom$ } from './game-state.js'
 
 function toVec2(ev: PointerEvent): Vec2 {
   return new Vec2(ev.clientX, ev.clientY)
@@ -95,6 +95,12 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   dampen()
 })
 
+function onWheel(ev: WheelEvent) {
+  ev.preventDefault()
+  zoom$.next(Math.max(0, Math.min(1, zoom$.value + (ev.deltaY / 4_000) * -1)))
+  console.log(zoom$.value)
+}
+
 export function initInput({
   canvas,
   signal,
@@ -108,4 +114,5 @@ export function initInput({
 
   canvas.addEventListener('pointermove', onPointerMove(state), { signal })
   canvas.addEventListener('pointerup', onPointerUp(state), { signal })
+  canvas.addEventListener('wheel', onWheel, { signal })
 }

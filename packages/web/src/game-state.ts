@@ -58,7 +58,7 @@ export interface GameState {
 }
 
 export const viewport$ = new Subject<Vec2>()
-export const zoom$ = new Subject<number>()
+export const zoom$ = new BehaviorSubject<number>(0)
 
 export const position$ = new BehaviorSubject(new Vec2(0, 0))
 

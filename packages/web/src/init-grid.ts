@@ -1,18 +1,12 @@
-import { Application, Container, Graphics, ICanvas, Text } from 'pixi.js'
-import { zip } from 'rxjs'
+import { Application, Container, Graphics, ICanvas } from 'pixi.js'
+import { combineLatest } from 'rxjs'
 import { position$, viewport$, zoom$ } from './game-state.js'
 
 function mod(n: number, m: number) {
   return ((n % m) + m) % m
 }
 
-function initCellGrid({
-  app,
-  rect,
-}: {
-  app: Application<ICanvas>
-  rect: DOMRect
-}) {
+function initCellGrid({ app }: { app: Application<ICanvas> }) {
   const container = new Container()
   app.stage.addChild(container)
 
@@ -20,9 +14,7 @@ function initCellGrid({
 
   const cellSize = 40
 
-  zip(viewport$, zoom$).subscribe(([viewport, zoom]) => {
-    console.log('updating lines')
-
+  combineLatest(viewport$, zoom$).subscribe(([viewport, zoom]) => {
     if (lines) {
       container.removeChild(lines)
       lines.destroy()
@@ -52,13 +44,7 @@ function initCellGrid({
   })
 }
 
-function initChunkGrid({
-  app,
-  rect,
-}: {
-  app: Application<ICanvas>
-  rect: DOMRect
-}) {
+function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   const container = new Container()
   app.stage.addChild(container)
 
@@ -67,19 +53,20 @@ function initChunkGrid({
   const cellSize = 40
   const chunkSize = 10
 
-  zip(viewport$, zoom$).subscribe(([viewport, zoom]) => {
+  combineLatest(viewport$, zoom$).subscribe(([viewport, zoom]) => {
     if (lines) {
       container.removeChild(lines)
       lines.destroy()
     }
+    console.log('update chunk lines?')
 
     lines = new Graphics()
     container.addChild(lines)
 
     lines.lineStyle(2, 'hsl(0, 0%, 30%)')
 
-    const rows = Math.ceil(rect.height / cellSize / chunkSize) + 1
-    const cols = Math.ceil(rect.width / cellSize / chunkSize) + 1
+    const rows = Math.ceil(viewport.y / cellSize / chunkSize) + 1
+    const cols = Math.ceil(viewport.x / cellSize / chunkSize) + 1
 
     for (let x = 0; x < cols; x++) {
       lines
@@ -115,13 +102,7 @@ function initChunkGrid({
   })
 }
 
-export function initGrid({
-  app,
-  rect,
-}: {
-  app: Application<ICanvas>
-  rect: DOMRect
-}) {
-  initCellGrid({ app, rect })
-  initChunkGrid({ app, rect })
+export function initGrid({ app }: { app: Application<ICanvas> }) {
+  initCellGrid({ app })
+  initChunkGrid({ app })
 }
