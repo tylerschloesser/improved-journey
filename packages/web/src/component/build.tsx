@@ -15,7 +15,6 @@ export function Build() {
       build$.next({
         position: position.sub(size.div(2)).floor(),
       })
-      console.log(position, build$.value?.position)
     })
 
     return () => {

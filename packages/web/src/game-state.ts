@@ -44,7 +44,7 @@ function zoomToCellSize(zoom: number) {
 export const cellSize$ = zoom$.pipe(map(zoomToCellSize))
 
 move$.pipe(withLatestFrom(cellSize$)).subscribe(([move, cellSize]) => {
-  position$.next(position$.value.add(move.div(cellSize)))
+  position$.next(position$.value.add(move.div(cellSize).mul(-1)))
 })
 
 wheel$
@@ -68,7 +68,7 @@ wheel$
 export const translate$ = combineLatest([position$, viewport$, cellSize$]).pipe(
   map(([position, viewport, cellSize]) => {
     return (world: Vec2) => {
-      return world.add(position).mul(cellSize).add(viewport.div(2))
+      return world.sub(position).mul(cellSize).add(viewport.div(2))
     }
   }),
 )

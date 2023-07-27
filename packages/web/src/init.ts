@@ -1,6 +1,5 @@
 import { Application, Graphics, ICanvas } from 'pixi.js'
 import { combineLatest } from 'rxjs'
-import { Build } from './component/build.js'
 import {
   build$,
   cellSize$,
