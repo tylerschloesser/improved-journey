@@ -27,6 +27,7 @@ function initCursor({ app }: InitArgs) {
         return
       }
 
+      circle.width = circle.height = cellSize
       circle.visible = true
     },
   )
