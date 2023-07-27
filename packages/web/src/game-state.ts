@@ -89,6 +89,10 @@ export const position$ = new BehaviorSubject(new Vec2(0, 0))
 export const move$ = new Subject<Vec2>()
 export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 
+export const cursor$ = new BehaviorSubject<{ enabled: boolean }>({
+  enabled: false,
+})
+
 const MAX_CELL_SIZE = 100
 const MIN_CELL_SIZE = 10
 

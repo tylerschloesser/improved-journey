@@ -13,7 +13,7 @@ export function WorldControls() {
           navigate('cursor')
         }}
       >
-        TODO
+        Cursor
       </button>
     </div>
   )
