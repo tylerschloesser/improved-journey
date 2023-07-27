@@ -1,4 +1,10 @@
-import { BehaviorSubject, map, Subject, withLatestFrom } from 'rxjs'
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Subject,
+  withLatestFrom,
+} from 'rxjs'
 
 function mod(n: number, m: number) {
   return ((n % m) + m) % m
@@ -97,6 +103,13 @@ move$.pipe(withLatestFrom(cellSize$)).subscribe(([move, cellSize]) => {
   position$.next(position$.value.add(move.div(cellSize)))
 })
 
+export const translate$ = combineLatest([position$, viewport$, cellSize$]).pipe(
+  map(([position, viewport, cellSize]) => {
+    return (world: Vec2) => {
+      return world.add(position).mul(cellSize).add(viewport.div(2))
+    }
+  }),
+)
 export interface RenderState {
   viewport: Vec2
   zoom: number

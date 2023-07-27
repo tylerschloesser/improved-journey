@@ -1,6 +1,12 @@
 import { Application, Container, Graphics, ICanvas } from 'pixi.js'
 import { combineLatest } from 'rxjs'
-import { cellSize$, position$, viewport$ } from './game-state.js'
+import {
+  cellSize$,
+  position$,
+  translate$,
+  Vec2,
+  viewport$,
+} from './game-state.js'
 
 function initCellGrid({ app }: { app: Application<ICanvas> }) {
   const container = new Container()
@@ -30,10 +36,10 @@ function initCellGrid({ app }: { app: Application<ICanvas> }) {
     }
   })
 
-  combineLatest([position$, viewport$, cellSize$]).subscribe(
-    ([position, viewport, cellSize]) => {
-      const translate = position.mul(cellSize)
-      container.position.set(translate.x, translate.y)
+  combineLatest([viewport$, cellSize$, translate$]).subscribe(
+    ([viewport, cellSize, translate]) => {
+      const position = translate(new Vec2(0, 0))
+      container.position.set(position.x, position.y)
     },
   )
 }
@@ -85,9 +91,9 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   //   }
   // }
 
-  combineLatest([position$, cellSize$]).subscribe(([position, cellSize]) => {
-    const translate = position.mul(cellSize)
-    container.position.set(translate.x, translate.y)
+  combineLatest([cellSize$, translate$]).subscribe(([cellSize, translate]) => {
+    const position = translate(new Vec2(0, 0))
+    container.position.set(position.x, position.y)
   })
 }
 

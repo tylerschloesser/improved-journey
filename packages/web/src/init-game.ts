@@ -1,6 +1,6 @@
 import { Application, Graphics, ICanvas } from 'pixi.js'
 import { combineLatest } from 'rxjs'
-import { cellSize$, miner$, position$ } from './game-state.js'
+import { cellSize$, miner$, translate$ } from './game-state.js'
 
 export function initGame({ app }: { app: Application<ICanvas> }) {
   const rect = new Graphics()
@@ -13,10 +13,8 @@ export function initGame({ app }: { app: Application<ICanvas> }) {
     rect.width = rect.height = cellSize
   })
 
-  combineLatest([miner$, position$, cellSize$]).subscribe(
-    ([miner, position, cellSize]) => {
-      const translate = miner.add(position).mul(cellSize)
-      rect.position.set(translate.x, translate.y)
-    },
-  )
+  combineLatest([miner$, translate$]).subscribe(([miner, translate]) => {
+    const position = translate(miner)
+    rect.position.set(position.x, position.y)
+  })
 }
