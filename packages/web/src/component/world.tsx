@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import styles from './world.module.scss'
 
 import { Application } from 'pixi.js'
-import { Vec2, viewport$ } from '../game-state.js'
+import { viewport$ } from '../game-state.js'
 import { init } from '../init.js'
 import { Outlet } from 'react-router-dom'
+import { Vec2 } from '../vec2.js'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
