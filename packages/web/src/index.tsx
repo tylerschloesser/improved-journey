@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant'
 import { World } from './component/world.js'
 import './index.scss'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { WorldControls } from './component/world-controls.js'
 
 const container = document.getElementById('root')
 invariant(container)
@@ -17,6 +18,12 @@ const router = createBrowserRouter([
   {
     path: '/world/:id',
     element: <World />,
+    children: [
+      {
+        path: '',
+        element: <WorldControls />,
+      },
+    ],
   },
 ])
 

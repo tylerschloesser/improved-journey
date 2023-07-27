@@ -4,6 +4,7 @@ import styles from './world.module.scss'
 import { Application } from 'pixi.js'
 import { Vec2, viewport$ } from '../game-state.js'
 import { init } from '../init.js'
+import { Outlet } from 'react-router-dom'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
@@ -49,5 +50,12 @@ export function World() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useResizeObserver(canvas)
   useInitCanvas(canvas)
-  return <canvas className={styles.canvas} ref={setCanvas}></canvas>
+  return (
+    <div className={styles.container}>
+      <canvas className={styles.canvas} ref={setCanvas}></canvas>
+      <div className={styles.outlet}>
+        <Outlet />
+      </div>
+    </div>
+  )
 }
