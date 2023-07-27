@@ -1,15 +1,18 @@
-import { Application, Graphics, ICanvas } from 'pixi.js'
+import { Application, Container, Graphics, ICanvas } from 'pixi.js'
 import { combineLatest } from 'rxjs'
 import {
   build$,
   cellSize$,
   cursor$,
+  entities$,
+  EntityId,
   translate$,
   viewport$,
 } from './game-state.js'
 import { initGame } from './init-game.js'
 import { initGrid } from './init-grid.js'
 import { initInput } from './input.js'
+import { Vec2 } from './vec2.js'
 
 interface InitArgs {
   canvas: HTMLCanvasElement
@@ -68,10 +71,44 @@ function initBuild({ app }: InitArgs) {
   })
 }
 
+function initEntities({ app }: InitArgs) {
+  const cache = new Map<EntityId, Graphics>()
+
+  const container = new Container()
+  app.stage.addChild(container)
+
+  combineLatest([entities$, cellSize$]).subscribe(([entities, cellSize]) => {
+    Object.values(entities).forEach((entity) => {
+      let g = cache.get(entity.id)
+      if (!g) {
+        g = new Graphics()
+        cache.set(entity.id, g)
+
+        g.beginFill('pink')
+        g.drawRect(0, 0, 1, 1)
+
+        container.addChild(g)
+      }
+
+      const { x, y } = entity.position.mul(cellSize)
+      g.position.set(x, y)
+
+      g.width = cellSize * entity.size.x
+      g.height = cellSize * entity.size.y
+    })
+  })
+
+  translate$.subscribe((translate) => {
+    const { x, y } = translate(new Vec2(0, 0))
+    container.position.set(x, y)
+  })
+}
+
 export function init(args: InitArgs): void {
   initInput(args)
   initGrid(args)
   initGame(args)
   initCursor(args)
   initBuild(args)
+  initEntities(args)
 }

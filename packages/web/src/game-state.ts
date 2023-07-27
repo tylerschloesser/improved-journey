@@ -20,8 +20,6 @@ export const build$ = new BehaviorSubject<null | {
   position: Vec2
 }>(null)
 
-export const miner$ = new BehaviorSubject<Vec2>(new Vec2(1, 2))
-
 export const viewport$ = new Subject<Vec2>()
 export const zoom$ = new BehaviorSubject<number>(0.5)
 
@@ -32,6 +30,14 @@ export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 
 export const cursor$ = new BehaviorSubject<{ enabled: boolean }>({
   enabled: false,
+})
+
+export const entities$ = new BehaviorSubject<Record<EntityId, Entity>>({
+  miner1: {
+    id: 'miner1',
+    position: new Vec2(1, 2),
+    size: new Vec2(2, 2),
+  },
 })
 
 const MAX_CELL_SIZE = 100
@@ -78,16 +84,20 @@ export interface RenderState {
   position: Vec2
 }
 
-type EntityId = string
-type SurfaceId = string
-type ChunkId = string
+export type EntityId = string
+export type SurfaceId = string
+export type ChunkId = string
 
 interface Chunk {
   id: ChunkId
   tiles: (EntityId | null)[]
 }
 
-type Entity = unknown
+interface Entity {
+  id: EntityId
+  position: Vec2
+  size: Vec2
+}
 
 interface Surface {
   id: SurfaceId
