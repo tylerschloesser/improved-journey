@@ -13,7 +13,7 @@ export function Build() {
 
     const sub = position$.subscribe((position) => {
       build$.next({
-        position: position.sub(size.div(2)).floor(),
+        position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
       })
     })
 
