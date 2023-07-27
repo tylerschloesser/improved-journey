@@ -15,6 +15,13 @@ export function WorldControls() {
       >
         Cursor
       </button>
+      <button
+        onPointerUp={() => {
+          navigate('build')
+        }}
+      >
+        Build
+      </button>
     </div>
   )
 }

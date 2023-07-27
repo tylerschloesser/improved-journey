@@ -6,6 +6,7 @@ import './index.scss'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { WorldControls } from './component/world-controls.js'
 import { Cursor } from './component/cursor.js'
+import { Build } from './component/build.js'
 
 const container = document.getElementById('root')
 invariant(container)
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: 'cursor',
         element: <Cursor />,
+      },
+      {
+        path: 'build',
+        element: <Build />,
       },
     ],
   },
