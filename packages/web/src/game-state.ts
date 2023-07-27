@@ -16,6 +16,10 @@ export interface GameState {
   }
 }
 
+export const build$ = new BehaviorSubject<null | {
+  position: Vec2
+}>(null)
+
 export const miner$ = new BehaviorSubject<Vec2>(new Vec2(1, 2))
 
 export const viewport$ = new Subject<Vec2>()
