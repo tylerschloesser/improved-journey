@@ -5,13 +5,24 @@ import { Application } from 'pixi.js'
 import { Vec2, viewport$ } from '../game-state.js'
 import { init } from '../init.js'
 
-type SetCanvasFn = React.Dispatch<
-  React.SetStateAction<HTMLCanvasElement | null>
->
+function useResizeObserver(canvas: HTMLCanvasElement | null) {
+  useEffect(() => {
+    if (!canvas) return
 
-function useCanvas(): { setCanvas: SetCanvasFn } {
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      viewport$.next(
+        new Vec2(entry.contentRect.width, entry.contentRect.height),
+      )
+    })
+    resizeObserver.observe(canvas)
 
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+}
+
+function useInitCanvas(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
     if (!canvas) return
 
@@ -31,23 +42,15 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
       signal: abortController.signal,
     })
 
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      viewport$.next(
-        new Vec2(entry.contentRect.width, entry.contentRect.height),
-      )
-    })
-    resizeObserver.observe(canvas)
-
     return () => {
       abortController.abort()
-      resizeObserver.disconnect()
     }
   }, [canvas])
-
-  return { setCanvas }
 }
 
 export function Home() {
-  const { setCanvas } = useCanvas()
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+  useResizeObserver(canvas)
+  useInitCanvas(canvas)
   return <canvas className={styles.canvas} ref={setCanvas}></canvas>
 }
