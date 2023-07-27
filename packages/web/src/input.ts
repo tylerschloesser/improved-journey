@@ -1,6 +1,6 @@
 import { curry } from 'lodash-es'
 import invariant from 'tiny-invariant'
-import { move$, Vec2, wheel$, zoom$ } from './game-state.js'
+import { move$, Vec2, wheel$ } from './game-state.js'
 
 function toVec2(ev: PointerEvent): Vec2 {
   return new Vec2(ev.clientX, ev.clientY)
