@@ -64,6 +64,10 @@ export class Vec2 {
   mod(v: number) {
     return new Vec2(mod(this.x, v), mod(this.y, v))
   }
+
+  floor(): Vec2 {
+    return new Vec2(Math.floor(this.x), Math.floor(this.y))
+  }
 }
 
 export interface GameState {

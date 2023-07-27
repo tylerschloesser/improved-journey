@@ -36,10 +36,14 @@ function initCellGrid({ app }: { app: Application<ICanvas> }) {
     }
   })
 
-  combineLatest([viewport$, cellSize$, translate$]).subscribe(
-    ([viewport, cellSize, translate]) => {
-      const position = translate(new Vec2(0, 0))
-      container.position.set(position.x, position.y)
+  combineLatest([position$, viewport$, cellSize$]).subscribe(
+    ([position, viewport, cellSize]) => {
+      const { x, y } = position
+        .add(viewport.div(cellSize).div(2))
+        .mod(1)
+        .sub(1)
+        .mul(cellSize)
+      container.position.set(x, y)
     },
   )
 }
@@ -91,10 +95,12 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   //   }
   // }
 
-  combineLatest([cellSize$, translate$]).subscribe(([cellSize, translate]) => {
-    const position = translate(new Vec2(0, 0))
-    container.position.set(position.x, position.y)
-  })
+  combineLatest([cellSize$, viewport$, translate$]).subscribe(
+    ([cellSize, viewport, translate]) => {
+      const position = translate(new Vec2(0, 0))
+      container.position.set(position.x, position.y)
+    },
+  )
 }
 
 export function initGrid({ app }: { app: Application<ICanvas> }) {
