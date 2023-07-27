@@ -1,3 +1,4 @@
+import { clamp } from 'lodash-es'
 import {
   BehaviorSubject,
   combineLatest,
@@ -92,7 +93,8 @@ wheel$
   .pipe(withLatestFrom(viewport$))
   .subscribe(([{ deltaY, position }, viewport]) => {
     console.log('todo consider mouse position', position)
-    zoom$.next(Math.max(0, Math.min(1, zoom$.value + (deltaY / 4_000) * -1)))
+    const nextZoom = clamp(zoom$.value + (deltaY / 4_000) * -1, 0, 1)
+    zoom$.next(nextZoom)
   })
 
 const MAX_CELL_SIZE = 100
