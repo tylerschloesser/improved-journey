@@ -81,19 +81,6 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
     }
   })
 
-  // for (let x = 0; x < cols; x++) {
-  //   for (let y = 0; y < rows; y++) {
-  //     const text = new Text(`[${x},${y}]`, {
-  //       fontFamily: 'monospace',
-  //       fill: 'hsl(0, 0%, 30%)',
-  //     })
-  //     text.x = x * cellSize * chunkSize
-  //     text.y = y * cellSize * chunkSize
-
-  //     container.addChild(text)
-  //   }
-  // }
-
   combineLatest([position$, viewport$, cellSize$]).subscribe(
     ([position, viewport, cellSize]) => {
       const { x, y } = position
