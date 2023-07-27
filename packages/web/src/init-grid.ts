@@ -62,9 +62,10 @@ function initChunkGrid({
   const container = new Container()
   app.stage.addChild(container)
 
-  let obj = new Graphics()
+  let lines = new Graphics()
+  container.addChild(lines)
 
-  obj.lineStyle(2, 'hsl(0, 0%, 30%)')
+  lines.lineStyle(2, 'hsl(0, 0%, 30%)')
   const cellSize = 40
   const chunkSize = 10
 
@@ -72,18 +73,16 @@ function initChunkGrid({
   const cols = Math.ceil(rect.width / cellSize / chunkSize) + 1
 
   for (let x = 0; x < cols; x++) {
-    obj
+    lines
       .moveTo(x * cellSize * chunkSize, 0)
       .lineTo(x * cellSize * chunkSize, cellSize * chunkSize * rows)
   }
 
   for (let y = 0; y < rows; y++) {
-    obj
+    lines
       .moveTo(0, y * cellSize * chunkSize)
       .lineTo(cellSize * chunkSize * cols, y * cellSize * chunkSize)
   }
-
-  app.stage.addChild(obj)
 
   for (let x = 0; x < cols; x++) {
     for (let y = 0; y < rows; y++) {
@@ -100,11 +99,6 @@ function initChunkGrid({
   }
 
   position$.subscribe((position) => {
-    obj.position.set(
-      mod(position.x, cellSize * chunkSize) - cellSize * chunkSize,
-      mod(position.y, cellSize * chunkSize) - cellSize * chunkSize,
-    )
-
     container.position.set(
       mod(position.x, cellSize * chunkSize) - cellSize * chunkSize,
       mod(position.y, cellSize * chunkSize) - cellSize * chunkSize,
