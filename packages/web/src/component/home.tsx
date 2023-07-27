@@ -19,19 +19,16 @@ function useResizeObserver(canvas: HTMLCanvasElement | null) {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [])
+  }, [canvas])
 }
 
 function useInitCanvas(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
     if (!canvas) return
 
-    const rect = canvas.getBoundingClientRect()
     const app = new Application({
       resizeTo: canvas,
       view: canvas,
-      width: rect.width,
-      height: rect.height,
     })
 
     const abortController = new AbortController()
