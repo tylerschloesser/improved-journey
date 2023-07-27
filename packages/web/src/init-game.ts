@@ -7,10 +7,10 @@ export function initGame({ app }: { app: Application<ICanvas> }) {
   app.stage.addChild(rect)
 
   rect.beginFill('red')
-  rect.drawRect(0, 0, 100, 100)
+  rect.drawRect(0, 0, 200, 200)
 
   cellSize$.subscribe((cellSize) => {
-    rect.width = rect.height = cellSize
+    rect.width = rect.height = cellSize * 2
   })
 
   combineLatest([miner$, translate$]).subscribe(([miner, translate]) => {
