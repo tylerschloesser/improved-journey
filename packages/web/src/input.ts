@@ -1,6 +1,6 @@
 import { curry } from 'lodash-es'
 import invariant from 'tiny-invariant'
-import { move$, Vec2, zoom$ } from './game-state.js'
+import { move$, Vec2, wheel$, zoom$ } from './game-state.js'
 
 function toVec2(ev: PointerEvent): Vec2 {
   return new Vec2(ev.clientX, ev.clientY)
@@ -97,7 +97,7 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 
 function onWheel(ev: WheelEvent) {
   ev.preventDefault()
-  zoom$.next(Math.max(0, Math.min(1, zoom$.value + (ev.deltaY / 4_000) * -1)))
+  wheel$.next(ev.deltaY)
 }
 
 export function initInput({

@@ -74,6 +74,11 @@ export const zoom$ = new BehaviorSubject<number>(0)
 export const position$ = new BehaviorSubject(new Vec2(0, 0))
 
 export const move$ = new Subject<Vec2>()
+export const wheel$ = new Subject<number>()
+
+wheel$.subscribe((wheel) => {
+  zoom$.next(Math.max(0, Math.min(1, zoom$.value + (wheel / 4_000) * -1)))
+})
 
 const MAX_CELL_SIZE = 100
 const MIN_CELL_SIZE = 10
