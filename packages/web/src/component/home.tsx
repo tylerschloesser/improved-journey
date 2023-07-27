@@ -31,10 +31,6 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
       signal: abortController.signal,
     })
 
-    viewport$.subscribe((v) => {
-      console.log(v)
-    })
-
     const resizeObserver = new ResizeObserver(([entry]) => {
       viewport$.next(
         new Vec2(entry.contentRect.width, entry.contentRect.height),
