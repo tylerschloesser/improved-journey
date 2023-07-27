@@ -32,6 +32,13 @@ export function Build() {
       >
         Back
       </button>
+      <button
+        onPointerUp={() => {
+          console.log('todo build')
+        }}
+      >
+        Build
+      </button>
     </div>
   )
 }
