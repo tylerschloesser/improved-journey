@@ -1,6 +1,15 @@
 import { Application, Container, Graphics, ICanvas } from 'pixi.js'
-import { combineLatest } from 'rxjs'
+import { combineLatest, map } from 'rxjs'
 import { position$, viewport$, zoom$ } from './game-state.js'
+
+const MAX_CELL_SIZE = 100
+const MIN_CELL_SIZE = 10
+
+const cellSize$ = zoom$.pipe(
+  map((zoom) => {
+    return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
+  }),
+)
 
 function mod(n: number, m: number) {
   return ((n % m) + m) % m
@@ -12,9 +21,7 @@ function initCellGrid({ app }: { app: Application<ICanvas> }) {
 
   let lines: Graphics | null = null
 
-  const cellSize = 40
-
-  combineLatest(viewport$, zoom$).subscribe(([viewport, zoom]) => {
+  combineLatest([viewport$, cellSize$]).subscribe(([viewport, cellSize]) => {
     if (lines) {
       container.removeChild(lines)
       lines.destroy()
@@ -36,7 +43,7 @@ function initCellGrid({ app }: { app: Application<ICanvas> }) {
     }
   })
 
-  position$.subscribe((position) => {
+  combineLatest([position$, cellSize$]).subscribe(([position, cellSize]) => {
     container.position.set(
       mod(position.x, cellSize) - cellSize,
       mod(position.y, cellSize) - cellSize,
@@ -49,16 +56,13 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   app.stage.addChild(container)
 
   let lines: Graphics | null = null
-
-  const cellSize = 40
   const chunkSize = 10
 
-  combineLatest(viewport$, zoom$).subscribe(([viewport, zoom]) => {
+  combineLatest([viewport$, cellSize$]).subscribe(([viewport, cellSize]) => {
     if (lines) {
       container.removeChild(lines)
       lines.destroy()
     }
-    console.log('update chunk lines?')
 
     lines = new Graphics()
     container.addChild(lines)
@@ -94,7 +98,7 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   //   }
   // }
 
-  position$.subscribe((position) => {
+  combineLatest([position$, cellSize$]).subscribe(([position, cellSize]) => {
     container.position.set(
       mod(position.x, cellSize * chunkSize) - cellSize * chunkSize,
       mod(position.y, cellSize * chunkSize) - cellSize * chunkSize,
