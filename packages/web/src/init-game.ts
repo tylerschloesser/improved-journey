@@ -16,7 +16,6 @@ export function initGame({ app }: { app: Application<ICanvas> }) {
   combineLatest([miner$, position$, cellSize$]).subscribe(
     ([miner, position, cellSize]) => {
       const translate = miner.add(position).mul(cellSize)
-      console.log(translate)
       rect.position.set(translate.x, translate.y)
     },
   )

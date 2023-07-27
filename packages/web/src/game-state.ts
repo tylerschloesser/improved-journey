@@ -68,7 +68,7 @@ export interface GameState {
   }
 }
 
-export const miner$ = new BehaviorSubject<Vec2>(new Vec2(4, 6))
+export const miner$ = new BehaviorSubject<Vec2>(new Vec2(1, 2))
 
 export const viewport$ = new Subject<Vec2>()
 export const zoom$ = new BehaviorSubject<number>(0.5)
