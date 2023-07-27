@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject } from 'rxjs'
+import { BehaviorSubject, map, Subject, withLatestFrom } from 'rxjs'
 
 function mod(n: number, m: number) {
   return ((n % m) + m) % m
@@ -75,7 +75,16 @@ export const position$ = new BehaviorSubject(new Vec2(0, 0))
 
 export const move$ = new Subject<Vec2>()
 
-move$.subscribe((move) => {
+const MAX_CELL_SIZE = 100
+const MIN_CELL_SIZE = 10
+
+export const cellSize$ = zoom$.pipe(
+  map((zoom) => {
+    return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
+  }),
+)
+move$.pipe(withLatestFrom(zoom$)).subscribe(([move, zoom]) => {
+  console.log('move with zoom', zoom)
   position$.next(position$.value.add(move))
 })
 

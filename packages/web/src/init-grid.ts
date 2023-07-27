@@ -1,15 +1,6 @@
 import { Application, Container, Graphics, ICanvas } from 'pixi.js'
-import { combineLatest, map } from 'rxjs'
-import { position$, viewport$, zoom$ } from './game-state.js'
-
-const MAX_CELL_SIZE = 100
-const MIN_CELL_SIZE = 10
-
-const cellSize$ = zoom$.pipe(
-  map((zoom) => {
-    return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
-  }),
-)
+import { combineLatest } from 'rxjs'
+import { cellSize$, position$, viewport$ } from './game-state.js'
 
 function initCellGrid({ app }: { app: Application<ICanvas> }) {
   const container = new Container()
