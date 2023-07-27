@@ -1,6 +1,6 @@
 import { Application, Container, Graphics, ICanvas } from 'pixi.js'
 import { combineLatest, map } from 'rxjs'
-import { position$, Vec2, viewport$, zoom$ } from './game-state.js'
+import { position$, viewport$, zoom$ } from './game-state.js'
 
 const MAX_CELL_SIZE = 100
 const MIN_CELL_SIZE = 10
