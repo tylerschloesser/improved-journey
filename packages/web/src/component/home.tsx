@@ -29,6 +29,10 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
     initInput({ canvas, signal: abortController.signal })
     initGrid({ app })
 
+    viewport$.subscribe((v) => {
+      console.log(v)
+    })
+
     const resizeObserver = new ResizeObserver(([entry]) => {
       viewport$.next(
         new Vec2(entry.contentRect.width, entry.contentRect.height),

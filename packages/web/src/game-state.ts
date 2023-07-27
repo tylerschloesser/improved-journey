@@ -83,9 +83,9 @@ export const cellSize$ = zoom$.pipe(
     return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
   }),
 )
-move$.pipe(withLatestFrom(zoom$)).subscribe(([move, zoom]) => {
-  console.log('move with zoom', zoom)
-  position$.next(position$.value.add(move))
+move$.pipe(withLatestFrom(cellSize$)).subscribe(([move, cellSize]) => {
+  // console.log('move with cell size', cellSize)
+  position$.next(position$.value.add(move.div(cellSize)))
 })
 
 export interface RenderState {

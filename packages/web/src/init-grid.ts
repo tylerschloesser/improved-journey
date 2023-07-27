@@ -32,7 +32,7 @@ function initCellGrid({ app }: { app: Application<ICanvas> }) {
 
   combineLatest([position$, viewport$, cellSize$]).subscribe(
     ([position, viewport, cellSize]) => {
-      const translate = position.mod(cellSize).sub(cellSize)
+      const translate = position.mul(cellSize)
       container.position.set(translate.x, translate.y)
     },
   )
@@ -86,9 +86,7 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   // }
 
   combineLatest([position$, cellSize$]).subscribe(([position, cellSize]) => {
-    const translate = position
-      .mod(cellSize * chunkSize)
-      .sub(cellSize * chunkSize)
+    const translate = position.mul(cellSize)
     container.position.set(translate.x, translate.y)
   })
 }
