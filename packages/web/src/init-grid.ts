@@ -1,6 +1,6 @@
 import { Application, Container, Graphics, ICanvas } from 'pixi.js'
 import { combineLatest, map } from 'rxjs'
-import { position$, viewport$, zoom$ } from './game-state.js'
+import { position$, Vec2, viewport$, zoom$ } from './game-state.js'
 
 const MAX_CELL_SIZE = 100
 const MIN_CELL_SIZE = 10
@@ -10,10 +10,6 @@ const cellSize$ = zoom$.pipe(
     return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
   }),
 )
-
-function mod(n: number, m: number) {
-  return ((n % m) + m) % m
-}
 
 function initCellGrid({ app }: { app: Application<ICanvas> }) {
   const container = new Container()
@@ -43,12 +39,12 @@ function initCellGrid({ app }: { app: Application<ICanvas> }) {
     }
   })
 
-  combineLatest([position$, cellSize$]).subscribe(([position, cellSize]) => {
-    container.position.set(
-      mod(position.x, cellSize) - cellSize,
-      mod(position.y, cellSize) - cellSize,
-    )
-  })
+  combineLatest([position$, viewport$, cellSize$]).subscribe(
+    ([position, viewport, cellSize]) => {
+      const translate = position.mod(cellSize).sub(cellSize)
+      container.position.set(translate.x, translate.y)
+    },
+  )
 }
 
 function initChunkGrid({ app }: { app: Application<ICanvas> }) {
@@ -99,10 +95,10 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   // }
 
   combineLatest([position$, cellSize$]).subscribe(([position, cellSize]) => {
-    container.position.set(
-      mod(position.x, cellSize * chunkSize) - cellSize * chunkSize,
-      mod(position.y, cellSize * chunkSize) - cellSize * chunkSize,
-    )
+    const translate = position
+      .mod(cellSize * chunkSize)
+      .sub(cellSize * chunkSize)
+    container.position.set(translate.x, translate.y)
   })
 }
 
