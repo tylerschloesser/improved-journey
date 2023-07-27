@@ -74,11 +74,14 @@ export const zoom$ = new BehaviorSubject<number>(0)
 export const position$ = new BehaviorSubject(new Vec2(0, 0))
 
 export const move$ = new Subject<Vec2>()
-export const wheel$ = new Subject<number>()
+export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 
-wheel$.subscribe((wheel) => {
-  zoom$.next(Math.max(0, Math.min(1, zoom$.value + (wheel / 4_000) * -1)))
-})
+wheel$
+  .pipe(withLatestFrom(viewport$))
+  .subscribe(([{ deltaY, position }, viewport]) => {
+    console.log('todo consider mouse position', position)
+    zoom$.next(Math.max(0, Math.min(1, zoom$.value + (deltaY / 4_000) * -1)))
+  })
 
 const MAX_CELL_SIZE = 100
 const MIN_CELL_SIZE = 10

@@ -97,7 +97,10 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 
 function onWheel(ev: WheelEvent) {
   ev.preventDefault()
-  wheel$.next(ev.deltaY)
+  wheel$.next({
+    deltaY: ev.deltaY,
+    position: new Vec2(ev.clientX, ev.clientY),
+  })
 }
 
 export function initInput({
