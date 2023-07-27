@@ -71,6 +71,28 @@ function initBuild({ app }: InitArgs) {
   })
 }
 
+function cacheGraphics({
+  entityId,
+  cache,
+  container,
+}: {
+  entityId: EntityId
+  cache: Map<EntityId, Graphics>
+  container: Container
+}): Graphics {
+  let g = cache.get(entityId)
+  if (!g) {
+    g = new Graphics()
+    cache.set(entityId, g)
+
+    g.beginFill('pink')
+    g.drawRect(0, 0, 1, 1)
+
+    container.addChild(g)
+  }
+  return g
+}
+
 function initEntities({ app }: InitArgs) {
   const cache = new Map<EntityId, Graphics>()
 
@@ -79,16 +101,7 @@ function initEntities({ app }: InitArgs) {
 
   combineLatest([entities$, cellSize$]).subscribe(([entities, cellSize]) => {
     Object.values(entities).forEach((entity) => {
-      let g = cache.get(entity.id)
-      if (!g) {
-        g = new Graphics()
-        cache.set(entity.id, g)
-
-        g.beginFill('pink')
-        g.drawRect(0, 0, 1, 1)
-
-        container.addChild(g)
-      }
+      let g = cacheGraphics({ entityId: entity.id, cache, container })
 
       const { x, y } = entity.position.mul(cellSize)
       g.position.set(x, y)
