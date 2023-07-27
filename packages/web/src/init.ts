@@ -15,7 +15,7 @@ function initCursor({ app }: InitArgs) {
   const circle = new Graphics()
   circle.visible = false
 
-  circle.beginFill('blue')
+  circle.beginFill('hsla(0, 100%, 100%, .5)')
   circle.drawCircle(0, 0, 100)
 
   app.stage.addChild(circle)
