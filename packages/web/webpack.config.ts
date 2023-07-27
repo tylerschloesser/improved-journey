@@ -20,6 +20,7 @@ const config: Configuration = {
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].chunk.js',
     clean: true,
+    publicPath: '/',
   },
   module: {
     rules: [

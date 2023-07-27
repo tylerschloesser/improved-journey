@@ -116,5 +116,5 @@ export function initInput({
 
   canvas.addEventListener('pointermove', onPointerMove(state), { signal })
   canvas.addEventListener('pointerup', onPointerUp(state), { signal })
-  canvas.addEventListener('wheel', onWheel, { signal })
+  canvas.addEventListener('wheel', onWheel, { signal, passive: false })
 }
