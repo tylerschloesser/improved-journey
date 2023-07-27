@@ -1,4 +1,6 @@
-import { Application, ICanvas } from 'pixi.js'
+import { Application, Graphics, ICanvas } from 'pixi.js'
+import { combineLatest } from 'rxjs'
+import { cellSize$, cursor$, viewport$ } from './game-state.js'
 import { initGame } from './init-game.js'
 import { initGrid } from './init-grid.js'
 import { initInput } from './input.js'
@@ -9,7 +11,26 @@ interface InitArgs {
   app: Application<ICanvas>
 }
 
-function initCursor({ app }: InitArgs) {}
+function initCursor({ app }: InitArgs) {
+  const circle = new Graphics()
+  circle.visible = false
+
+  circle.beginFill('blue')
+  circle.drawCircle(0, 0, 100)
+
+  app.stage.addChild(circle)
+
+  combineLatest([viewport$, cellSize$, cursor$]).subscribe(
+    ([viewport, cellSize, cursor]) => {
+      if (cursor.enabled === false) {
+        circle.visible = false
+        return
+      }
+
+      circle.visible = true
+    },
+  )
+}
 
 export function init(args: InitArgs): void {
   initInput(args)
