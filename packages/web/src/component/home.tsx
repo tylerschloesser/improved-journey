@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { initInput } from '../input.js'
 import styles from './home.module.scss'
 
 import { Application } from 'pixi.js'
 import { Vec2, viewport$ } from '../game-state.js'
-import { initGrid } from '../init-grid.js'
-import { initGame } from '../init-game.js'
+import { init } from '../init.js'
 
 type SetCanvasFn = React.Dispatch<
   React.SetStateAction<HTMLCanvasElement | null>
@@ -27,9 +25,11 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
 
     const abortController = new AbortController()
 
-    initInput({ canvas, signal: abortController.signal })
-    initGrid({ app })
-    initGame({ app })
+    init({
+      canvas,
+      app,
+      signal: abortController.signal,
+    })
 
     viewport$.subscribe((v) => {
       console.log(v)
