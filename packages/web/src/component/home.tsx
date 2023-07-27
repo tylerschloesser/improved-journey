@@ -5,6 +5,7 @@ import styles from './home.module.scss'
 import { Application } from 'pixi.js'
 import { Vec2, viewport$ } from '../game-state.js'
 import { initGrid } from '../init-grid.js'
+import { initGame } from '../init-game.js'
 
 type SetCanvasFn = React.Dispatch<
   React.SetStateAction<HTMLCanvasElement | null>
@@ -28,6 +29,7 @@ function useCanvas(): { setCanvas: SetCanvasFn } {
 
     initInput({ canvas, signal: abortController.signal })
     initGrid({ app })
+    initGame({ app })
 
     viewport$.subscribe((v) => {
       console.log(v)
