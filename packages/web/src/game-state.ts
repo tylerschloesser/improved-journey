@@ -64,8 +64,8 @@ wheel$
 
     const anchor = position.sub(viewport.div(2))
     const adjust = anchor
-      .div(zoomToCellSize(nextZoom))
-      .sub(anchor.div(zoomToCellSize(zoom)))
+      .div(zoomToCellSize(zoom))
+      .sub(anchor.div(zoomToCellSize(nextZoom)))
     position$.next(position$.value.add(adjust))
 
     zoom$.next(nextZoom)
