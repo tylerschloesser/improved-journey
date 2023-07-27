@@ -84,7 +84,6 @@ export const cellSize$ = zoom$.pipe(
   }),
 )
 move$.pipe(withLatestFrom(cellSize$)).subscribe(([move, cellSize]) => {
-  // console.log('move with cell size', cellSize)
   position$.next(position$.value.add(move.div(cellSize)))
 })
 

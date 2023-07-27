@@ -98,7 +98,6 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 function onWheel(ev: WheelEvent) {
   ev.preventDefault()
   zoom$.next(Math.max(0, Math.min(1, zoom$.value + (ev.deltaY / 4_000) * -1)))
-  console.log(zoom$.value)
 }
 
 export function initInput({
