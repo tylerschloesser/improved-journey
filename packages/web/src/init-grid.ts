@@ -92,7 +92,6 @@ function initChunkGrid({
       })
       text.x = x * cellSize * chunkSize
       text.y = y * cellSize * chunkSize
-      text.text
 
       container.addChild(text)
     }
