@@ -3,16 +3,17 @@ import { initGame } from './init-game.js'
 import { initGrid } from './init-grid.js'
 import { initInput } from './input.js'
 
-export function init({
-  canvas,
-  signal,
-  app,
-}: {
+interface InitArgs {
   canvas: HTMLCanvasElement
   signal: AbortSignal
   app: Application<ICanvas>
-}): void {
-  initInput({ canvas, signal })
-  initGrid({ app })
-  initGame({ app })
+}
+
+function initCursor({ app }: InitArgs) {}
+
+export function init(args: InitArgs): void {
+  initInput(args)
+  initGrid(args)
+  initGame(args)
+  initCursor(args)
 }
