@@ -40,6 +40,7 @@ export function Build() {
           id: `${nextEntityId}`,
           position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
           size,
+          color: 'blue',
         }
 
         let valid = isValid(entity, Object.values(entities))

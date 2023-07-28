@@ -40,6 +40,7 @@ export const entities$ = new BehaviorSubject<Record<EntityId, Entity>>({
     id: 'miner1',
     position: new Vec2(1, 2),
     size: new Vec2(2, 2),
+    color: 'blue',
   },
 })
 
@@ -137,6 +138,7 @@ export interface Entity {
   id: EntityId
   position: Vec2
   size: Vec2
+  color: string
 }
 
 interface Surface {

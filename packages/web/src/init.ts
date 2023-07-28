@@ -5,6 +5,7 @@ import {
   cellSize$,
   cursor$,
   entities$,
+  Entity,
   EntityId,
   viewport$,
   worldToScreen$,
@@ -77,20 +78,20 @@ function initBuild({ app }: InitArgs) {
 }
 
 function cacheGraphics({
-  entityId,
+  entity,
   cache,
   container,
 }: {
-  entityId: EntityId
+  entity: Entity
   cache: Map<EntityId, Graphics>
   container: Container
 }): Graphics {
-  let g = cache.get(entityId)
+  let g = cache.get(entity.id)
   if (!g) {
     g = new Graphics()
-    cache.set(entityId, g)
+    cache.set(entity.id, g)
 
-    g.beginFill('pink')
+    g.beginFill(entity.color)
     g.drawRect(0, 0, 1, 1)
 
     container.addChild(g)
@@ -106,7 +107,7 @@ function initEntities({ app }: InitArgs) {
 
   combineLatest([entities$, cellSize$]).subscribe(([entities, cellSize]) => {
     Object.values(entities).forEach((entity) => {
-      let g = cacheGraphics({ entityId: entity.id, cache, container })
+      let g = cacheGraphics({ entity: entity, cache, container })
 
       const { x, y } = entity.position.mul(cellSize)
       g.position.set(x, y)
