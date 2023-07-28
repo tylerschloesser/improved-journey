@@ -1,12 +1,11 @@
 import {
   Application,
-  Color,
   ColorMatrixFilter,
   Container,
   Graphics,
   ICanvas,
 } from 'pixi.js'
-import { combineLatest, withLatestFrom } from 'rxjs'
+import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
 import {
   build$,
