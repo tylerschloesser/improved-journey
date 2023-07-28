@@ -6,8 +6,8 @@ import {
   cursor$,
   entities$,
   EntityId,
-  worldToScreen$,
   viewport$,
+  worldToScreen$,
 } from './game-state.js'
 import { initGame } from './init-game.js'
 import { initGrid } from './init-grid.js'
