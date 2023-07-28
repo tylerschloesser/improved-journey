@@ -10,10 +10,11 @@ export function Build() {
 
   useEffect(() => {
     const size = new Vec2(2, 2)
-
     const sub = position$.subscribe((position) => {
       build$.next({
+        id: 'tbd',
         position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
+        size,
       })
     })
 

@@ -16,9 +16,7 @@ export interface GameState {
   }
 }
 
-export const build$ = new BehaviorSubject<null | {
-  position: Vec2
-}>(null)
+export const build$ = new BehaviorSubject<null | Entity>(null)
 
 export const viewport$ = new Subject<Vec2>()
 export const zoom$ = new BehaviorSubject<number>(0.5)
