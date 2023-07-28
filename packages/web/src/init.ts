@@ -84,16 +84,26 @@ function initBuild({ app }: InitArgs) {
         g.drawRect(0, 0, 1, 1)
 
         // https://fecolormatrix.com/
-        //
+
         const validFilter = new ColorMatrixFilter()
+
+        // prettier-ignore
         validFilter.matrix = [
-          0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+          0, 0, 0, 0, 0, 
+          1, 1, 1, 0, 0, 
+          0, 0, 0, 0, 0, 
+          0, 0, 0, 1, 0,
         ]
         validFilter.enabled = false
 
         const invalidFilter = new ColorMatrixFilter()
+
+        // prettier-ignore
         invalidFilter.matrix = [
-          1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+          1, 1, 1, 0, 0, 
+          0, 0, 0, 0, 0, 
+          0, 0, 0, 0, 0, 
+          0, 0, 0, 1, 0,
         ]
 
         g.filters = [validFilter, invalidFilter]
