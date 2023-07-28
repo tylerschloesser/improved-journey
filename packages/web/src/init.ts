@@ -64,7 +64,7 @@ function initBuild({ app }: InitArgs) {
       return
     }
 
-    const { x, y } = translate(build.position)
+    const { x, y } = translate(build.entity.position)
 
     rect.position.set(x, y)
     rect.visible = true

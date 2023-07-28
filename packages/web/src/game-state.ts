@@ -16,7 +16,10 @@ export interface GameState {
   }
 }
 
-export const build$ = new BehaviorSubject<null | Entity>(null)
+export const build$ = new BehaviorSubject<null | {
+  entity: Entity
+  valid: boolean
+}>(null)
 
 export const viewport$ = new Subject<Vec2>()
 export const zoom$ = new BehaviorSubject<number>(0.5)
@@ -93,7 +96,7 @@ interface Chunk {
   tiles: (EntityId | null)[]
 }
 
-interface Entity {
+export interface Entity {
   id: EntityId
   position: Vec2
   size: Vec2
