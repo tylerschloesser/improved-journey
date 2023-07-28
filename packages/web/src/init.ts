@@ -67,15 +67,17 @@ function initBuild({ app }: InitArgs) {
 
         g.zIndex = ZIndex.Build
 
-        g.beginFill('blue')
-        g.drawRect(0, 0, 200, 200)
+        g.beginFill(build.entity.color)
+        g.drawRect(0, 0, 1, 1)
 
         app.stage.addChild(g)
       }
 
       const { x, y } = worldToScreen(build.entity.position)
 
-      g.width = g.height = cellSize * 2
+      g.width = cellSize * build.entity.size.x
+      g.height = cellSize * build.entity.size.y
+
       g.position.set(x, y)
     },
   )
