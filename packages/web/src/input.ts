@@ -1,6 +1,6 @@
 import { curry } from 'lodash-es'
 import invariant from 'tiny-invariant'
-import { move$, wheel$ } from './game-state.js'
+import { move$, tap$, wheel$ } from './game-state.js'
 import { Vec2 } from './vec2.js'
 
 function toVec2(ev: PointerEvent): Vec2 {
@@ -10,14 +10,14 @@ function toVec2(ev: PointerEvent): Vec2 {
 type PointerId = number
 
 interface PointerState {
-  pointerMoveCache: Map<PointerId, PointerEvent[]>
+  pointerEventCache: Map<PointerId, PointerEvent[]>
 }
 
 const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
-  let cache = state.pointerMoveCache.get(ev.pointerId)
+  let cache = state.pointerEventCache.get(ev.pointerId)
   if (!cache) {
     cache = []
-    state.pointerMoveCache.set(ev.pointerId, cache)
+    state.pointerEventCache.set(ev.pointerId, cache)
   }
 
   const prev = cache.at(-1)
@@ -29,18 +29,43 @@ const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
   }
 })
 
+function isTap(down: PointerEvent, up: PointerEvent) {
+  invariant(down.type === 'pointerdown')
+  invariant(up.type === 'pointerup')
+
+  const dt = up.timeStamp - down.timeStamp
+
+  // const dp = toVec2(up).sub(toVec2(down))
+  // const dist = dp.len()
+
+  return dt < 100
+}
+
+const onPointerDown = curry((state: PointerState, ev: PointerEvent) => {
+  state.pointerEventCache.set(ev.pointerId, [ev])
+})
+
 const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   const now = ev.timeStamp
 
-  const cache = state.pointerMoveCache.get(ev.pointerId) ?? []
+  const cache = state.pointerEventCache.get(ev.pointerId) ?? []
+  const first = cache.at(0)
   const last = cache.at(-1)
 
-  if (!last) return
+  invariant(first)
+  invariant(last)
+
+  invariant(first.type === 'pointerdown')
+
+  if (isTap(first, ev)) {
+    tap$.next(toVec2(ev))
+    return
+  }
 
   // only dampen if last pointermove was <= 100ms ago
   if (now - last.timeStamp > 100) return
 
-  state.pointerMoveCache.delete(ev.pointerId)
+  state.pointerEventCache.delete(ev.pointerId)
 
   const latest = cache.filter((cached) => {
     return now - cached.timeStamp < 500
@@ -112,10 +137,11 @@ export function initInput({
   signal: AbortSignal
 }) {
   const state: PointerState = {
-    pointerMoveCache: new Map(),
+    pointerEventCache: new Map(),
   }
 
   canvas.addEventListener('pointermove', onPointerMove(state), { signal })
   canvas.addEventListener('pointerup', onPointerUp(state), { signal })
+  canvas.addEventListener('pointerdown', onPointerDown(state), { signal })
   canvas.addEventListener('wheel', onWheel, { signal, passive: false })
 }

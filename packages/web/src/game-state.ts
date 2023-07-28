@@ -28,6 +28,11 @@ export const position$ = new BehaviorSubject(new Vec2(0, 0))
 
 export const move$ = new Subject<Vec2>()
 export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
+export const tap$ = new Subject<Vec2>()
+
+tap$.subscribe(() => {
+  console.log('todo handle tap')
+})
 
 export const cursor$ = new BehaviorSubject<{ enabled: boolean }>({
   enabled: false,
