@@ -6,6 +6,7 @@ import {
   Subject,
   withLatestFrom,
 } from 'rxjs'
+import { intersects } from './util.js'
 import { Vec2 } from './vec2.js'
 
 export interface GameState {
@@ -103,7 +104,18 @@ tap$
   .pipe(withLatestFrom(screenToWorld$, entities$))
   .subscribe(([tap, screenToWorld, entities]) => {
     const world = screenToWorld(tap).floor()
-    console.log('todo tap', world)
+
+    const a1 = world
+    const b1 = world.add(new Vec2(1, 1))
+
+    for (const entity of Object.values(entities)) {
+      const a2 = entity.position
+      const b2 = entity.position.add(entity.size)
+
+      if (intersects(a1, a2, b1, b2)) {
+        console.log('tapped', entity)
+      }
+    }
   })
 
 export interface RenderState {
