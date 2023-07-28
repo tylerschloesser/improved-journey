@@ -38,6 +38,8 @@ export const entities$ = new BehaviorSubject<Record<EntityId, Entity>>({
   },
 })
 
+export const nextEntityId$ = new BehaviorSubject<number>(0)
+
 const MAX_CELL_SIZE = 100
 const MIN_CELL_SIZE = 10
 
