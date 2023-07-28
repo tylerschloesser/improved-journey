@@ -1,5 +1,13 @@
-import { Application, Container, Graphics, ICanvas } from 'pixi.js'
+import {
+  Application,
+  Color,
+  ColorMatrixFilter,
+  Container,
+  Graphics,
+  ICanvas,
+} from 'pixi.js'
 import { combineLatest, withLatestFrom } from 'rxjs'
+import invariant from 'tiny-invariant'
 import {
   build$,
   cellSize$,
@@ -70,13 +78,38 @@ function initBuild({ app }: InitArgs) {
         g.beginFill(build.entity.color)
         g.drawRect(0, 0, 1, 1)
 
+        // https://fecolormatrix.com/
+        //
+        const validFilter = new ColorMatrixFilter()
+        validFilter.matrix = [
+          0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+        ]
+        validFilter.enabled = false
+
+        const invalidFilter = new ColorMatrixFilter()
+        invalidFilter.matrix = [
+          1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+        ]
+
+        g.filters = [validFilter, invalidFilter]
+
         app.stage.addChild(g)
       }
+
+      const validFilter = g.filters?.at(0)
+      const invalidFilter = g.filters?.at(1)
+      invariant(validFilter)
+      invariant(invalidFilter)
+
+      validFilter.enabled = build.valid
+      invalidFilter.enabled = !build.valid
 
       const { x, y } = worldToScreen(build.entity.position)
 
       g.width = cellSize * build.entity.size.x
       g.height = cellSize * build.entity.size.y
+
+      g.filters
 
       g.position.set(x, y)
     },
