@@ -2,6 +2,7 @@ import {
   Application,
   ColorMatrixFilter,
   Container,
+  Filter,
   Graphics,
   ICanvas,
 } from 'pixi.js'
@@ -56,21 +57,26 @@ function initCursor({ app }: InitArgs) {
 }
 
 function initBuild({ app }: InitArgs) {
-  let g: Graphics | null = null
+  let cache: {
+    g: Graphics
+    invalidFilter: Filter
+    validFilter: Filter
+  } | null = null
 
   combineLatest([build$, worldToScreen$, cellSize$]).subscribe(
     ([build, worldToScreen, cellSize]) => {
       if (build === null) {
-        if (g) {
+        if (cache) {
+          const { g } = cache
           app.stage.removeChild(g)
           g.destroy()
-          g = null
+          cache = null
         }
         return
       }
 
-      if (g === null) {
-        g = new Graphics()
+      if (cache === null) {
+        const g = new Graphics()
 
         g.zIndex = ZIndex.Build
 
@@ -93,13 +99,11 @@ function initBuild({ app }: InitArgs) {
         g.filters = [validFilter, invalidFilter]
 
         app.stage.addChild(g)
+
+        cache = { g, validFilter, invalidFilter }
       }
 
-      const validFilter = g.filters?.at(0)
-      const invalidFilter = g.filters?.at(1)
-      invariant(validFilter)
-      invariant(invalidFilter)
-
+      const { g, validFilter, invalidFilter } = cache
       validFilter.enabled = build.valid
       invalidFilter.enabled = !build.valid
 
@@ -107,8 +111,6 @@ function initBuild({ app }: InitArgs) {
 
       g.width = cellSize * build.entity.size.x
       g.height = cellSize * build.entity.size.y
-
-      g.filters
 
       g.position.set(x, y)
     },
