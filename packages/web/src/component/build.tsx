@@ -9,6 +9,7 @@ import {
   nextEntityId$,
   position$,
 } from '../game-state.js'
+import { intersects } from '../util.js'
 import { Vec2 } from '../vec2.js'
 
 import styles from './build.module.scss'
@@ -20,16 +21,7 @@ function isValid(entity: Entity, entities: Entity[]) {
   for (const check of entities) {
     const a2 = check.position
     const b2 = check.position.add(check.size)
-
-    if (a1.x >= b2.x || a2.x >= b1.x) {
-      continue
-    }
-
-    if (a1.y >= b2.y || a2.y >= b1.y) {
-      continue
-    }
-
-    return false
+    if (intersects(a1, a2, b1, b2)) return false
   }
 
   return true
