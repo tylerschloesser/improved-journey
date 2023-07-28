@@ -33,6 +33,8 @@ function useInitCanvas(canvas: HTMLCanvasElement | null) {
       view: canvas,
     })
 
+    app.stage.sortableChildren = true
+
     const abortController = new AbortController()
 
     init({

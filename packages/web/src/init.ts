@@ -13,6 +13,7 @@ import { initGame } from './init-game.js'
 import { initGrid } from './init-grid.js'
 import { initInput } from './input.js'
 import { Vec2 } from './vec2.js'
+import { ZIndex } from './z-index.js'
 
 interface InitArgs {
   canvas: HTMLCanvasElement
@@ -22,6 +23,7 @@ interface InitArgs {
 
 function initCursor({ app }: InitArgs) {
   const circle = new Graphics()
+  circle.zIndex = ZIndex.Cursor
   circle.visible = false
 
   circle.beginFill('hsla(0, 100%, 100%, .5)')
@@ -48,6 +50,7 @@ function initCursor({ app }: InitArgs) {
 function initBuild({ app }: InitArgs) {
   const rect = new Graphics()
   rect.visible = false
+  rect.zIndex = ZIndex.Build
 
   rect.beginFill('blue')
   rect.drawRect(0, 0, 200, 200)
