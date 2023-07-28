@@ -29,11 +29,16 @@ const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
   }
 })
 
-function isTap(down: PointerEvent, up: PointerEvent) {
-  invariant(down.type === 'pointerdown')
-  invariant(up.type === 'pointerup')
+function isTap(cache: PointerEvent[], ev: PointerEvent) {
+  invariant(cache.length > 0)
+  const first = cache.at(0)
 
-  const dt = up.timeStamp - down.timeStamp
+  invariant(first?.type === 'pointerdown')
+  if (cache.length === 1) {
+    return true
+  }
+
+  const dt = ev.timeStamp - first.timeStamp
 
   // const dp = toVec2(up).sub(toVec2(down))
   // const dist = dp.len()
@@ -47,20 +52,15 @@ const onPointerDown = curry((state: PointerState, ev: PointerEvent) => {
 
 const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   const now = ev.timeStamp
-
   const cache = state.pointerEventCache.get(ev.pointerId) ?? []
-  const first = cache.at(0)
-  const last = cache.at(-1)
 
-  invariant(first)
-  invariant(last)
-
-  invariant(first.type === 'pointerdown')
-
-  if (isTap(first, ev)) {
+  if (isTap(cache, ev)) {
     tap$.next(toVec2(ev))
     return
   }
+
+  const last = cache.at(-1)
+  invariant(last)
 
   // only dampen if last pointermove was <= 100ms ago
   if (now - last.timeStamp > 100) return

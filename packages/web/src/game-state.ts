@@ -30,10 +30,6 @@ export const move$ = new Subject<Vec2>()
 export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 export const tap$ = new Subject<Vec2>()
 
-tap$.subscribe(() => {
-  console.log('todo handle tap')
-})
-
 export const cursor$ = new BehaviorSubject<{ enabled: boolean }>({
   enabled: false,
 })
@@ -79,13 +75,37 @@ wheel$
     zoom$.next(nextZoom)
   })
 
-export const translate$ = combineLatest([position$, viewport$, cellSize$]).pipe(
+export const worldToScreen$ = combineLatest([
+  position$,
+  viewport$,
+  cellSize$,
+]).pipe(
   map(([position, viewport, cellSize]) => {
     return (world: Vec2) => {
       return world.sub(position).mul(cellSize).add(viewport.div(2))
     }
   }),
 )
+
+export const screenToWorld$ = combineLatest([
+  position$,
+  viewport$,
+  cellSize$,
+]).pipe(
+  map(([position, viewport, cellSize]) => {
+    return (screen: Vec2) => {
+      return screen.sub(viewport.div(2)).div(cellSize).add(position)
+    }
+  }),
+)
+
+tap$
+  .pipe(withLatestFrom(screenToWorld$, entities$))
+  .subscribe(([tap, screenToWorld, entities]) => {
+    const world = screenToWorld(tap).floor()
+    console.log('todo tap', world)
+  })
+
 export interface RenderState {
   viewport: Vec2
   zoom: number

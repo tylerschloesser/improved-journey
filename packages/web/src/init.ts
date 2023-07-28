@@ -6,7 +6,7 @@ import {
   cursor$,
   entities$,
   EntityId,
-  translate$,
+  worldToScreen$,
   viewport$,
 } from './game-state.js'
 import { initGame } from './init-game.js'
@@ -58,17 +58,19 @@ function initBuild({ app }: InitArgs) {
     rect.width = rect.height = cellSize * 2
   })
 
-  combineLatest([build$, translate$]).subscribe(([build, translate]) => {
-    if (build === null) {
-      rect.visible = false
-      return
-    }
+  combineLatest([build$, worldToScreen$]).subscribe(
+    ([build, worldToScreen]) => {
+      if (build === null) {
+        rect.visible = false
+        return
+      }
 
-    const { x, y } = translate(build.entity.position)
+      const { x, y } = worldToScreen(build.entity.position)
 
-    rect.position.set(x, y)
-    rect.visible = true
-  })
+      rect.position.set(x, y)
+      rect.visible = true
+    },
+  )
 }
 
 function cacheGraphics({
@@ -111,8 +113,8 @@ function initEntities({ app }: InitArgs) {
     })
   })
 
-  translate$.subscribe((translate) => {
-    const { x, y } = translate(new Vec2(0, 0))
+  worldToScreen$.subscribe((worldToScreen) => {
+    const { x, y } = worldToScreen(new Vec2(0, 0))
     container.position.set(x, y)
   })
 }
