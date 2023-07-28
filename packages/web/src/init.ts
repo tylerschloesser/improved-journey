@@ -1,5 +1,5 @@
 import { Application, Container, Graphics, ICanvas } from 'pixi.js'
-import { combineLatest } from 'rxjs'
+import { combineLatest, withLatestFrom } from 'rxjs'
 import {
   build$,
   cellSize$,
@@ -49,30 +49,34 @@ function initCursor({ app }: InitArgs) {
 }
 
 function initBuild({ app }: InitArgs) {
-  const rect = new Graphics()
-  rect.visible = false
-  rect.zIndex = ZIndex.Build
+  let g: Graphics | null = null
 
-  rect.beginFill('blue')
-  rect.drawRect(0, 0, 200, 200)
-
-  app.stage.addChild(rect)
-
-  cellSize$.subscribe((cellSize) => {
-    rect.width = rect.height = cellSize * 2
-  })
-
-  combineLatest([build$, worldToScreen$]).subscribe(
-    ([build, worldToScreen]) => {
+  combineLatest([build$, worldToScreen$, cellSize$]).subscribe(
+    ([build, worldToScreen, cellSize]) => {
       if (build === null) {
-        rect.visible = false
+        if (g) {
+          app.stage.removeChild(g)
+          g.destroy()
+          g = null
+        }
         return
+      }
+
+      if (g === null) {
+        g = new Graphics()
+
+        g.zIndex = ZIndex.Build
+
+        g.beginFill('blue')
+        g.drawRect(0, 0, 200, 200)
+
+        app.stage.addChild(g)
       }
 
       const { x, y } = worldToScreen(build.entity.position)
 
-      rect.position.set(x, y)
-      rect.visible = true
+      g.width = g.height = cellSize * 2
+      g.position.set(x, y)
     },
   )
 }
