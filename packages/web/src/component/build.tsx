@@ -58,6 +58,7 @@ export function Build() {
   return (
     <div className={styles.container}>
       <button
+        className={styles.button}
         onPointerUp={() => {
           navigate('..')
         }}
@@ -65,6 +66,7 @@ export function Build() {
         Back
       </button>
       <button
+        className={styles.button}
         disabled={!valid}
         onPointerUp={() => {
           if (!valid) return

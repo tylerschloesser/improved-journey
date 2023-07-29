@@ -1,4 +1,9 @@
+@import 'core';
+
 .container {
-  position: absolute;
-  bottom: 0;
+  @include container-default;
+}
+
+.button {
+  @include button-default;
 }

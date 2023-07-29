@@ -1,7 +1,12 @@
 @mixin container-default {
-  font: var(--font-default);
-  color: var(--color-default);
+  font: var(--font-container-default);
+  color: var(--color-container-default);
 
   position: absolute;
   bottom: 0;
+}
+
+@mixin button-default {
+  font: var(--font-button-default);
+  color: var(--color-button-default);
 }

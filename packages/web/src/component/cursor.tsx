@@ -17,6 +17,7 @@ export function Cursor() {
   return (
     <div className={styles.container}>
       <button
+        className={styles.button}
         onPointerUp={() => {
           navigate('..')
         }}

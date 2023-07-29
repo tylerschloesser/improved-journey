@@ -1,6 +1,9 @@
 body {
   margin: 0;
 
-  --font-default: 16px system-ui;
-  --color-default: white;
+  --font-container-default: 16px system-ui;
+  --font-button-default: 20px system-ui;
+
+  --color-container-default: white;
+  --color-button-default: black;
 }

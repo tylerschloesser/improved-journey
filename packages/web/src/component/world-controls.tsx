@@ -9,6 +9,7 @@ export function WorldControls() {
   return (
     <div className={styles.container}>
       <button
+        className={styles.button}
         onPointerUp={() => {
           navigate('cursor')
         }}
@@ -16,6 +17,7 @@ export function WorldControls() {
         Cursor
       </button>
       <button
+        className={styles.button}
         onPointerUp={() => {
           navigate('build')
         }}
