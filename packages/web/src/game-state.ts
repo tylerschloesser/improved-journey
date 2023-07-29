@@ -122,6 +122,12 @@ tap$
     }
   })
 
+export const focus$ = new Subject<{ entityId: EntityId }>()
+
+focus$.subscribe(({ entityId }) => {
+  console.log('todo focus on', entityId)
+})
+
 export interface RenderState {
   viewport: Vec2
   zoom: number
