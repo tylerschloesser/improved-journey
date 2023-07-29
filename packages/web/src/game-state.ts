@@ -118,28 +118,44 @@ tap$
       const b2 = entity.position.add(entity.size)
 
       if (intersects(a1, a2, b1, b2)) {
-        focus$.next({ entityId: entity.id })
+        focus$.next({ entityId: entity.id, mode: FocusMode.Entity })
         navigate$.next({ to: `entity/${entity.id}` })
       }
     }
   })
 
-export const focus$ = new Subject<{ entityId: EntityId }>()
+export enum FocusMode {
+  Entity,
+  Connection,
+}
+
+export const focus$ = new Subject<{ entityId: EntityId; mode: FocusMode }>()
 
 export const connection$ = new BehaviorSubject<null | {
   entityId: EntityId
 }>(null)
 
+connection$.subscribe((connection) => {
+  if (connection) {
+    focus$.next({
+      entityId: connection.entityId,
+      mode: FocusMode.Connection,
+    })
+  }
+})
+
 focus$
   .pipe(withLatestFrom(entities$, position$, viewport$, cellSize$))
-  .subscribe(([{ entityId }, entities, position, viewport, cellSize]) => {
+  .subscribe(([{ entityId, mode }, entities, position, viewport, cellSize]) => {
     const entity = entities[entityId]
 
     let center = entity.position.add(entity.size.div(2))
 
-    // entity UI takes up half the bottom of the screen
-    // adjust accordingly
-    center = center.add(new Vec2(0, viewport.div(4).div(cellSize).y))
+    if (mode === FocusMode.Entity) {
+      // entity UI takes up half the bottom of the screen
+      // adjust accordingly
+      center = center.add(new Vec2(0, viewport.div(4).div(cellSize).y))
+    }
 
     animateVec2({
       from: position,
