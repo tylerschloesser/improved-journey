@@ -1,8 +1,9 @@
-import { Application, Container, Graphics, ICanvas } from 'pixi.js'
+import { Container, Graphics } from 'pixi.js'
 import { combineLatest } from 'rxjs'
 import { cellSize$, position$, viewport$, zoom$ } from './game-state.js'
+import { InitArgs } from './init-args.js'
 
-function initCellGrid({ app }: { app: Application<ICanvas> }) {
+function initCellGrid({ app }: InitArgs) {
   const container = new Container()
   app.stage.addChild(container)
 
@@ -48,7 +49,7 @@ function initCellGrid({ app }: { app: Application<ICanvas> }) {
   })
 }
 
-function initChunkGrid({ app }: { app: Application<ICanvas> }) {
+function initChunkGrid({ app }: InitArgs) {
   const container = new Container()
   app.stage.addChild(container)
 
@@ -96,7 +97,7 @@ function initChunkGrid({ app }: { app: Application<ICanvas> }) {
   )
 }
 
-export function initGrid({ app }: { app: Application<ICanvas> }) {
-  initCellGrid({ app })
-  initChunkGrid({ app })
+export function initGrid(args: InitArgs) {
+  initCellGrid(args)
+  initChunkGrid(args)
 }
