@@ -9,6 +9,7 @@ import {
 } from 'rxjs'
 import { intersects } from './util.js'
 import { Vec2 } from './vec2.js'
+import { animateVec2 } from './animate.js'
 
 export interface GameState {
   position$: BehaviorSubject<Vec2>
@@ -135,7 +136,14 @@ focus$
     // adjust accordingly
     center = center.add(new Vec2(0, viewport.div(4).div(cellSize).y))
 
-    position$.next(center)
+    animateVec2({
+      from: position,
+      to: center,
+      duration: 200,
+      callback(v) {
+        position$.next(v)
+      },
+    })
   })
 
 export interface RenderState {
