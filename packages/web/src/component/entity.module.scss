@@ -1,7 +1,5 @@
-.container {
-  font: var(--font-default);
-  color: var(--color-default);
+@import 'core';
 
-  position: absolute;
-  bottom: 0;
+.container {
+  @include container-default;
 }
