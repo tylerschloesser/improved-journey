@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { Vec2 } from './vec2.js'
 
 export interface AnimateVec2Args {
@@ -5,6 +6,12 @@ export interface AnimateVec2Args {
   to: Vec2
   duration: number
   callback(v: Vec2): void
+}
+
+// https://css-tricks.com/emulating-css-timing-functions-javascript/
+function easeIn(k: number) {
+  invariant(k >= 0 && k <= 1)
+  return 1 - Math.pow(1 - k, 1.675)
 }
 
 export function animateVec2({
@@ -25,7 +32,9 @@ export function animateVec2({
 
     const elapsed = now - start
 
-    callback(from.add(d.mul(elapsed / duration)))
+    const k = elapsed / duration
+
+    callback(from.add(d.mul(easeIn(k))))
 
     window.requestAnimationFrame(onFrame)
   }
