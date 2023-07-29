@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@react-rxjs/core": "^0.10.6",
+    "@react-rxjs/utils": "^0.9.7",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "css-loader": "^6.8.1",
