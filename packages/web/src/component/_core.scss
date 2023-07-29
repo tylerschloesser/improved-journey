@@ -1,9 +1,14 @@
 @mixin container-default {
   font: var(--font-container-default);
   color: var(--color-container-default);
+  background: var(--background-container-default);
 
   position: absolute;
   bottom: 0;
+
+  padding: var(--padding-md);
+
+  box-sizing: border-box;
 }
 
 @mixin button-default {

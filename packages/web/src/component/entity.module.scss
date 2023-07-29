@@ -2,4 +2,7 @@
 
 .container {
   @include container-default;
+
+  height: 50dvh;
+  width: 100dvw;
 }
