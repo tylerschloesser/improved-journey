@@ -55,12 +55,21 @@ export function initConnection({ app }: InitArgs) {
         }
 
         const g = new Graphics()
-        const width = 0.05
-        g.lineStyle(width, `hsl(0, 0%, 50%)`)
+        container.addChild(g)
 
-        for (const { x, y } of points) {
-          g.drawRect(x + width / 2, y + width / 2, 1 - width, 1 - width)
-          container.addChild(g)
+        const scale = 10
+
+        // TODO fix this is dumb as fuck
+        // force the container to have a size that makes positioning easier
+        // but transparent doesn't work...
+        g.beginFill('hsla(0, 100%, 50%, .0001)')
+        g.drawRect(0, 0, config.size.x * scale, config.size.y * scale)
+
+        const r = 0.25 * scale
+        g.beginFill('hsl(0, 0%, 50%)')
+
+        for (const { x, y } of points.slice(0, 8)) {
+          g.drawCircle((x + 0.5) * scale, (y + 0.5) * scale, r)
         }
       }
 
