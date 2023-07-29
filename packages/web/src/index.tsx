@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { WorldControls } from './component/world-controls.js'
 import { Cursor } from './component/cursor.js'
 import { Build } from './component/build.js'
+import { Entity } from './component/entity.js'
 
 const container = document.getElementById('root')
 invariant(container)
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: 'build',
         element: <Build />,
+      },
+      {
+        path: 'entity/:id',
+        element: <Entity />,
       },
     ],
   },
