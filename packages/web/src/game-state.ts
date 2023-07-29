@@ -118,6 +118,7 @@ tap$
       const b2 = entity.position.add(entity.size)
 
       if (intersects(a1, a2, b1, b2)) {
+        focus$.next({ entityId: entity.id })
         navigate$.next({ to: `entity/${entity.id}` })
       }
     }

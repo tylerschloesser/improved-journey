@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import { bind } from '@react-rxjs/core'
+import React from 'react'
 import { useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { EntityId, entities$, focus$ } from '../game-state.js'
-import { bind } from '@react-rxjs/core'
+import { EntityId, entities$ } from '../game-state.js'
 
-import styles from './entity.module.scss'
 import { map } from 'rxjs'
+import styles from './entity.module.scss'
 
 function useEntityId() {
   const params = useParams<{ id: EntityId }>()
@@ -20,10 +20,6 @@ const [useEntity] = bind((id: EntityId) =>
 export function Entity() {
   const entityId = useEntityId()
   const entity = useEntity(entityId)
-
-  useEffect(() => {
-    focus$.next({ entityId })
-  }, [entityId])
 
   return (
     <div className={styles.container}>
