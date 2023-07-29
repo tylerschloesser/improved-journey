@@ -6,3 +6,7 @@
   height: 50dvh;
   width: 100dvw;
 }
+
+.button {
+  @include button-default;
+}

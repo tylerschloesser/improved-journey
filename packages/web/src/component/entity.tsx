@@ -26,6 +26,9 @@ export function Entity() {
   }, [entityId])
 
   return (
-    <div className={styles.container}>{JSON.stringify(entity, null, 2)}</div>
+    <div className={styles.container}>
+      <button className={styles.button}>Add Output</button>
+      <pre>{JSON.stringify(entity, null, 2)}</pre>
+    </div>
   )
 }
