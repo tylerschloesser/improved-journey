@@ -129,7 +129,11 @@ focus$
   .subscribe(([{ entityId }, entities, position, viewport, cellSize]) => {
     const entity = entities[entityId]
 
-    const center = entity.position.add(entity.size.div(2))
+    let center = entity.position.add(entity.size.div(2))
+
+    // entity UI takes up half the bottom of the screen
+    // adjust accordingly
+    center = center.add(new Vec2(0, viewport.div(4).div(cellSize).y))
 
     position$.next(center)
   })
