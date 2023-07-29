@@ -6,6 +6,7 @@ import {
   map,
   merge,
   Observable,
+  skip,
   Subject,
   take,
   withLatestFrom,
@@ -152,34 +153,32 @@ merge(
   combineLatest([focus$, entities$, position$, viewport$, cellSize$]).pipe(
     take(1),
   ),
-  // then use withLatestFrom so we this only happens when focus emits
-  // TODO do I actually need this? Is it more performant than simply
-  // using combineLatest and distinctUntilChanged below? position for
-  // example can emit 60/s
-  focus$.pipe(withLatestFrom(entities$, position$, viewport$, cellSize$)),
-)
-  .pipe(distinctUntilChanged(([a], [b]) => isEqual(a, b)))
+  // then use withLatestFrom so we this only happens when focus emits.
+  // skip the first value because it's handled above
+  focus$.pipe(
+    withLatestFrom(entities$, position$, viewport$, cellSize$),
+    skip(1),
+  ),
+).subscribe(([{ entityId, mode }, entities, position, viewport, cellSize]) => {
+  const entity = entities[entityId]
 
-  .subscribe(([{ entityId, mode }, entities, position, viewport, cellSize]) => {
-    const entity = entities[entityId]
+  let center = entity.position.add(entity.size.div(2))
 
-    let center = entity.position.add(entity.size.div(2))
+  if (mode === FocusMode.Entity) {
+    // entity UI takes up half the bottom of the screen
+    // adjust accordingly
+    center = center.add(new Vec2(0, viewport.div(4).div(cellSize).y))
+  }
 
-    if (mode === FocusMode.Entity) {
-      // entity UI takes up half the bottom of the screen
-      // adjust accordingly
-      center = center.add(new Vec2(0, viewport.div(4).div(cellSize).y))
-    }
-
-    animateVec2({
-      from: position,
-      to: center,
-      duration: 200,
-      callback(v) {
-        position$.next(v)
-      },
-    })
+  animateVec2({
+    from: position,
+    to: center,
+    duration: 200,
+    callback(v) {
+      position$.next(v)
+    },
   })
+})
 
 export interface RenderState {
   viewport: Vec2
