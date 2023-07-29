@@ -45,8 +45,8 @@ export function initConnection({ app }: InitArgs) {
 
       if (g === null) {
         g = new Graphics()
-        g.beginFill('orange')
-        g.drawRect(0, 0, 1, 1)
+        g.lineStyle(0.1, 'orange')
+        g.drawRect(0.05, 0.05, 1, 1)
         g.zIndex = ZIndex.Connection
         app.stage.addChild(g)
       }
