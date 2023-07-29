@@ -13,7 +13,6 @@ import { ZIndex } from './z-index.js'
 
 export function initConnection({ app }: InitArgs) {
   let container: Container | null = null
-  // let g: Graphics | null = null
 
   const entity$ = combineLatest([connection$, entities$]).pipe(
     map(([connection, entities]) =>
