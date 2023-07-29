@@ -1,7 +1,7 @@
 import { bind } from '@react-rxjs/core'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { EntityId, entities$ } from '../game-state.js'
+import { EntityId, FocusMode, entities$, focus$ } from '../game-state.js'
 
 import { map } from 'rxjs'
 import styles from './entity.module.scss'
@@ -16,6 +16,10 @@ export function Entity() {
   const entity = useEntity(entityId)
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    focus$.next({ entityId: entity.id, mode: FocusMode.Entity })
+  }, [entityId])
 
   return (
     <div className={styles.container}>

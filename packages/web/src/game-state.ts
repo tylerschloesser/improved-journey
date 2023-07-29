@@ -1,10 +1,13 @@
-import { clamp } from 'lodash-es'
+import { clamp, isEqual } from 'lodash-es'
 import {
   BehaviorSubject,
   combineLatest,
+  distinctUntilChanged,
   map,
+  merge,
   Observable,
   Subject,
+  take,
   withLatestFrom,
 } from 'rxjs'
 import { intersects } from './util.js'
@@ -118,7 +121,6 @@ tap$
       const b2 = entity.position.add(entity.size)
 
       if (intersects(a1, a2, b1, b2)) {
-        focus$.next({ entityId: entity.id, mode: FocusMode.Entity })
         navigate$.next({ to: `entity/${entity.id}` })
       }
     }
@@ -144,9 +146,22 @@ connection$.subscribe((connection) => {
   }
 })
 
-focus$
-  .pipe(withLatestFrom(entities$, position$, viewport$, cellSize$))
+merge(
+  // use combineLatest once so that we handle a focus that may happen
+  // before other observables have emitted. e.g. on page load
+  combineLatest([focus$, entities$, position$, viewport$, cellSize$]).pipe(
+    take(1),
+  ),
+  // then use withLatestFrom so we this only happens when focus emits
+  // TODO do I actually need this? Is it more performant than simply
+  // using combineLatest and distinctUntilChanged below? position for
+  // example can emit 60/s
+  focus$.pipe(withLatestFrom(entities$, position$, viewport$, cellSize$)),
+)
+  .pipe(distinctUntilChanged(([a], [b]) => isEqual(a, b)))
+
   .subscribe(([{ entityId, mode }, entities, position, viewport, cellSize]) => {
+    console.log('move')
     const entity = entities[entityId]
 
     let center = entity.position.add(entity.size.div(2))
