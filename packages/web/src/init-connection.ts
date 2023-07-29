@@ -1,16 +1,15 @@
+import { isEqual } from 'lodash-es'
+import { Container, Graphics } from 'pixi.js'
 import { combineLatest, distinctUntilChanged, map } from 'rxjs'
-import { InitArgs } from './init-args.js'
 import {
   cellSize$,
   connection$,
   entities$,
   worldToScreen$,
 } from './game-state.js'
+import { InitArgs } from './init-args.js'
 import { Vec2 } from './vec2.js'
-import { Container, Graphics } from 'pixi.js'
-import invariant from 'tiny-invariant'
 import { ZIndex } from './z-index.js'
-import { isEqual } from 'lodash-es'
 
 export function initConnection({ app }: InitArgs) {
   let container: Container | null = null
