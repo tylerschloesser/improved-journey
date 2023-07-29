@@ -1,6 +1,6 @@
 .container {
-  font: 16px system-ui;
-  color: white;
+  font: var(--font-default);
+  color: var(--color-default);
 
   position: absolute;
   bottom: 0;
