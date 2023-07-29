@@ -124,9 +124,11 @@ tap$
 
 export const focus$ = new Subject<{ entityId: EntityId }>()
 
-focus$.subscribe(({ entityId }) => {
-  console.log('todo focus on', entityId)
-})
+focus$
+  .pipe(withLatestFrom(position$, viewport$, cellSize$))
+  .subscribe(([{ entityId }, position, viewport, cellSize]) => {
+    console.log('todo focus on', entityId)
+  })
 
 export interface RenderState {
   viewport: Vec2
