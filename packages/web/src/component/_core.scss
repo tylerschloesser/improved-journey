@@ -18,4 +18,8 @@
   border: var(--border-button-default);
 
   padding: var(--padding-md);
+
+  &:disabled {
+    background: var(--background-button-disabled);
+  }
 }
