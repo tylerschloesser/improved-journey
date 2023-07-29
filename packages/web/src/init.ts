@@ -16,6 +16,7 @@ import { initGrid } from './init-grid.js'
 import { initInput } from './input.js'
 import { Vec2 } from './vec2.js'
 import { ZIndex } from './z-index.js'
+import { initConnection } from './init-connection.js'
 
 function initCursor({ app }: InitArgs) {
   const circle = new Graphics()
@@ -96,4 +97,5 @@ export function init(args: InitArgs): void {
   initCursor(args)
   initBuild(args)
   initEntities(args)
+  initConnection(args)
 }
