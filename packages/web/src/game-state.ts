@@ -122,10 +122,6 @@ tap$
     }
   })
 
-navigate$.subscribe(({ to }) => {
-  console.log('todo navigate to', to)
-})
-
 export interface RenderState {
   viewport: Vec2
   zoom: number

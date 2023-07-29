@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import styles from './world.module.scss'
 
 import { Application } from 'pixi.js'
-import { viewport$ } from '../game-state.js'
+import { navigate$, viewport$ } from '../game-state.js'
 import { init } from '../init.js'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Vec2 } from '../vec2.js'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
@@ -49,10 +49,23 @@ function useInitCanvas(canvas: HTMLCanvasElement | null) {
   }, [canvas])
 }
 
+function useNavigateListener() {
+  const navigate = useNavigate()
+  useEffect(() => {
+    const sub = navigate$.subscribe(({ to }) => {
+      navigate(to)
+    })
+    return () => {
+      sub.unsubscribe()
+    }
+  }, [])
+}
+
 export function World() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useResizeObserver(canvas)
   useInitCanvas(canvas)
+  useNavigateListener()
   return (
     <div className={styles.container}>
       <canvas className={styles.canvas} ref={setCanvas}></canvas>
