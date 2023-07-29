@@ -161,7 +161,6 @@ merge(
   .pipe(distinctUntilChanged(([a], [b]) => isEqual(a, b)))
 
   .subscribe(([{ entityId, mode }, entities, position, viewport, cellSize]) => {
-    console.log('move')
     const entity = entities[entityId]
 
     let center = entity.position.add(entity.size.div(2))
