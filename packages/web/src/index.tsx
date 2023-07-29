@@ -8,6 +8,7 @@ import { WorldControls } from './component/world-controls.js'
 import { Cursor } from './component/cursor.js'
 import { Build } from './component/build.js'
 import { Entity } from './component/entity.js'
+import { Subscribe } from '@react-rxjs/core'
 
 const container = document.getElementById('root')
 invariant(container)
@@ -42,4 +43,8 @@ const router = createBrowserRouter([
   },
 ])
 
-root.render(<RouterProvider router={router} />)
+root.render(
+  <Subscribe>
+    <RouterProvider router={router} />
+  </Subscribe>,
+)
