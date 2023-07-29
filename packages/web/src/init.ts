@@ -1,4 +1,4 @@
-import { Application, Container, Graphics, ICanvas } from 'pixi.js'
+import { Container, Graphics } from 'pixi.js'
 import { combineLatest } from 'rxjs'
 import {
   Entity,
@@ -9,18 +9,13 @@ import {
   viewport$,
   worldToScreen$,
 } from './game-state.js'
+import { InitArgs } from './init-args.js'
+import { initBuild } from './init-build.js'
 import { initGame } from './init-game.js'
 import { initGrid } from './init-grid.js'
 import { initInput } from './input.js'
 import { Vec2 } from './vec2.js'
 import { ZIndex } from './z-index.js'
-import { initBuild } from './init-build.js'
-
-interface InitArgs {
-  canvas: HTMLCanvasElement
-  signal: AbortSignal
-  app: Application<ICanvas>
-}
 
 function initCursor({ app }: InitArgs) {
   const circle = new Graphics()

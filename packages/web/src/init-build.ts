@@ -1,19 +1,8 @@
-import {
-  Application,
-  ColorMatrixFilter,
-  Filter,
-  Graphics,
-  ICanvas,
-} from 'pixi.js'
+import { ColorMatrixFilter, Filter, Graphics } from 'pixi.js'
 import { combineLatest } from 'rxjs'
 import { build$, cellSize$, worldToScreen$ } from './game-state.js'
+import { InitArgs } from './init-args.js'
 import { ZIndex } from './z-index.js'
-
-interface InitArgs {
-  canvas: HTMLCanvasElement
-  signal: AbortSignal
-  app: Application<ICanvas>
-}
 
 export function initBuild({ app }: InitArgs) {
   let cache: {
