@@ -3,6 +3,7 @@ import {
   BehaviorSubject,
   combineLatest,
   map,
+  Observable,
   Subject,
   withLatestFrom,
 } from 'rxjs'
@@ -43,6 +44,8 @@ export const entities$ = new BehaviorSubject<Record<EntityId, Entity>>({
     color: 'blue',
   },
 })
+
+export const navigate$ = new Subject<{ to: string }>()
 
 export const nextEntityId$ = new BehaviorSubject<number>(0)
 
@@ -114,10 +117,14 @@ tap$
       const b2 = entity.position.add(entity.size)
 
       if (intersects(a1, a2, b1, b2)) {
-        console.log('tapped', entity)
+        navigate$.next({ to: `entity/${entity.id}` })
       }
     }
   })
+
+navigate$.subscribe(({ to }) => {
+  console.log('todo navigate to', to)
+})
 
 export interface RenderState {
   viewport: Vec2
