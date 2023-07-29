@@ -126,6 +126,10 @@ tap$
 
 export const focus$ = new Subject<{ entityId: EntityId }>()
 
+export const connection$ = new BehaviorSubject<null | {
+  entityId: EntityId
+}>(null)
+
 focus$
   .pipe(withLatestFrom(entities$, position$, viewport$, cellSize$))
   .subscribe(([{ entityId }, entities, position, viewport, cellSize]) => {

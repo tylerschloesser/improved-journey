@@ -1,17 +1,11 @@
 import { bind } from '@react-rxjs/core'
 import React from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import invariant from 'tiny-invariant'
+import { useNavigate } from 'react-router-dom'
 import { EntityId, entities$ } from '../game-state.js'
 
 import { map } from 'rxjs'
 import styles from './entity.module.scss'
-
-function useEntityId() {
-  const params = useParams<{ id: EntityId }>()
-  invariant(params.id)
-  return params.id
-}
+import { useEntityId } from './use-entity-id.js'
 
 const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),
