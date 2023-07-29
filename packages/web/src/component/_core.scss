@@ -9,4 +9,8 @@
 @mixin button-default {
   font: var(--font-button-default);
   color: var(--color-button-default);
+  background: var(--background-button-default);
+  border: var(--border-button-default);
+
+  padding: var(--padding-md);
 }

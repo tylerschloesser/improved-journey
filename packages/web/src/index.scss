@@ -6,4 +6,11 @@ body {
 
   --color-container-default: white;
   --color-button-default: black;
+
+  --background-button-default: hsl(0, 0%, 100%);
+
+  --padding-sm: 4px;
+  --padding-md: 8px;
+
+  --border-button-default: 2px solid hsl(0, 0%, 50%);
 }
