@@ -9,6 +9,9 @@ export function Connection() {
 
   useEffect(() => {
     connection$.next({ entityId })
+    return () => {
+      connection$.next(null)
+    }
   }, [])
 
   return <div className={styles.container}>TODO</div>
