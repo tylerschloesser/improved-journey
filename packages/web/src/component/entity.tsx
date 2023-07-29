@@ -1,6 +1,6 @@
 import { bind } from '@react-rxjs/core'
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { EntityId, entities$ } from '../game-state.js'
 
@@ -21,9 +21,18 @@ export function Entity() {
   const entityId = useEntityId()
   const entity = useEntity(entityId)
 
+  const navigate = useNavigate()
+
   return (
     <div className={styles.container}>
-      <button className={styles.button}>Add Output</button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          navigate('connection')
+        }}
+      >
+        Add Output
+      </button>
       <pre>{JSON.stringify(entity, null, 2)}</pre>
     </div>
   )
