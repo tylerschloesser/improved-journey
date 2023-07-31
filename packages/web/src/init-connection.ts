@@ -5,7 +5,6 @@ import {
   distinctUntilChanged,
   map,
   scan,
-  share,
   shareReplay,
 } from 'rxjs'
 import invariant from 'tiny-invariant'
@@ -44,22 +43,14 @@ export function initConnection({ app }: InitArgs) {
       const center = entity.position.add(entity.size.div(2))
       const points: Vec2[] = []
 
-      for (let x = 0; x < entity.size.x; x++) {
-        points.push(new Vec2(1 + x, 0))
-        points.push(new Vec2(1 + x, entity.size.y + 1))
-      }
-
-      for (let y = 0; y < entity.size.y; y++) {
-        points.push(new Vec2(0, 1 + y))
-        points.push(new Vec2(entity.size.x + 1, 1 + y))
+      for (const node of entity.nodes) {
+        points.push(node.position.sub(entity.size.div(2).floor()))
       }
 
       return {
         entity,
         center,
-        points: points.map((point) =>
-          point.sub(entity.size.div(2).add(new Vec2(1, 1))),
-        ),
+        points,
       }
     }),
   )

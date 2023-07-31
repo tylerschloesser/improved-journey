@@ -1,4 +1,6 @@
 @mixin container-default {
+  overflow: scroll;
+
   font: var(--font-container-default);
   color: var(--color-container-default);
   background: var(--background-container-default);
