@@ -1,12 +1,6 @@
 import { isEqual } from 'lodash-es'
 import { Container, Graphics } from 'pixi.js'
-import {
-  combineLatest,
-  distinctUntilChanged,
-  map,
-  scan,
-  shareReplay,
-} from 'rxjs'
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import {
   cellSize$,
@@ -23,6 +17,16 @@ import { Vec2 } from './vec2.js'
 const CONNECTION_POINT_RADIUS = 0.166
 const SCALE = 10
 
+interface State {
+  container: Container
+  g: {
+    points: Graphics
+    selected: Graphics
+  }
+}
+
+const state$ = new BehaviorSubject<State | null>(null)
+
 export function initConnection({ app }: InitArgs) {
   const entity$ = combineLatest([connection$, entities$]).pipe(
     map(([connection, entities]) =>
@@ -31,25 +35,19 @@ export function initConnection({ app }: InitArgs) {
     distinctUntilChanged<Entity | null>(isEqual),
   )
 
-  interface State {
-    container: Container
-    g: {
-      points: Graphics
-      selected: Graphics
-    }
-    entity: Entity
-  }
+  entity$
+    .pipe(distinctUntilChanged<Entity | null>(isEqual))
+    .subscribe((entity) => {
+      const state = state$.value
 
-  const state$ = entity$.pipe(
-    distinctUntilChanged<Entity | null>(isEqual),
-    scan<Entity | null, State | null>((state, entity) => {
       if (state !== null) {
         app.stage.removeChild(state.container)
         state.container.destroy({ children: true })
       }
 
       if (entity === null) {
-        return null
+        state$.next(null)
+        return
       }
 
       const container = new Container()
@@ -93,10 +91,8 @@ export function initConnection({ app }: InitArgs) {
         g.selected.drawCircle(0.5 * SCALE, 0.5 * SCALE, r)
       }
 
-      return { container, entity, g }
-    }, null),
-    shareReplay(),
-  )
+      state$.next({ container, g })
+    })
 
   const selected$ = combineLatest([entity$, position$]).pipe(
     map(([entity, position]) => {
@@ -125,13 +121,13 @@ export function initConnection({ app }: InitArgs) {
     state.g.selected.position.set(x, y)
   })
 
-  combineLatest([state$, worldToScreen$, cellSize$]).subscribe(
-    ([state, worldToScreen, cellSize]) => {
-      if (state === null) {
+  combineLatest([entity$, state$, worldToScreen$, cellSize$]).subscribe(
+    ([entity, state, worldToScreen, cellSize]) => {
+      if (state === null || entity === null) {
         return
       }
 
-      const { entity, container } = state
+      const { container } = state
 
       const { x, y } = worldToScreen(entity.position)
       container.position.set(x, y)
