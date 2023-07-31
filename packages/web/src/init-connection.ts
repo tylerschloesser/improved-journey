@@ -1,10 +1,13 @@
 import { isEqual } from 'lodash-es'
 import { Container, Graphics } from 'pixi.js'
-import { combineLatest, distinctUntilChanged, map } from 'rxjs'
+import { combineLatest, distinctUntilChanged, filter, map, scan } from 'rxjs'
+import invariant from 'tiny-invariant'
 import {
   cellSize$,
   connection$,
   entities$,
+  Entity,
+  position$,
   worldToScreen$,
 } from './game-state.js'
 import { InitArgs } from './init-args.js'
@@ -18,7 +21,7 @@ export function initConnection({ app }: InitArgs) {
     map(([connection, entities]) =>
       connection ? entities[connection.entityId] : null,
     ),
-    distinctUntilChanged(isEqual),
+    distinctUntilChanged<Entity | null>(isEqual),
   )
 
   const config$ = entity$.pipe(
@@ -44,6 +47,55 @@ export function initConnection({ app }: InitArgs) {
       }
     }),
   )
+
+  interface State {
+    container: Container
+    entity: Entity
+  }
+
+  const state$ = entity$.pipe(
+    distinctUntilChanged<Entity | null>(isEqual),
+    scan<Entity | null, State | null>((state, entity) => {
+      if (state !== null) {
+        app.stage.removeChild(state.container)
+        state.container.destroy({ children: true })
+      }
+
+      if (entity === null) {
+        return null
+      }
+
+      const container = new Container()
+      app.stage.addChild(container)
+
+      return { container, entity }
+    }, null),
+    filter((state) => state !== null),
+    map((state) => state as State),
+  )
+
+  const selected$ = combineLatest([config$, position$]).pipe(
+    map(([config, position]) => {
+      if (config === null) return null
+
+      let closest: { cell: Vec2; dist: number } | null = null
+      for (const cell of config.cells) {
+        const dist = position
+          .sub(config.bb.position.add(cell).add(new Vec2(0.5, 0.5)))
+          .len()
+        if (closest === null || dist < closest.dist) {
+          closest = { cell, dist }
+        }
+      }
+      invariant(closest)
+      return closest.cell
+    }),
+    distinctUntilChanged(isEqual),
+  )
+
+  selected$.subscribe((cell) => {
+    console.log('closest', cell)
+  })
 
   config$.subscribe((config) => {
     if (config === null) {
