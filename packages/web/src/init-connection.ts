@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash-es'
 import { Container, Graphics } from 'pixi.js'
-import { combineLatest, distinctUntilChanged, filter, map, scan } from 'rxjs'
+import { combineLatest, distinctUntilChanged, map, scan } from 'rxjs'
 import invariant from 'tiny-invariant'
 import {
   cellSize$,
@@ -12,12 +12,11 @@ import {
 } from './game-state.js'
 import { InitArgs } from './init-args.js'
 import { Vec2 } from './vec2.js'
-import { ZIndex } from './z-index.js'
 
-const CONNECTION_POINT_RADIUS = 0.5
+const CONNECTION_POINT_RADIUS = 0.25
 
 export function initConnection({ app }: InitArgs) {
-  let container: Container | null = null
+  // let container: Container | null = null
 
   const entity$ = combineLatest([connection$, entities$]).pipe(
     map(([connection, entities]) =>
@@ -26,8 +25,14 @@ export function initConnection({ app }: InitArgs) {
     distinctUntilChanged<Entity | null>(isEqual),
   )
 
+  interface Config {
+    entity: Entity
+    center: Vec2
+    points: Vec2[]
+  }
+
   const config$ = entity$.pipe(
-    map((entity) => {
+    map<Entity | null, Config | null>((entity) => {
       if (entity === null) return null
 
       const center = entity.position.add(entity.size.div(2))
@@ -55,28 +60,44 @@ export function initConnection({ app }: InitArgs) {
 
   interface State {
     container: Container
+    g: {
+      points: Graphics
+    }
     entity: Entity
+    config: Config
   }
 
-  const state$ = entity$.pipe(
-    distinctUntilChanged<Entity | null>(isEqual),
-    scan<Entity | null, State | null>((state, entity) => {
+  const state$ = config$.pipe(
+    distinctUntilChanged<Config | null>(isEqual),
+    scan<Config | null, State | null>((state, config) => {
       if (state !== null) {
         app.stage.removeChild(state.container)
         state.container.destroy({ children: true })
       }
 
-      if (entity === null) {
+      if (config === null) {
         return null
       }
 
       const container = new Container()
       app.stage.addChild(container)
 
-      return { container, entity }
+      const g: State['g'] = {
+        points: new Graphics(),
+      }
+
+      {
+        container.addChild(g.points)
+        const scale = 10
+        const r = CONNECTION_POINT_RADIUS * scale
+        g.points.beginFill('hsl(0, 0%, 50%)')
+        for (const { x, y } of config.points) {
+          g.points.drawCircle((x + 0.5) * scale, (y + 0.5) * scale, r)
+        }
+      }
+
+      return { container, entity: config.entity, g, config }
     }, null),
-    filter((state) => state !== null),
-    map((state) => state as State),
   )
 
   const selected$ = combineLatest([config$, position$]).pipe(
@@ -100,47 +121,19 @@ export function initConnection({ app }: InitArgs) {
     console.log('closest', point)
   })
 
-  config$.subscribe((config) => {
-    if (config === null) {
-      if (container) {
-        app.stage.removeChild(container)
-        container.destroy({ children: true })
-        container = null
-      }
-      return
-    }
-
-    const { points } = config
-
-    if (container === null) {
-      container = new Container()
-      container.zIndex = ZIndex.Connection
-      app.stage.addChild(container)
-
-      const g = new Graphics()
-      container.addChild(g)
-
-      const scale = 10
-
-      const r = 0.25 * scale
-      g.beginFill('hsl(0, 0%, 50%)')
-
-      for (const { x, y } of points) {
-        g.drawCircle((x + 0.5) * scale, (y + 0.5) * scale, r)
-      }
-    }
-  })
-
-  combineLatest([config$, worldToScreen$, cellSize$]).subscribe(
-    ([config, worldToScreen, cellSize]) => {
-      if (container === null || config === null) {
+  combineLatest([state$, worldToScreen$, cellSize$]).subscribe(
+    ([state, worldToScreen, cellSize]) => {
+      if (state === null) {
         return
       }
+
+      const { config, container } = state
 
       const { x, y } = worldToScreen(config.center)
       container.position.set(x, y)
 
-      const size = config.entity.size.add(1 + 0.5).mul(cellSize)
+      const r = CONNECTION_POINT_RADIUS
+      const size = config.entity.size.add(1 + r * 2).mul(cellSize)
 
       container.width = size.x
       container.height = size.y
