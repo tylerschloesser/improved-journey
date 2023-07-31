@@ -61,7 +61,6 @@ export function initConnection({ app }: InitArgs) {
       points: Graphics
       selected: Graphics
     }
-    entity: Entity
     config: Config
   }
 
