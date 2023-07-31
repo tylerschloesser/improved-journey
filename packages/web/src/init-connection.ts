@@ -138,7 +138,9 @@ export function initConnection({ app }: InitArgs) {
 
       let closest: { point: Vec2; dist: number } | null = null
       for (const point of config.points) {
-        const dist = position.sub(config.center.add(point)).len()
+        const dist = position
+          .sub(config.center.add(point.add(new Vec2(0.5))))
+          .len()
         if (closest === null || dist < closest.dist) {
           closest = { point, dist }
         }
