@@ -6,9 +6,9 @@ export class Vec2 {
   readonly x: number
   readonly y: number
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y?: number) {
     this.x = x
-    this.y = y
+    this.y = y ?? x
   }
 
   sub(v: Vec2 | number): Vec2 {
@@ -18,7 +18,10 @@ export class Vec2 {
     return new Vec2(this.x - v.x, this.y - v.y)
   }
 
-  add(v: Vec2): Vec2 {
+  add(v: Vec2 | number): Vec2 {
+    if (typeof v === 'number') {
+      return new Vec2(this.x + v, this.y + v)
+    }
     return new Vec2(this.x + v.x, this.y + v.y)
   }
 

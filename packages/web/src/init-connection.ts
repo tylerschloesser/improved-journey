@@ -14,6 +14,8 @@ import { InitArgs } from './init-args.js'
 import { Vec2 } from './vec2.js'
 import { ZIndex } from './z-index.js'
 
+const CONNECTION_POINT_RADIUS = 0.5
+
 export function initConnection({ app }: InitArgs) {
   let container: Container | null = null
 
@@ -28,22 +30,25 @@ export function initConnection({ app }: InitArgs) {
     map((entity) => {
       if (entity === null) return null
 
+      const center = entity.position.add(entity.size.div(2))
       const cells: Vec2[] = []
+
       for (let x = 0; x < entity.size.x; x++) {
         cells.push(new Vec2(1 + x, 0))
         cells.push(new Vec2(1 + x, entity.size.y + 1))
       }
+
       for (let y = 0; y < entity.size.y; y++) {
         cells.push(new Vec2(0, 1 + y))
         cells.push(new Vec2(entity.size.x + 1, 1 + y))
       }
 
       return {
-        cells,
-        bb: {
-          position: entity.position.sub(new Vec2(1, 1)),
-          size: entity.size.add(new Vec2(2, 2)),
-        },
+        entity,
+        center,
+        cells: cells.map((cell) =>
+          cell.sub(entity.size.div(2).add(new Vec2(1, 1))),
+        ),
       }
     }),
   )
@@ -80,9 +85,7 @@ export function initConnection({ app }: InitArgs) {
 
       let closest: { cell: Vec2; dist: number } | null = null
       for (const cell of config.cells) {
-        const dist = position
-          .sub(config.bb.position.add(cell).add(new Vec2(0.5, 0.5)))
-          .len()
+        const dist = position.sub(config.center.add(cell)).len()
         if (closest === null || dist < closest.dist) {
           closest = { cell, dist }
         }
@@ -107,7 +110,7 @@ export function initConnection({ app }: InitArgs) {
       return
     }
 
-    const { cells, bb } = config
+    const { cells } = config
 
     if (container === null) {
       container = new Container()
@@ -119,16 +122,10 @@ export function initConnection({ app }: InitArgs) {
 
       const scale = 10
 
-      // TODO fix this is dumb as fuck
-      // force the container to have a size that makes positioning easier
-      // but transparent doesn't work...
-      g.beginFill('hsla(0, 100%, 50%, .0001)')
-      g.drawRect(0, 0, bb.size.x * scale, bb.size.y * scale)
-
       const r = 0.25 * scale
       g.beginFill('hsl(0, 0%, 50%)')
 
-      for (const { x, y } of cells.slice(0, 8)) {
+      for (const { x, y } of cells) {
         g.drawCircle((x + 0.5) * scale, (y + 0.5) * scale, r)
       }
     }
@@ -140,10 +137,13 @@ export function initConnection({ app }: InitArgs) {
         return
       }
 
-      const { x, y } = worldToScreen(config.bb.position)
+      const { x, y } = worldToScreen(config.center)
       container.position.set(x, y)
-      container.width = config.bb.size.x * cellSize
-      container.height = config.bb.size.y * cellSize
+
+      const size = config.entity.size.add(1 + 0.5).mul(cellSize)
+
+      container.width = size.x
+      container.height = size.y
     },
   )
 }
