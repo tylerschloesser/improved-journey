@@ -87,15 +87,13 @@ export function initConnection({ app }: InitArgs) {
       container.addChild(g.points)
       {
         const r = CONNECTION_POINT_RADIUS * SCALE
-        g.points.beginFill('hsl(0, 0%, 20%)')
         for (const { x, y } of config.points) {
+          g.points.beginFill('hsl(0, 0%, 20%)')
           g.points.drawCircle((x + 0.5) * SCALE, (y + 0.5) * SCALE, r)
-        }
-        g.points.endFill()
+          g.points.endFill()
 
-        const width = SCALE * 0.05
-        g.points.lineStyle(width, 'hsl(0, 0%, 20%)')
-        for (const { x, y } of config.points) {
+          const width = SCALE * 0.05
+          g.points.lineStyle(width, 'hsl(0, 0%, 20%)')
           g.points.drawRect(
             x * SCALE + width / 2,
             y * SCALE + width / 2,
