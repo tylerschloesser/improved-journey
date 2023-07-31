@@ -60,6 +60,7 @@ export function initConnection({ app }: InitArgs) {
     container: Container
     g: {
       points: Graphics
+      selected: Graphics
     }
     entity: Entity
     config: Config
@@ -82,10 +83,13 @@ export function initConnection({ app }: InitArgs) {
 
       const g: State['g'] = {
         points: new Graphics(),
+        selected: new Graphics(),
       }
 
+      container.addChild(g.points)
+      container.addChild(g.selected)
+
       {
-        container.addChild(g.points)
         const scale = 10
         const r = CONNECTION_POINT_RADIUS * scale
         g.points.beginFill('hsl(0, 0%, 50%)')
