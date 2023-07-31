@@ -1,6 +1,13 @@
 import { isEqual } from 'lodash-es'
 import { Container, Graphics } from 'pixi.js'
-import { combineLatest, distinctUntilChanged, map, scan } from 'rxjs'
+import {
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  scan,
+  share,
+  shareReplay,
+} from 'rxjs'
 import invariant from 'tiny-invariant'
 import {
   cellSize$,
@@ -14,6 +21,7 @@ import { InitArgs } from './init-args.js'
 import { Vec2 } from './vec2.js'
 
 const CONNECTION_POINT_RADIUS = 0.166
+const SCALE = 10
 
 export function initConnection({ app }: InitArgs) {
   const entity$ = combineLatest([connection$, entities$]).pipe(
@@ -86,43 +94,42 @@ export function initConnection({ app }: InitArgs) {
         selected: new Graphics(),
       }
 
-      const scale = 10
-
       container.addChild(g.points)
       {
-        const r = CONNECTION_POINT_RADIUS * scale
-        g.points.beginFill('hsl(0, 0%, 40%)')
+        const r = CONNECTION_POINT_RADIUS * SCALE
+        g.points.beginFill('hsl(0, 0%, 20%)')
         for (const { x, y } of config.points) {
-          g.points.drawCircle((x + 0.5) * scale, (y + 0.5) * scale, r)
+          g.points.drawCircle((x + 0.5) * SCALE, (y + 0.5) * SCALE, r)
         }
         g.points.endFill()
 
-        const width = scale * 0.05
-        g.points.lineStyle(width, 'hsl(0, 0%, 40%)')
+        const width = SCALE * 0.05
+        g.points.lineStyle(width, 'hsl(0, 0%, 20%)')
         for (const { x, y } of config.points) {
           g.points.drawRect(
-            x * scale + width / 2,
-            y * scale + width / 2,
-            scale - width,
-            scale - width,
+            x * SCALE + width / 2,
+            y * SCALE + width / 2,
+            SCALE - width,
+            SCALE - width,
           )
         }
       }
 
       container.addChild(g.selected)
       {
-        const width = scale * 0.05
-        g.selected.lineStyle(width, 'gray')
-        g.selected.drawRect(
-          width / 2,
-          width / 2,
-          1 * scale - width,
-          1 * scale - width,
-        )
+        const width = SCALE * 0.05
+        g.selected.lineStyle(width, 'green')
+        g.selected.drawRect(width / 2, width / 2, SCALE - width, SCALE - width)
+
+        const r = CONNECTION_POINT_RADIUS * SCALE
+        g.selected.lineStyle(0)
+        g.selected.beginFill('green')
+        g.selected.drawCircle(0.5 * SCALE, 0.5 * SCALE, r)
       }
 
       return { container, entity: config.entity, g, config }
     }, null),
+    shareReplay(),
   )
 
   const selected$ = combineLatest([config$, position$]).pipe(
@@ -139,11 +146,14 @@ export function initConnection({ app }: InitArgs) {
       invariant(closest)
       return closest.point
     }),
-    distinctUntilChanged(isEqual),
+    distinctUntilChanged<Vec2 | null>(isEqual),
   )
 
-  selected$.subscribe((point) => {
-    console.log('closest', point)
+  combineLatest([state$, selected$]).subscribe(([state, selected]) => {
+    if (!state || !selected) return
+
+    const { x, y } = selected.mul(SCALE)
+    state.g.selected.position.set(x, y)
   })
 
   combineLatest([state$, worldToScreen$, cellSize$]).subscribe(
