@@ -75,6 +75,7 @@ export function initConnection({ app }: InitArgs) {
       if (config === null) {
         return null
       }
+      const { entity } = config
 
       const container = new Container()
       app.stage.addChild(container)
@@ -87,7 +88,10 @@ export function initConnection({ app }: InitArgs) {
       container.addChild(g.points)
       {
         const r = CONNECTION_POINT_RADIUS * SCALE
-        for (const { x, y } of config.points) {
+        for (const node of entity.nodes) {
+          // for (const { x, y } of config.points) {
+          const { x, y } = node.position.sub(entity.size.div(2).floor())
+
           g.points.beginFill('hsl(0, 0%, 20%)')
           g.points.drawCircle((x + 0.5) * SCALE, (y + 0.5) * SCALE, r)
           g.points.endFill()
