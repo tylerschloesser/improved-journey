@@ -1,19 +1,17 @@
-import { clamp, isEqual } from 'lodash-es'
+import { clamp } from 'lodash-es'
 import {
   BehaviorSubject,
   combineLatest,
-  distinctUntilChanged,
   map,
   merge,
-  Observable,
   skip,
   Subject,
   take,
   withLatestFrom,
 } from 'rxjs'
+import { animateVec2 } from './animate.js'
 import { intersects } from './util.js'
 import { Vec2 } from './vec2.js'
-import { animateVec2 } from './animate.js'
 
 export interface GameState {
   position$: BehaviorSubject<Vec2>
