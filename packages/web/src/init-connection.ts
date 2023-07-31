@@ -31,52 +31,26 @@ export function initConnection({ app }: InitArgs) {
     distinctUntilChanged<Entity | null>(isEqual),
   )
 
-  interface Config {
-    entity: Entity
-    center: Vec2
-    points: Vec2[]
-  }
-
-  const config$ = entity$.pipe(
-    map<Entity | null, Config | null>((entity) => {
-      if (entity === null) return null
-
-      const center = entity.position.add(entity.size.div(2))
-      const points: Vec2[] = []
-
-      for (const node of entity.nodes) {
-        points.push(node.position)
-      }
-
-      return {
-        entity,
-        center,
-        points,
-      }
-    }),
-  )
-
   interface State {
     container: Container
     g: {
       points: Graphics
       selected: Graphics
     }
-    config: Config
+    entity: Entity
   }
 
-  const state$ = config$.pipe(
-    distinctUntilChanged<Config | null>(isEqual),
-    scan<Config | null, State | null>((state, config) => {
+  const state$ = entity$.pipe(
+    distinctUntilChanged<Entity | null>(isEqual),
+    scan<Entity | null, State | null>((state, entity) => {
       if (state !== null) {
         app.stage.removeChild(state.container)
         state.container.destroy({ children: true })
       }
 
-      if (config === null) {
+      if (entity === null) {
         return null
       }
-      const { entity } = config
 
       const container = new Container()
       app.stage.addChild(container)
@@ -119,19 +93,19 @@ export function initConnection({ app }: InitArgs) {
         g.selected.drawCircle(0.5 * SCALE, 0.5 * SCALE, r)
       }
 
-      return { container, entity: config.entity, g, config }
+      return { container, entity, g }
     }, null),
     shareReplay(),
   )
 
-  const selected$ = combineLatest([config$, position$]).pipe(
-    map(([config, position]) => {
-      if (config === null) return null
+  const selected$ = combineLatest([entity$, position$]).pipe(
+    map(([entity, position]) => {
+      if (entity === null) return null
 
       let closest: { node: EntityNode; dist: number } | null = null
-      for (const node of config.entity.nodes) {
+      for (const node of entity.nodes) {
         const dist = position
-          .sub(config.entity.position.add(node.position).add(new Vec2(0.5)))
+          .sub(entity.position.add(node.position).add(new Vec2(0.5)))
           .len()
 
         if (closest === null || dist < closest.dist) {
@@ -157,12 +131,12 @@ export function initConnection({ app }: InitArgs) {
         return
       }
 
-      const { config, container } = state
+      const { entity, container } = state
 
-      const { x, y } = worldToScreen(state.config.entity.position)
+      const { x, y } = worldToScreen(entity.position)
       container.position.set(x, y)
 
-      const size = config.entity.size.add(2).mul(cellSize)
+      const size = entity.size.add(2).mul(cellSize)
       container.width = size.x
       container.height = size.y
     },
