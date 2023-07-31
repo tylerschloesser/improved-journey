@@ -13,7 +13,6 @@ import {
   connection$,
   entities$,
   Entity,
-  EntityNode,
   position$,
   worldToScreen$,
 } from './game-state.js'
@@ -76,7 +75,6 @@ export function initConnection({ app }: InitArgs) {
       if (config === null) {
         return null
       }
-      const { entity } = config
 
       const container = new Container()
       app.stage.addChild(container)
@@ -90,16 +88,14 @@ export function initConnection({ app }: InitArgs) {
       {
         const r = CONNECTION_POINT_RADIUS * SCALE
         g.points.beginFill('hsl(0, 0%, 20%)')
-        for (const node of entity.nodes) {
-          const { x, y } = node.position.sub(entity.size.div(2).floor())
+        for (const { x, y } of config.points) {
           g.points.drawCircle((x + 0.5) * SCALE, (y + 0.5) * SCALE, r)
         }
         g.points.endFill()
 
         const width = SCALE * 0.05
         g.points.lineStyle(width, 'hsl(0, 0%, 20%)')
-        for (const node of entity.nodes) {
-          const { x, y } = node.position.sub(entity.size.div(2).floor())
+        for (const { x, y } of config.points) {
           g.points.drawRect(
             x * SCALE + width / 2,
             y * SCALE + width / 2,
@@ -129,33 +125,26 @@ export function initConnection({ app }: InitArgs) {
   const selected$ = combineLatest([config$, position$]).pipe(
     map(([config, position]) => {
       if (config === null) return null
-      const { entity } = config
 
-      const center = entity.position.add(entity.size.div(2))
-
-      let closest: { node: EntityNode; dist: number } | null = null
-      for (const node of entity.nodes) {
+      let closest: { point: Vec2; dist: number } | null = null
+      for (const point of config.points) {
         const dist = position
-          .sub(
-            center.add(
-              node.position.sub(entity.size.div(2).floor()).add(new Vec2(0.5)),
-            ),
-          )
+          .sub(config.center.add(point.add(new Vec2(0.5))))
           .len()
         if (closest === null || dist < closest.dist) {
-          closest = { node, dist }
+          closest = { point, dist }
         }
       }
       invariant(closest)
-      return closest.node
+      return closest.point
     }),
-    distinctUntilChanged<EntityNode | null>(isEqual),
+    distinctUntilChanged<Vec2 | null>(isEqual),
   )
 
   combineLatest([state$, selected$]).subscribe(([state, selected]) => {
     if (!state || !selected) return
 
-    const { x, y } = selected.position.mul(SCALE)
+    const { x, y } = selected.mul(SCALE)
     state.g.selected.position.set(x, y)
   })
 
