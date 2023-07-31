@@ -31,23 +31,23 @@ export function initConnection({ app }: InitArgs) {
       if (entity === null) return null
 
       const center = entity.position.add(entity.size.div(2))
-      const cells: Vec2[] = []
+      const points: Vec2[] = []
 
       for (let x = 0; x < entity.size.x; x++) {
-        cells.push(new Vec2(1 + x, 0))
-        cells.push(new Vec2(1 + x, entity.size.y + 1))
+        points.push(new Vec2(1 + x, 0))
+        points.push(new Vec2(1 + x, entity.size.y + 1))
       }
 
       for (let y = 0; y < entity.size.y; y++) {
-        cells.push(new Vec2(0, 1 + y))
-        cells.push(new Vec2(entity.size.x + 1, 1 + y))
+        points.push(new Vec2(0, 1 + y))
+        points.push(new Vec2(entity.size.x + 1, 1 + y))
       }
 
       return {
         entity,
         center,
-        cells: cells.map((cell) =>
-          cell.sub(entity.size.div(2).add(new Vec2(1, 1))),
+        points: points.map((point) =>
+          point.sub(entity.size.div(2).add(new Vec2(1, 1))),
         ),
       }
     }),
@@ -83,21 +83,21 @@ export function initConnection({ app }: InitArgs) {
     map(([config, position]) => {
       if (config === null) return null
 
-      let closest: { cell: Vec2; dist: number } | null = null
-      for (const cell of config.cells) {
-        const dist = position.sub(config.center.add(cell)).len()
+      let closest: { point: Vec2; dist: number } | null = null
+      for (const point of config.points) {
+        const dist = position.sub(config.center.add(point)).len()
         if (closest === null || dist < closest.dist) {
-          closest = { cell, dist }
+          closest = { point, dist }
         }
       }
       invariant(closest)
-      return closest.cell
+      return closest.point
     }),
     distinctUntilChanged(isEqual),
   )
 
-  selected$.subscribe((cell) => {
-    console.log('closest', cell)
+  selected$.subscribe((point) => {
+    console.log('closest', point)
   })
 
   config$.subscribe((config) => {
@@ -110,7 +110,7 @@ export function initConnection({ app }: InitArgs) {
       return
     }
 
-    const { cells } = config
+    const { points } = config
 
     if (container === null) {
       container = new Container()
@@ -125,7 +125,7 @@ export function initConnection({ app }: InitArgs) {
       const r = 0.25 * scale
       g.beginFill('hsl(0, 0%, 50%)')
 
-      for (const { x, y } of cells) {
+      for (const { x, y } of points) {
         g.drawCircle((x + 0.5) * scale, (y + 0.5) * scale, r)
       }
     }
