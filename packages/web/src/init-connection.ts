@@ -13,6 +13,7 @@ import {
   connection$,
   entities$,
   Entity,
+  EntityNode,
   position$,
   worldToScreen$,
 } from './game-state.js'
@@ -127,25 +128,26 @@ export function initConnection({ app }: InitArgs) {
     map(([config, position]) => {
       if (config === null) return null
 
-      let closest: { point: Vec2; dist: number } | null = null
-      for (const point of config.points) {
+      let closest: { node: EntityNode; dist: number } | null = null
+      for (const node of config.entity.nodes) {
         const dist = position
-          .sub(config.center.add(point.add(new Vec2(0.5))))
+          .sub(config.entity.position.add(node.position).add(new Vec2(0.5)))
           .len()
+
         if (closest === null || dist < closest.dist) {
-          closest = { point, dist }
+          closest = { node, dist }
         }
       }
       invariant(closest)
-      return closest.point
+      return closest.node
     }),
-    distinctUntilChanged<Vec2 | null>(isEqual),
+    distinctUntilChanged<EntityNode | null>(isEqual),
   )
 
   combineLatest([state$, selected$]).subscribe(([state, selected]) => {
     if (!state || !selected) return
 
-    const { x, y } = selected.mul(SCALE)
+    const { x, y } = selected.position.mul(SCALE)
     state.g.selected.position.set(x, y)
   })
 
