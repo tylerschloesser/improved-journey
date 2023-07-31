@@ -41,6 +41,7 @@ export function Build() {
           position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
           size,
           color: 'blue',
+          nodes: [],
         }
 
         let valid = isValid(entity, Object.values(entities))
