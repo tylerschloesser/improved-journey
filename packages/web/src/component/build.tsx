@@ -9,6 +9,7 @@ import {
   nextEntityId$,
   position$,
 } from '../game-state.js'
+import { newMiner } from '../miner.js'
 import { intersects } from '../util.js'
 import { Vec2 } from '../vec2.js'
 
@@ -36,13 +37,12 @@ export function Build() {
     const size = new Vec2(2, 2)
     const sub = combineLatest([position$, nextEntityId$, entities$]).subscribe(
       ([position, nextEntityId, entities]) => {
-        const entity: Entity = {
+        const entity: Entity = newMiner({
           id: `${nextEntityId}`,
           position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
           size,
           color: 'blue',
-          nodes: [],
-        }
+        })
 
         let valid = isValid(entity, Object.values(entities))
         setValid(valid)

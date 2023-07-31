@@ -10,6 +10,7 @@ import {
   withLatestFrom,
 } from 'rxjs'
 import { animateVec2 } from './animate.js'
+import { newMiner } from './miner.js'
 import { intersects } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -40,13 +41,12 @@ export const cursor$ = new BehaviorSubject<{ enabled: boolean }>({
 })
 
 export const entities$ = new BehaviorSubject<Record<EntityId, Entity>>({
-  miner1: {
+  miner1: newMiner({
     id: 'miner1',
     position: new Vec2(1, 2),
     size: new Vec2(2, 2),
     color: 'blue',
-    nodes: [],
-  },
+  }),
 })
 
 export const navigate$ = new Subject<{ to: string }>()
