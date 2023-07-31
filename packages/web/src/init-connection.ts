@@ -13,7 +13,7 @@ import {
 import { InitArgs } from './init-args.js'
 import { Vec2 } from './vec2.js'
 
-const CONNECTION_POINT_RADIUS = 0.25
+const CONNECTION_POINT_RADIUS = 0.166
 
 export function initConnection({ app }: InitArgs) {
   const entity$ = combineLatest([connection$, entities$]).pipe(
@@ -86,16 +86,39 @@ export function initConnection({ app }: InitArgs) {
         selected: new Graphics(),
       }
 
-      container.addChild(g.points)
-      container.addChild(g.selected)
+      const scale = 10
 
+      container.addChild(g.points)
       {
-        const scale = 10
         const r = CONNECTION_POINT_RADIUS * scale
-        g.points.beginFill('hsl(0, 0%, 50%)')
+        g.points.beginFill('hsl(0, 0%, 40%)')
         for (const { x, y } of config.points) {
           g.points.drawCircle((x + 0.5) * scale, (y + 0.5) * scale, r)
         }
+        g.points.endFill()
+
+        const width = scale * 0.05
+        g.points.lineStyle(width, 'hsl(0, 0%, 40%)')
+        for (const { x, y } of config.points) {
+          g.points.drawRect(
+            x * scale + width / 2,
+            y * scale + width / 2,
+            scale - width,
+            scale - width,
+          )
+        }
+      }
+
+      container.addChild(g.selected)
+      {
+        const width = scale * 0.05
+        g.selected.lineStyle(width, 'gray')
+        g.selected.drawRect(
+          width / 2,
+          width / 2,
+          1 * scale - width,
+          1 * scale - width,
+        )
       }
 
       return { container, entity: config.entity, g, config }
@@ -134,9 +157,7 @@ export function initConnection({ app }: InitArgs) {
       const { x, y } = worldToScreen(config.center)
       container.position.set(x, y)
 
-      const r = CONNECTION_POINT_RADIUS
-      const size = config.entity.size.add(1 + r * 2).mul(cellSize)
-
+      const size = config.entity.size.add(2).mul(cellSize)
       container.width = size.x
       container.height = size.y
     },
