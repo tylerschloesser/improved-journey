@@ -44,7 +44,7 @@ export function initConnection({ app }: InitArgs) {
       const points: Vec2[] = []
 
       for (const node of entity.nodes) {
-        points.push(node.position.sub(entity.size.div(2).floor()))
+        points.push(node.position)
       }
 
       return {
@@ -89,7 +89,7 @@ export function initConnection({ app }: InitArgs) {
       {
         const r = CONNECTION_POINT_RADIUS * SCALE
         for (const node of entity.nodes) {
-          const { x, y } = node.position.sub(entity.size.div(2).floor())
+          const { x, y } = node.position
 
           g.points.beginFill('hsl(0, 0%, 20%)')
           g.points.drawCircle((x + 0.5) * SCALE, (y + 0.5) * SCALE, r)
@@ -157,7 +157,7 @@ export function initConnection({ app }: InitArgs) {
 
       const { config, container } = state
 
-      const { x, y } = worldToScreen(config.center)
+      const { x, y } = worldToScreen(state.config.entity.position)
       container.position.set(x, y)
 
       const size = config.entity.size.add(2).mul(cellSize)
