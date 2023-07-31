@@ -16,8 +16,6 @@ import { Vec2 } from './vec2.js'
 const CONNECTION_POINT_RADIUS = 0.25
 
 export function initConnection({ app }: InitArgs) {
-  // let container: Container | null = null
-
   const entity$ = combineLatest([connection$, entities$]).pipe(
     map(([connection, entities]) =>
       connection ? entities[connection.entityId] : null,
