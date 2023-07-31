@@ -89,7 +89,6 @@ export function initConnection({ app }: InitArgs) {
       {
         const r = CONNECTION_POINT_RADIUS * SCALE
         for (const node of entity.nodes) {
-          // for (const { x, y } of config.points) {
           const { x, y } = node.position.sub(entity.size.div(2).floor())
 
           g.points.beginFill('hsl(0, 0%, 20%)')
