@@ -97,7 +97,26 @@ export function initConnection(_args: InitArgs) {
   ]).pipe(
     map(([selected, position]) => {
       if (selected === null) return null
-      return [position]
+
+      const node = selected.node.position.add(selected.entity.position)
+
+      let dp = position.sub(node)
+
+      if (Math.abs(dp.x) >= Math.abs(dp.y)) {
+        dp = new Vec2(dp.x, 0)
+      } else {
+        dp = new Vec2(0, dp.y)
+      }
+
+      const norm = dp.norm()
+
+      const belt: Vec2[] = []
+      while (dp.len() > 0) {
+        belt.push(node.add(dp))
+        dp = dp.sub(norm)
+      }
+
+      return belt
     }),
   )
 
