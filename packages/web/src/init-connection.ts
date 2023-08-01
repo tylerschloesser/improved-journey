@@ -109,28 +109,25 @@ export function initConnection(_args: InitArgs) {
 
       const norm = dp.norm()
 
-      const cells: { position: Vec2; valid: boolean }[] = []
+      const cells: { entity: Entity; valid: boolean }[] = []
       while (dp.len() > 0) {
         const p = selected.node.position.add(dp)
         cells.push({
-          position: p,
+          entity: newBelt({
+            id: `${nextEntityId++}`,
+            color: 'yellow',
+            position: p,
+            size: new Vec2(1),
+          }),
           valid: !occupiedCellIds.has(toCellId(p)),
         })
         dp = dp.sub(norm)
       }
 
-      const valid = cells.every((cell) => cell.valid)
       return {
-        valid,
-        cells: cells.map((cell) => ({
-          valid: cell.valid,
-          entity: newBelt({
-            id: `${nextEntityId++}`,
-            color: 'yellow',
-            position: cell.position,
-            size: new Vec2(1),
-          }),
-        })),
+        valid: cells.every((cell) => cell.valid),
+        cells,
+        nextEntityId,
       }
     }),
   )

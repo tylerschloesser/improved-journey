@@ -172,6 +172,7 @@ export const connection$ = new BehaviorSubject<null | {
 export const buildConnection$ = new BehaviorSubject<{
   cells: { entity: Entity; valid: boolean }[]
   valid: boolean
+  nextEntityId: number
 } | null>(null)
 
 connection$.subscribe((connection) => {
