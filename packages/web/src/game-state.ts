@@ -90,7 +90,7 @@ export const worldToScreen$ = combineLatest([
   cellSize$,
 ]).pipe(
   map(([position, viewport, cellSize]) => {
-    return (world: Vec2) => {
+    return (world: Vec2 = new Vec2()) => {
       return world.sub(position).mul(cellSize).add(viewport.div(2))
     }
   }),

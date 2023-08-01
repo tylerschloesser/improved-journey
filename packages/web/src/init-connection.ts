@@ -19,10 +19,16 @@ const SCALE = 10
 
 interface State {
   container: Container
+  belt: Graphics
   g: {
     points: Graphics
     selected: Graphics
   }
+}
+
+interface Selected {
+  node: EntityNode
+  entity: Entity
 }
 
 const state$ = new BehaviorSubject<State | null>(null)
@@ -43,12 +49,18 @@ export function initConnection({ app }: InitArgs) {
       if (state !== null) {
         app.stage.removeChild(state.container)
         state.container.destroy({ children: true })
+
+        app.stage.removeChild(state.belt)
+        state.belt.destroy()
       }
 
       if (entity === null) {
         state$.next(null)
         return
       }
+
+      const belt = new Graphics()
+      app.stage.addChild(belt)
 
       const container = new Container()
       app.stage.addChild(container)
@@ -91,7 +103,7 @@ export function initConnection({ app }: InitArgs) {
         g.selected.drawCircle(0.5 * SCALE, 0.5 * SCALE, r)
       }
 
-      state$.next({ container, g })
+      state$.next({ container, g, belt })
     })
 
   const selected$ = combineLatest([entity$, position$]).pipe(
@@ -109,17 +121,47 @@ export function initConnection({ app }: InitArgs) {
         }
       }
       invariant(closest)
-      return closest.node
+      return {
+        node: closest.node,
+        entity,
+      }
     }),
-    distinctUntilChanged<EntityNode | null>(isEqual),
+    distinctUntilChanged<Selected | null>(isEqual),
   )
+
+  combineLatest([
+    state$,
+    selected$,
+    position$.pipe(
+      map((position) => position.floor()),
+      distinctUntilChanged<Vec2>(isEqual),
+    ),
+  ]).subscribe(([state, selected, position]) => {
+    if (!state || !selected) return
+
+    const dp = position.sub(
+      selected.node.position.add(selected.entity.position),
+    )
+
+    for (let x = 1; x < Math.abs(dp.x); x++) {}
+
+    console.log(dp)
+  })
 
   combineLatest([state$, selected$]).subscribe(([state, selected]) => {
     if (!state || !selected) return
 
-    const { x, y } = selected.position.mul(SCALE)
+    const { x, y } = selected.node.position.mul(SCALE)
     state.g.selected.position.set(x, y)
   })
+
+  combineLatest([state$, worldToScreen$, cellSize$]).subscribe(
+    ([state, worldToScreen, cellSize]) => {
+      if (state === null) return
+      const { x, y } = worldToScreen()
+      state.belt.position.set(x, y)
+    },
+  )
 
   combineLatest([entity$, state$, worldToScreen$, cellSize$]).subscribe(
     ([entity, state, worldToScreen, cellSize]) => {
