@@ -8,6 +8,7 @@ import {
   entities$,
   Entity,
   EntityNode,
+  nextEntityId$,
   occupiedCellIds$,
   PIXI,
   position$,
@@ -120,13 +121,14 @@ export function initConnection(_args: InitArgs) {
     }),
   )
 
-  belt$.subscribe((belt) => {
+  combineLatest([belt$, nextEntityId$]).subscribe(([belt]) => {
     if (belt === null) {
       buildConnection$.next(null)
       return
     }
     const valid = belt.cells.every((cell) => cell.valid)
     buildConnection$.next({
+      entities: [],
       valid,
     })
   })
