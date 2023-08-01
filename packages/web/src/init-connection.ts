@@ -2,6 +2,7 @@ import { isEqual } from 'lodash-es'
 import { Graphics } from 'pixi.js'
 import { combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
+import { newBelt } from './belt.js'
 import {
   buildConnection$,
   connection$,
@@ -93,8 +94,9 @@ export function initConnection(_args: InitArgs) {
       distinctUntilChanged<Vec2>(isEqual),
     ),
     occupiedCellIds$,
+    nextEntityId$,
   ]).pipe(
-    map(([selected, position, occupiedCellIds]) => {
+    map(([selected, position, occupiedCellIds, nextEntityId]) => {
       if (selected === null) return null
 
       let dp = position.sub(selected.node.position)
@@ -117,20 +119,24 @@ export function initConnection(_args: InitArgs) {
         dp = dp.sub(norm)
       }
 
-      return { cells }
+      const valid = cells.every((cell) => cell.valid)
+      return {
+        valid,
+        cells: cells.map((cell) => ({
+          valid: cell.valid,
+          entity: newBelt({
+            id: `${nextEntityId++}`,
+            color: 'yellow',
+            position: cell.position,
+            size: new Vec2(1),
+          }),
+        })),
+      }
     }),
   )
 
-  combineLatest([belt$, nextEntityId$]).subscribe(([belt]) => {
-    if (belt === null) {
-      buildConnection$.next(null)
-      return
-    }
-    const valid = belt.cells.every((cell) => cell.valid)
-    buildConnection$.next({
-      entities: [],
-      valid,
-    })
+  belt$.subscribe((belt) => {
+    buildConnection$.next(belt)
   })
 
   belt$.subscribe((belt) => {
@@ -147,7 +153,7 @@ export function initConnection(_args: InitArgs) {
       } else {
         g.beginFill('hsla(0, 50%, 50%, .5)')
       }
-      g.drawRect(cell.position.x, cell.position.y, 1, 1)
+      g.drawRect(cell.entity.position.x, cell.entity.position.y, 1, 1)
     }
   })
 

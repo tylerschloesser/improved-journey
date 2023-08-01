@@ -170,7 +170,7 @@ export const connection$ = new BehaviorSubject<null | {
 }>(null)
 
 export const buildConnection$ = new BehaviorSubject<{
-  entities: Entity[]
+  cells: { entity: Entity; valid: boolean }[]
   valid: boolean
 } | null>(null)
 
