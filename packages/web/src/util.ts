@@ -1,3 +1,4 @@
+import { CellId } from './game-state.js'
 import { Vec2 } from './vec2.js'
 
 // https://www.geeksforgeeks.org/find-two-rectangles-overlap/#
@@ -13,4 +14,8 @@ export function intersects(a1: Vec2, a2: Vec2, b1: Vec2, b2: Vec2): boolean {
     return false
   }
   return true
+}
+
+export function toCellId(position: Vec2): CellId {
+  return `${position.x}.${position.y}`
 }

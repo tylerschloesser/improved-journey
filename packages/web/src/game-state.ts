@@ -13,7 +13,7 @@ import {
 } from 'rxjs'
 import { animateVec2 } from './animate.js'
 import { newMiner } from './miner.js'
-import { intersects } from './util.js'
+import { intersects, toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 
 export interface GameState {
@@ -50,6 +50,25 @@ export const entities$ = new BehaviorSubject<Record<EntityId, Entity>>({
     color: 'blue',
   }),
 })
+
+export type CellId = string
+
+export const occupiedCellIds$ = entities$.pipe(
+  map((entities) => {
+    const occupiedCellIds = new Set<CellId>()
+
+    for (const entity of Object.values(entities)) {
+      for (let x = 0; x < entity.size.x; x++) {
+        for (let y = 0; y < entity.size.y; y++) {
+          const position = entity.position.add(new Vec2(x, y))
+          occupiedCellIds.add(toCellId(position))
+        }
+      }
+    }
+
+    return occupiedCellIds
+  }),
+)
 
 export const navigate$ = new Subject<{ to: string }>()
 

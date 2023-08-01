@@ -7,10 +7,12 @@ import {
   entities$,
   Entity,
   EntityNode,
+  occupiedCellIds$,
   PIXI,
   position$,
 } from './game-state.js'
 import { InitArgs } from './init-args.js'
+import { toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 
 interface Selected {
@@ -88,8 +90,9 @@ export function initConnection(_args: InitArgs) {
       map((position) => position.floor()),
       distinctUntilChanged<Vec2>(isEqual),
     ),
+    occupiedCellIds$,
   ]).pipe(
-    map(([selected, position]) => {
+    map(([selected, position, occupiedCellIds]) => {
       if (selected === null) return null
 
       let dp = position.sub(selected.node.position)
@@ -104,9 +107,10 @@ export function initConnection(_args: InitArgs) {
 
       const cells: { position: Vec2; valid: boolean }[] = []
       while (dp.len() > 0) {
+        const p = selected.node.position.add(dp)
         cells.push({
-          position: selected.node.position.add(dp),
-          valid: true,
+          position: p,
+          valid: !occupiedCellIds.has(toCellId(p)),
         })
         dp = dp.sub(norm)
       }
@@ -123,8 +127,12 @@ export function initConnection(_args: InitArgs) {
 
     const g = createGraphics(GraphicsKey.Belt)
 
-    g.beginFill('hsla(0, 50%, 50%, .5)')
     for (const cell of belt.cells) {
+      if (cell.valid) {
+        g.beginFill('hsla(100, 50%, 50%, .5)')
+      } else {
+        g.beginFill('hsla(0, 50%, 50%, .5)')
+      }
       g.drawRect(cell.position.x, cell.position.y, 1, 1)
     }
   })
