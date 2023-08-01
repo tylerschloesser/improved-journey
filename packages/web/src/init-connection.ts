@@ -15,7 +15,6 @@ import { Vec2 } from './vec2.js'
 
 interface Selected {
   node: EntityNode
-  entity: Entity
 }
 
 enum GraphicsKey {
@@ -78,10 +77,7 @@ export function initConnection(_args: InitArgs) {
         }
       }
       invariant(closest)
-      return {
-        node: closest.node,
-        entity,
-      }
+      return { node: closest.node }
     }),
     distinctUntilChanged<Selected | null>(isEqual),
   )
@@ -96,9 +92,7 @@ export function initConnection(_args: InitArgs) {
     map(([selected, position]) => {
       if (selected === null) return null
 
-      const node = selected.node.position
-
-      let dp = position.sub(node)
+      let dp = position.sub(selected.node.position)
 
       if (Math.abs(dp.x) >= Math.abs(dp.y)) {
         dp = new Vec2(dp.x, 0)
@@ -110,7 +104,7 @@ export function initConnection(_args: InitArgs) {
 
       const belt: Vec2[] = []
       while (dp.len() > 0) {
-        belt.push(node.add(dp))
+        belt.push(selected.node.position.add(dp))
         dp = dp.sub(norm)
       }
 
