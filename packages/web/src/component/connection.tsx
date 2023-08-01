@@ -24,6 +24,7 @@ export function Connection() {
         className={styles.button}
         disabled={!valid}
         onPointerUp={() => {
+          if (!valid) return
           console.log('todo build')
         }}
       >
