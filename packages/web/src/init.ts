@@ -70,6 +70,7 @@ function initPixi({ app }: InitArgs): void {
   app.stage.addChild(PIXI.container.world)
 
   const container = PIXI.container.world
+  container.zIndex = 1
 
   combineLatest([position$, cellSize$, viewport$]).subscribe(
     ([position, cellSize, viewport]) => {
