@@ -8,6 +8,7 @@ import {
   entities$,
   viewport$,
   worldToScreen$,
+  position$,
 } from './game-state.js'
 import { InitArgs } from './init-args.js'
 import { initBuild } from './init-build.js'
@@ -59,7 +60,7 @@ function cacheGraphics({
     cache.set(entity.id, g)
 
     g.beginFill(entity.color)
-    g.drawRect(0, 0, 1, 1)
+    g.drawRect(0, 0, entity.size.x, entity.size.y)
 
     container.addChild(g)
   }
@@ -72,22 +73,21 @@ function initEntities({ app }: InitArgs) {
   const container = new Container()
   app.stage.addChild(container)
 
-  combineLatest([entities$, cellSize$]).subscribe(([entities, cellSize]) => {
+  entities$.subscribe((entities) => {
     Object.values(entities).forEach((entity) => {
       let g = cacheGraphics({ entity: entity, cache, container })
-
-      const { x, y } = entity.position.mul(cellSize)
+      const { x, y } = entity.position
       g.position.set(x, y)
-
-      g.width = cellSize * entity.size.x
-      g.height = cellSize * entity.size.y
     })
   })
 
-  worldToScreen$.subscribe((worldToScreen) => {
-    const { x, y } = worldToScreen(new Vec2(0, 0))
-    container.position.set(x, y)
-  })
+  combineLatest([position$, cellSize$, viewport$]).subscribe(
+    ([position, cellSize, viewport]) => {
+      const { x, y } = position.mul(cellSize * -1).add(viewport.div(2))
+      container.position.set(x, y)
+      container.scale.set(cellSize)
+    },
+  )
 }
 
 export function init(args: InitArgs): void {

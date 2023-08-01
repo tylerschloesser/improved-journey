@@ -197,7 +197,6 @@ export function initConnection({ app }: InitArgs) {
       beltGraphics.position.set(x, y)
       beltGraphics.width = cellSize
       beltGraphics.height = cellSize
-      console.log(belt)
     },
   )
 
