@@ -60,7 +60,7 @@ export function initConnection(_args: InitArgs) {
 
     g.beginFill('hsla(180, 50%, 50%, .5)')
     for (const node of entity.nodes) {
-      const { x, y } = node.position.add(entity.position)
+      const { x, y } = node.position
       g.drawRect(x, y, 1, 1)
     }
   })
@@ -71,9 +71,7 @@ export function initConnection(_args: InitArgs) {
 
       let closest: { node: EntityNode; dist: number } | null = null
       for (const node of entity.nodes) {
-        const dist = position
-          .sub(entity.position.add(node.position).add(new Vec2(0.5)))
-          .len()
+        const dist = position.sub(node.position.add(new Vec2(0.5))).len()
 
         if (closest === null || dist < closest.dist) {
           closest = { node, dist }
@@ -98,7 +96,7 @@ export function initConnection(_args: InitArgs) {
     map(([selected, position]) => {
       if (selected === null) return null
 
-      const node = selected.node.position.add(selected.entity.position)
+      const node = selected.node.position
 
       let dp = position.sub(node)
 
@@ -143,7 +141,7 @@ export function initConnection(_args: InitArgs) {
     const g = createGraphics(GraphicsKey.Selected)
 
     g.beginFill('green')
-    const { x, y } = selected.node.position.add(selected.entity.position)
+    const { x, y } = selected.node.position
     g.drawRect(x, y, 1, 1)
   })
 }

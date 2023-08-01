@@ -5,8 +5,9 @@ export function newMiner(args: Omit<Entity, 'nodes'>): Entity {
   return { ...args, nodes: buildNodes(args) }
 }
 
-function buildNodes({ size }: { size: Vec2 }): EntityNode[] {
+function buildNodes(entity: Omit<Entity, 'nodes'>): EntityNode[] {
   const nodes: EntityNode[] = []
+  const { size } = entity
 
   for (let x = 0; x < size.x; x++) {
     nodes.push(
@@ -30,5 +31,8 @@ function buildNodes({ size }: { size: Vec2 }): EntityNode[] {
     )
   }
 
-  return nodes
+  return nodes.map((node) => ({
+    ...node,
+    position: node.position.add(entity.position),
+  }))
 }
