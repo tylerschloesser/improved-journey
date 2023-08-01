@@ -1,6 +1,14 @@
 import { isEqual } from 'lodash-es'
 import { Container, Graphics } from 'pixi.js'
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs'
+import {
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  ReplaySubject,
+  Subject,
+  tap,
+} from 'rxjs'
 import invariant from 'tiny-invariant'
 import {
   cellSize$,
@@ -13,17 +21,23 @@ import {
 } from './game-state.js'
 import { InitArgs } from './init-args.js'
 import { Vec2 } from './vec2.js'
+import { ZIndex } from './z-index.js'
 
 const CONNECTION_POINT_RADIUS = 0.166
 const SCALE = 10
 
 interface State {
+  root: Container
   container: Container
   belt: Graphics
   g: {
     points: Graphics
     selected: Graphics
   }
+}
+
+interface BeltState {
+  g: Graphics
 }
 
 interface Selected {
@@ -103,7 +117,7 @@ export function initConnection({ app }: InitArgs) {
         g.selected.drawCircle(0.5 * SCALE, 0.5 * SCALE, r)
       }
 
-      state$.next({ container, g, belt })
+      state$.next({ root: app.stage, container, g, belt })
     })
 
   const selected$ = combineLatest([entity$, position$]).pipe(
@@ -129,24 +143,63 @@ export function initConnection({ app }: InitArgs) {
     distinctUntilChanged<Selected | null>(isEqual),
   )
 
-  combineLatest([
+  const beltGraphics$ = new BehaviorSubject<Graphics | null>(null)
+
+  const belt$ = combineLatest([
     state$,
     selected$,
     position$.pipe(
       map((position) => position.floor()),
       distinctUntilChanged<Vec2>(isEqual),
     ),
-  ]).subscribe(([state, selected, position]) => {
-    if (!state || !selected) return
+  ]).pipe(
+    map(([state, selected, position]) => {
+      if (!state || !selected) return null
 
-    const dp = position.sub(
-      selected.node.position.add(selected.entity.position),
-    )
+      const dp = position.sub(
+        selected.node.position.add(selected.entity.position),
+      )
 
-    for (let x = 1; x < Math.abs(dp.x); x++) {}
+      for (let x = 1; x < Math.abs(dp.x); x++) {}
 
-    console.log(dp)
-  })
+      return [position]
+    }),
+    tap((belt) => {
+      let g = beltGraphics$.value
+      if (g) {
+        app.stage.removeChild(g)
+        g.destroy()
+      }
+      if (!belt) {
+        beltGraphics$.next(null)
+        return
+      }
+
+      g = new Graphics()
+      g.zIndex = ZIndex.Belt
+
+      g.beginFill('pink')
+      for (const cell of belt) {
+        g.drawRect(cell.x, cell.y, 1, 1)
+      }
+
+      beltGraphics$.next(g)
+    }),
+  )
+
+  combineLatest([belt$, beltGraphics$, worldToScreen$, cellSize$]).subscribe(
+    ([belt, beltGraphics, worldToScreen, cellSize]) => {
+      if (!beltGraphics) {
+        return
+      }
+
+      const { x, y } = worldToScreen()
+      beltGraphics.position.set(x, y)
+      beltGraphics.width = cellSize
+      beltGraphics.height = cellSize
+      console.log(belt)
+    },
+  )
 
   combineLatest([state$, selected$]).subscribe(([state, selected]) => {
     if (!state || !selected) return
