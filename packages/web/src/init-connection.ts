@@ -102,9 +102,12 @@ export function initConnection(_args: InitArgs) {
 
       const norm = dp.norm()
 
-      const cells: Vec2[] = []
+      const cells: { position: Vec2; valid: boolean }[] = []
       while (dp.len() > 0) {
-        cells.push(selected.node.position.add(dp))
+        cells.push({
+          position: selected.node.position.add(dp),
+          valid: true,
+        })
         dp = dp.sub(norm)
       }
 
@@ -122,7 +125,7 @@ export function initConnection(_args: InitArgs) {
 
     g.beginFill('hsla(0, 50%, 50%, .5)')
     for (const cell of belt.cells) {
-      g.drawRect(cell.x, cell.y, 1, 1)
+      g.drawRect(cell.position.x, cell.position.y, 1, 1)
     }
   })
 
