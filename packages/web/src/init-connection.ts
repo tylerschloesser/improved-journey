@@ -21,6 +21,7 @@ interface Selected {
 enum GraphicsKey {
   Nodes,
   Selected,
+  Belt,
 }
 
 const gcache = new Map<GraphicsKey, Graphics>()
@@ -86,6 +87,23 @@ export function initConnection(_args: InitArgs) {
     }),
     distinctUntilChanged<Selected | null>(isEqual),
   )
+
+  combineLatest([
+    selected$,
+    position$.pipe(
+      map((position) => position.floor()),
+      distinctUntilChanged<Vec2>(isEqual),
+    ),
+  ]).subscribe(([selected, position]) => {
+    if (selected === null) {
+      destroyGraphics(GraphicsKey.Belt)
+      return
+    }
+    const g = createGraphics(GraphicsKey.Belt)
+
+    g.beginFill('hsla(0, 50%, 50%, .5)')
+    g.drawRect(position.x, position.y, 1, 1)
+  })
 
   selected$.subscribe((selected) => {
     if (selected === null) {
