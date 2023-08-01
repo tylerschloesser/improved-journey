@@ -2,10 +2,14 @@ import React, { useEffect } from 'react'
 
 import styles from './connection.module.scss'
 import { useEntityId } from './use-entity-id.js'
-import { connection$ } from '../game-state.js'
+import { connection$, connectionValid$ } from '../game-state.js'
+import { bind } from '@react-rxjs/core'
+
+const [useConnectionValid] = bind(connectionValid$)
 
 export function Connection() {
   const entityId = useEntityId()
+  const valid = useConnectionValid()
 
   useEffect(() => {
     connection$.next({ entityId })
@@ -14,5 +18,17 @@ export function Connection() {
     }
   }, [])
 
-  return <div className={styles.container}>TODO</div>
+  return (
+    <div className={styles.container}>
+      <button
+        className={styles.button}
+        disabled={!valid}
+        onPointerUp={() => {
+          console.log('todo build')
+        }}
+      >
+        Build
+      </button>
+    </div>
+  )
 }

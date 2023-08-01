@@ -5,7 +5,6 @@ import {
   combineLatest,
   map,
   merge,
-  ReplaySubject,
   skip,
   Subject,
   take,
@@ -169,6 +168,8 @@ export const focus$ = new Subject<{ entityId: EntityId; mode: FocusMode }>()
 export const connection$ = new BehaviorSubject<null | {
   entityId: EntityId
 }>(null)
+
+export const connectionValid$ = new BehaviorSubject<null | boolean>(null)
 
 connection$.subscribe((connection) => {
   if (connection) {

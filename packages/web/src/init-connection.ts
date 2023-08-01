@@ -4,6 +4,7 @@ import { combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import {
   connection$,
+  connectionValid$,
   entities$,
   Entity,
   EntityNode,
@@ -118,6 +119,14 @@ export function initConnection(_args: InitArgs) {
       return { cells }
     }),
   )
+
+  belt$.subscribe((belt) => {
+    let valid: boolean | null = null
+    if (belt !== null) {
+      valid = belt.cells.every((cell) => cell.valid)
+    }
+    connectionValid$.next(valid)
+  })
 
   belt$.subscribe((belt) => {
     if (belt === null) {
