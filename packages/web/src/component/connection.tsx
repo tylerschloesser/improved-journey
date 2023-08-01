@@ -2,14 +2,16 @@ import React, { useEffect } from 'react'
 
 import styles from './connection.module.scss'
 import { useEntityId } from './use-entity-id.js'
-import { connection$, connectionValid$ } from '../game-state.js'
+import { buildConnection$, connection$ } from '../game-state.js'
 import { bind } from '@react-rxjs/core'
 
-const [useConnectionValid] = bind(connectionValid$)
+const [useBuildConnection] = bind(buildConnection$)
 
 export function Connection() {
   const entityId = useEntityId()
-  const valid = useConnectionValid()
+  const build = useBuildConnection()
+
+  const valid = build?.valid ?? false
 
   useEffect(() => {
     connection$.next({ entityId })

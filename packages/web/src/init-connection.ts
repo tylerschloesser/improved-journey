@@ -3,8 +3,8 @@ import { Graphics } from 'pixi.js'
 import { combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import {
+  buildConnection$,
   connection$,
-  connectionValid$,
   entities$,
   Entity,
   EntityNode,
@@ -121,11 +121,14 @@ export function initConnection(_args: InitArgs) {
   )
 
   belt$.subscribe((belt) => {
-    let valid: boolean | null = null
-    if (belt !== null) {
-      valid = belt.cells.every((cell) => cell.valid)
+    if (belt === null) {
+      buildConnection$.next(null)
+      return
     }
-    connectionValid$.next(valid)
+    const valid = belt.cells.every((cell) => cell.valid)
+    buildConnection$.next({
+      valid,
+    })
   })
 
   belt$.subscribe((belt) => {

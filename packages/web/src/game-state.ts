@@ -169,7 +169,9 @@ export const connection$ = new BehaviorSubject<null | {
   entityId: EntityId
 }>(null)
 
-export const connectionValid$ = new BehaviorSubject<null | boolean>(null)
+export const buildConnection$ = new BehaviorSubject<{
+  valid: boolean
+} | null>(null)
 
 connection$.subscribe((connection) => {
   if (connection) {
