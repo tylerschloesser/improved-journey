@@ -102,13 +102,13 @@ export function initConnection(_args: InitArgs) {
 
       const norm = dp.norm()
 
-      const belt: Vec2[] = []
+      const cells: Vec2[] = []
       while (dp.len() > 0) {
-        belt.push(selected.node.position.add(dp))
+        cells.push(selected.node.position.add(dp))
         dp = dp.sub(norm)
       }
 
-      return belt
+      return { cells }
     }),
   )
 
@@ -121,8 +121,8 @@ export function initConnection(_args: InitArgs) {
     const g = createGraphics(GraphicsKey.Belt)
 
     g.beginFill('hsla(0, 50%, 50%, .5)')
-    for (const segment of belt) {
-      g.drawRect(segment.x, segment.y, 1, 1)
+    for (const cell of belt.cells) {
+      g.drawRect(cell.x, cell.y, 1, 1)
     }
   })
 
