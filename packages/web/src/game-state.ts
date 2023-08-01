@@ -1,9 +1,11 @@
 import { clamp } from 'lodash-es'
+import { Container } from 'pixi.js'
 import {
   BehaviorSubject,
   combineLatest,
   map,
   merge,
+  ReplaySubject,
   skip,
   Subject,
   take,
@@ -95,6 +97,18 @@ export const worldToScreen$ = combineLatest([
     }
   }),
 )
+
+export interface Pixi {
+  container: {
+    world: Container
+  }
+}
+
+export const PIXI: Pixi = {
+  container: {
+    world: new Container(),
+  },
+}
 
 export const screenToWorld$ = combineLatest([
   position$,

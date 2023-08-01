@@ -1,23 +1,22 @@
 import { Container, Graphics } from 'pixi.js'
 import { combineLatest } from 'rxjs'
 import {
-  Entity,
-  EntityId,
   cellSize$,
   cursor$,
   entities$,
-  viewport$,
-  worldToScreen$,
+  Entity,
+  EntityId,
+  PIXI,
   position$,
+  viewport$,
 } from './game-state.js'
 import { InitArgs } from './init-args.js'
 import { initBuild } from './init-build.js'
+import { initConnection } from './init-connection.js'
 import { initGame } from './init-game.js'
 import { initGrid } from './init-grid.js'
 import { initInput } from './input.js'
-import { Vec2 } from './vec2.js'
 import { ZIndex } from './z-index.js'
-import { initConnection } from './init-connection.js'
 
 function initCursor({ app }: InitArgs) {
   const circle = new Graphics()
@@ -45,41 +44,32 @@ function initCursor({ app }: InitArgs) {
   )
 }
 
-function cacheGraphics({
-  entity,
-  cache,
-  container,
-}: {
-  entity: Entity
-  cache: Map<EntityId, Graphics>
-  container: Container
-}): Graphics {
-  let g = cache.get(entity.id)
-  if (!g) {
-    g = new Graphics()
-    cache.set(entity.id, g)
-
-    g.beginFill(entity.color)
-    g.drawRect(0, 0, entity.size.x, entity.size.y)
-
-    container.addChild(g)
-  }
-  return g
-}
-
-function initEntities({ app }: InitArgs) {
+function initEntities(_args: InitArgs) {
   const cache = new Map<EntityId, Graphics>()
 
-  const container = new Container()
-  app.stage.addChild(container)
+  const container = PIXI.container.world
 
   entities$.subscribe((entities) => {
     Object.values(entities).forEach((entity) => {
-      let g = cacheGraphics({ entity: entity, cache, container })
-      const { x, y } = entity.position
-      g.position.set(x, y)
+      let g = cache.get(entity.id)
+      if (!g) {
+        g = new Graphics()
+        cache.set(entity.id, g)
+
+        g.beginFill(entity.color)
+        const { x, y } = entity.position
+        g.drawRect(x, y, entity.size.x, entity.size.y)
+
+        container.addChild(g)
+      }
     })
   })
+}
+
+function initPixi({ app }: InitArgs): void {
+  app.stage.addChild(PIXI.container.world)
+
+  const container = PIXI.container.world
 
   combineLatest([position$, cellSize$, viewport$]).subscribe(
     ([position, cellSize, viewport]) => {
@@ -91,6 +81,7 @@ function initEntities({ app }: InitArgs) {
 }
 
 export function init(args: InitArgs): void {
+  initPixi(args)
   initInput(args)
   initGrid(args)
   initGame(args)
