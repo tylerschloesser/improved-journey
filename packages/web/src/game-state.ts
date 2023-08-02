@@ -1,4 +1,4 @@
-import { clamp, cloneDeep } from 'lodash-es'
+import { clamp } from 'lodash-es'
 import { Container } from 'pixi.js'
 import {
   BehaviorSubject,

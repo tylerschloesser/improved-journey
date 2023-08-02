@@ -6,6 +6,7 @@ import { navigate$, viewport$ } from '../game-state.js'
 import { init } from '../init.js'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Vec2 } from '../vec2.js'
+import { tickWorld } from '../tick.js'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
@@ -61,11 +62,21 @@ function useNavigateListener() {
   }, [])
 }
 
+function useTickWorld() {
+  useEffect(() => {
+    const interval = window.setInterval(tickWorld, 100)
+    return () => {
+      window.clearInterval(interval)
+    }
+  }, [])
+}
+
 export function World() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useResizeObserver(canvas)
   useInitCanvas(canvas)
   useNavigateListener()
+  useTickWorld()
   return (
     <div className={styles.container}>
       <canvas className={styles.canvas} ref={setCanvas}></canvas>

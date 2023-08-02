@@ -35,6 +35,8 @@ export interface Entity {
 }
 
 export interface World {
+  tick: number
+
   chunks: Record<ChunkId, Chunk>
   entities: Record<EntityId, Entity>
 
