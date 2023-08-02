@@ -110,7 +110,7 @@ export function initConnection(_args: InitArgs) {
       const norm = dp.norm()
 
       const cells: { entity: Entity; valid: boolean }[] = []
-      while (dp.len() > 0) {
+      while (true) {
         const p = selected.node.position.add(dp)
         cells.push({
           entity: newBelt({
@@ -121,6 +121,9 @@ export function initConnection(_args: InitArgs) {
           }),
           valid: !occupiedCellIds.has(toCellId(p)),
         })
+        if (dp.len() === 0) {
+          break
+        }
         dp = dp.sub(norm)
       }
 
