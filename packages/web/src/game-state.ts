@@ -48,7 +48,7 @@ export function addEntities(
     world.entities[entityId] = {
       id: entityId,
       ...entity,
-    }
+    } as Entity // TODO not happy about this type cast
 
     for (let x = 0; x < entity.size.x; x++) {
       for (let y = 0; y < entity.size.y; y++) {
