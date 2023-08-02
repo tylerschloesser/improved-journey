@@ -1,11 +1,11 @@
-import { Entity, EntityNode } from './game-state.js'
+import { Entity, EntityNode, EntityType } from './types.js'
 import { Vec2 } from './vec2.js'
 
-export function newMiner(args: Omit<Entity, 'nodes'>): Entity {
-  return { ...args, nodes: buildNodes(args) }
+export function newMiner(args: Omit<Entity, 'type' | 'nodes'>): Entity {
+  return { ...args, type: EntityType.Miner, nodes: buildNodes(args) }
 }
 
-function buildNodes(entity: Omit<Entity, 'nodes'>): EntityNode[] {
+function buildNodes(entity: Omit<Entity, 'type' | 'nodes'>): EntityNode[] {
   const nodes: EntityNode[] = []
   const { size } = entity
 

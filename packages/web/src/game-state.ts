@@ -10,8 +10,10 @@ import {
   take,
   withLatestFrom,
 } from 'rxjs'
+import { Chunk } from 'webpack'
 import { animateVec2 } from './animate.js'
 import { newMiner } from './miner.js'
+import { ChunkId, Entity, EntityId, RenderState, SurfaceId } from './types.js'
 import { intersects, toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -216,33 +218,6 @@ merge(
     },
   })
 })
-
-export interface RenderState {
-  viewport: Vec2
-  zoom: number
-  position: Vec2
-}
-
-export type EntityId = string
-export type SurfaceId = string
-export type ChunkId = string
-
-interface Chunk {
-  id: ChunkId
-  tiles: (EntityId | null)[]
-}
-
-export interface EntityNode {
-  position: Vec2
-}
-
-export interface Entity {
-  id: EntityId
-  position: Vec2
-  size: Vec2
-  color: string
-  nodes: EntityNode[]
-}
 
 interface Surface {
   id: SurfaceId

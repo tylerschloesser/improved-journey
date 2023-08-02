@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
-import {
-  build$,
-  entities$,
-  Entity,
-  nextEntityId$,
-  position$,
-} from '../game-state.js'
+import { build$, entities$, nextEntityId$, position$ } from '../game-state.js'
 import { newMiner } from '../miner.js'
+import { Entity } from '../types.js'
 import { intersects } from '../util.js'
 import { Vec2 } from '../vec2.js'
 

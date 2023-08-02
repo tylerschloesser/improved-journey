@@ -7,14 +7,13 @@ import {
   buildConnection$,
   connection$,
   entities$,
-  Entity,
-  EntityNode,
   nextEntityId$,
   occupiedCellIds$,
   PIXI,
   position$,
 } from './game-state.js'
 import { InitArgs } from './init-args.js'
+import { Entity, EntityNode } from './types.js'
 import { toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 

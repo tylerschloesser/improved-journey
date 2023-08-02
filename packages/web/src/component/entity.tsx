@@ -1,11 +1,12 @@
 import { bind } from '@react-rxjs/core'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { EntityId, FocusMode, entities$, focus$ } from '../game-state.js'
+import { FocusMode, entities$, focus$ } from '../game-state.js'
 
 import { map } from 'rxjs'
 import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
+import { EntityId } from '../types.js'
 
 const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),
