@@ -1,13 +1,6 @@
 import { Vec2 } from './vec2.js'
 
-export interface RenderState {
-  viewport: Vec2
-  zoom: number
-  position: Vec2
-}
-
 export type EntityId = string
-export type SurfaceId = string
 export type ChunkId = string
 
 export interface Chunk {

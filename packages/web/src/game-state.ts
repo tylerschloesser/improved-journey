@@ -11,27 +11,11 @@ import {
   withLatestFrom,
 } from 'rxjs'
 import invariant from 'tiny-invariant'
-import { Chunk } from 'webpack'
 import { animateVec2 } from './animate.js'
 import { generateWorld } from './generate-world.js'
-import {
-  ChunkId,
-  Entity,
-  EntityId,
-  RenderState,
-  SurfaceId,
-  World,
-} from './types.js'
+import { Entity, EntityId, World } from './types.js'
 import { intersects, setEntityId, toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
-
-export interface GameState {
-  position$: BehaviorSubject<Vec2>
-  surfaces: {
-    main: Subject<Surface>
-    build: Subject<Surface>
-  }
-}
 
 export const build$ = new BehaviorSubject<null | {
   entity: Omit<Entity, 'id'>
@@ -244,19 +228,3 @@ merge(
     },
   })
 })
-
-interface Surface {
-  id: SurfaceId
-  chunks: Map<ChunkId, Chunk>
-  entities: Map<EntityId, Entity>
-}
-
-export let gameState: GameState = {
-  position$: new BehaviorSubject<Vec2>(new Vec2(0, 0)),
-  surfaces: {
-    main: new Subject<Surface>(),
-    build: new Subject<Surface>(),
-  },
-}
-
-export const renderState$ = new Subject<RenderState>()
