@@ -82,6 +82,7 @@ export const entities$ = world$.pipe(map((world) => world.entities))
 
 export type CellId = string
 
+// TODO refactor this to use world.chunks
 export const occupiedCellIds$ = entities$.pipe(
   map((entities) => {
     const occupiedCellIds = new Set<CellId>()
