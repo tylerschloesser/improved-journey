@@ -7,7 +7,6 @@ import {
   buildConnection$,
   connection$,
   entities$,
-  nextEntityId$,
   occupiedCellIds$,
   PIXI,
   position$,
@@ -93,9 +92,8 @@ export function initConnection(_args: InitArgs) {
       distinctUntilChanged<Vec2>(isEqual),
     ),
     occupiedCellIds$,
-    nextEntityId$,
   ]).pipe(
-    map(([selected, position, occupiedCellIds, nextEntityId]) => {
+    map(([selected, position, occupiedCellIds]) => {
       if (selected === null) return null
 
       let dp = position.sub(selected.node.position)
@@ -108,12 +106,11 @@ export function initConnection(_args: InitArgs) {
 
       const norm = dp.norm()
 
-      const cells: { entity: Entity; valid: boolean }[] = []
+      const cells: { entity: Omit<Entity, 'id'>; valid: boolean }[] = []
       while (true) {
         const p = selected.node.position.add(dp)
         cells.push({
           entity: newBelt({
-            id: `${nextEntityId++}`,
             color: 'yellow',
             position: p,
             size: new Vec2(1),
@@ -129,7 +126,6 @@ export function initConnection(_args: InitArgs) {
       return {
         valid: cells.every((cell) => cell.valid),
         cells,
-        nextEntityId,
       }
     }),
   )

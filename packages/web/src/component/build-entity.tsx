@@ -1,9 +1,16 @@
+import { cloneDeep } from 'lodash-es'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { newGenerator } from '../entity/generator.js'
-import { build$, entities$, nextEntityId$, position$ } from '../game-state.js'
+import {
+  addEntities,
+  build$,
+  entities$,
+  position$,
+  world$,
+} from '../game-state.js'
 import { newMiner } from '../miner.js'
 import { Entity, EntityType } from '../types.js'
 import { intersects } from '../util.js'
@@ -11,7 +18,10 @@ import { Vec2 } from '../vec2.js'
 
 import styles from './build-entity.module.scss'
 
-function isValid(entity: Entity, entities: Entity[]) {
+function isValid(
+  entity: Pick<Entity, 'position' | 'size'>,
+  entities: Entity[],
+) {
   const a1 = entity.position
   const b1 = entity.position.add(entity.size)
 
@@ -25,7 +35,9 @@ function isValid(entity: Entity, entities: Entity[]) {
 }
 
 interface EntityConfig {
-  init(args: Omit<Entity, 'type' | 'nodes' | 'color'>): Entity
+  init(
+    args: Omit<Entity, 'id' | 'type' | 'nodes' | 'color'>,
+  ): Omit<Entity, 'id'>
   size: Vec2
 }
 
@@ -56,10 +68,9 @@ export function BuildEntity() {
 
   useEffect(() => {
     const { size } = config
-    const sub = combineLatest([position$, nextEntityId$, entities$]).subscribe(
-      ([position, nextEntityId, entities]) => {
-        const entity: Entity = config.init({
-          id: `${nextEntityId}`,
+    const sub = combineLatest([position$, entities$]).subscribe(
+      ([position, entities]) => {
+        const entity: Omit<Entity, 'id'> = config.init({
           position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
           size,
         })
@@ -94,13 +105,10 @@ export function BuildEntity() {
 
           const entity = build$.value?.entity
           invariant(entity)
-          const entities = entities$.value
-          invariant(entities[entity.id] === undefined)
-          entities$.next({
-            ...entities,
-            [entity.id]: entity,
-          })
-          nextEntityId$.next(nextEntityId$.value + 1)
+
+          const world = cloneDeep(world$.value)
+          addEntities(world, [entity])
+          world$.next(world)
         }}
       >
         Build

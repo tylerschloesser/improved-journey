@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react'
 
-import styles from './connection.module.scss'
-import { useEntityId } from './use-entity-id.js'
-import {
-  buildConnection$,
-  connection$,
-  entities$,
-  nextEntityId$,
-} from '../game-state.js'
 import { bind } from '@react-rxjs/core'
 import invariant from 'tiny-invariant'
+import {
+  addEntities,
+  buildConnection$,
+  connection$,
+  world$,
+} from '../game-state.js'
+import styles from './connection.module.scss'
+import { useEntityId } from './use-entity-id.js'
+import { cloneDeep } from 'lodash-es'
 
 const [useBuildConnection] = bind(buildConnection$)
 
@@ -35,12 +36,12 @@ export function Connection() {
           if (!valid) return
           invariant(build)
 
-          const entities = { ...entities$.value }
-          for (const cell of build.cells) {
-            entities[cell.entity.id] = cell.entity
-          }
-          entities$.next(entities)
-          nextEntityId$.next(build.nextEntityId)
+          const world = cloneDeep(world$.value)
+          addEntities(
+            world,
+            build.cells.map((cell) => cell.entity),
+          )
+          world$.next(world)
         }}
       >
         Build

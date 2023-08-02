@@ -1,4 +1,4 @@
-import { clamp } from 'lodash-es'
+import { clamp, cloneDeep } from 'lodash-es'
 import { Container } from 'pixi.js'
 import {
   BehaviorSubject,
@@ -10,11 +10,19 @@ import {
   take,
   withLatestFrom,
 } from 'rxjs'
+import invariant from 'tiny-invariant'
 import { Chunk } from 'webpack'
 import { animateVec2 } from './animate.js'
-import { newMiner } from './miner.js'
-import { ChunkId, Entity, EntityId, RenderState, SurfaceId } from './types.js'
-import { intersects, toCellId } from './util.js'
+import { generateWorld } from './generate-world.js'
+import {
+  ChunkId,
+  Entity,
+  EntityId,
+  RenderState,
+  SurfaceId,
+  World,
+} from './types.js'
+import { intersects, setEntityId, toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 
 export interface GameState {
@@ -26,7 +34,7 @@ export interface GameState {
 }
 
 export const build$ = new BehaviorSubject<null | {
-  entity: Entity
+  entity: Omit<Entity, 'id'>
   valid: boolean
 }>(null)
 
@@ -43,14 +51,34 @@ export const cursor$ = new BehaviorSubject<{ enabled: boolean }>({
   enabled: false,
 })
 
-export const entities$ = new BehaviorSubject<Record<EntityId, Entity>>({
-  miner1: newMiner({
-    id: 'miner1',
-    position: new Vec2(1, 2),
-    size: new Vec2(2, 2),
-    color: 'blue',
-  }),
-})
+export const world$ = new BehaviorSubject<World>(generateWorld())
+
+export function addEntities(
+  world: World,
+  entities: Omit<Entity, 'id'>[],
+): void {
+  for (const entity of entities) {
+    const entityId = `${world.nextEntityId++}`
+    invariant(world.entities[entityId] === undefined)
+
+    world.entities[entityId] = {
+      id: entityId,
+      ...entity,
+    }
+
+    for (let x = 0; x < entity.size.x; x++) {
+      for (let y = 0; y < entity.size.y; y++) {
+        setEntityId({
+          position: entity.position.add(new Vec2(x, y)),
+          entityId,
+          chunks: world.chunks,
+        })
+      }
+    }
+  }
+}
+
+export const entities$ = world$.pipe(map((world) => world.entities))
 
 export type CellId = string
 
@@ -72,8 +100,6 @@ export const occupiedCellIds$ = entities$.pipe(
 )
 
 export const navigate$ = new Subject<{ to: string }>()
-
-export const nextEntityId$ = new BehaviorSubject<number>(0)
 
 const MAX_CELL_SIZE = 100
 const MIN_CELL_SIZE = 10
@@ -172,9 +198,8 @@ export const connection$ = new BehaviorSubject<null | {
 }>(null)
 
 export const buildConnection$ = new BehaviorSubject<{
-  cells: { entity: Entity; valid: boolean }[]
+  cells: { entity: Omit<Entity, 'id'>; valid: boolean }[]
   valid: boolean
-  nextEntityId: number
 } | null>(null)
 
 connection$.subscribe((connection) => {

@@ -33,3 +33,10 @@ export interface Entity {
   color: string
   nodes: EntityNode[]
 }
+
+export interface World {
+  chunks: Record<ChunkId, Chunk>
+  entities: Record<EntityId, Entity>
+
+  nextEntityId: number
+}

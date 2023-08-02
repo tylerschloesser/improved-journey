@@ -2,7 +2,7 @@ import { Entity, EntityNode } from '../types.js'
 import { Vec2 } from '../vec2.js'
 
 export function buildNodes(
-  entity: Omit<Entity, 'type' | 'nodes'>,
+  entity: Omit<Entity, 'id' | 'type' | 'nodes'>,
 ): EntityNode[] {
   const nodes: EntityNode[] = []
   const { size } = entity
