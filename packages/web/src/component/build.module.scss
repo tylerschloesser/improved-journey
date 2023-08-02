@@ -2,6 +2,9 @@
 
 .container {
   @include container-default;
+
+  width: 100dvw;
+  height: 50dvh;
 }
 
 .button {
