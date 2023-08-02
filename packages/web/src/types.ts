@@ -18,14 +18,29 @@ export enum EntityType {
   Generator = 'generator',
 }
 
-export interface Entity {
+export interface BaseEntity {
   id: EntityId
-  type: EntityType
   position: Vec2
   size: Vec2
   color: string
+
+  // TODO move nodes to specific entities
   nodes: EntityNode[]
 }
+
+export interface MinerEntity extends BaseEntity {
+  type: EntityType.Miner
+}
+
+export interface BeltEntity extends BaseEntity {
+  type: EntityType.Belt
+}
+
+export interface GeneratorEntity extends BaseEntity {
+  type: EntityType.Generator
+}
+
+export type Entity = MinerEntity | BeltEntity | GeneratorEntity
 
 export interface World {
   tick: number
