@@ -23,7 +23,7 @@ function isValid(entity: Entity, entities: Entity[]) {
   return true
 }
 
-export function Build() {
+export function BuildEntity() {
   const navigate = useNavigate()
 
   const [valid, setValid] = useState(false)

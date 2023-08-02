@@ -6,10 +6,10 @@ import './index.scss'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { WorldControls } from './component/world-controls.js'
 import { Cursor } from './component/cursor.js'
-import { Build } from './component/build.js'
 import { Entity } from './component/entity.js'
 import { Subscribe } from '@react-rxjs/core'
 import { Connection } from './component/connection.js'
+import { BuildEntity } from './component/build-entity.js'
 
 const container = document.getElementById('root')
 invariant(container)
@@ -33,8 +33,8 @@ const router = createBrowserRouter([
         element: <Cursor />,
       },
       {
-        path: 'build',
-        element: <Build />,
+        path: 'build/:type',
+        element: <BuildEntity />,
       },
       {
         path: 'entity/:id',
