@@ -19,7 +19,7 @@ export function WorldControls() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          navigate('build/miner')
+          navigate('build')
         }}
       >
         Build

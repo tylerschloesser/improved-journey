@@ -10,6 +10,7 @@ import { Entity } from './component/entity.js'
 import { Subscribe } from '@react-rxjs/core'
 import { Connection } from './component/connection.js'
 import { BuildEntity } from './component/build-entity.js'
+import { Build } from './component/build.js'
 
 const container = document.getElementById('root')
 invariant(container)
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: 'cursor',
         element: <Cursor />,
+      },
+      {
+        path: 'build',
+        element: <Build />,
       },
       {
         path: 'build/:type',
