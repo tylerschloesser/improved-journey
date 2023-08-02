@@ -31,6 +31,8 @@ export interface BaseEntity {
 
 export interface MinerEntity extends BaseEntity {
   type: EntityType.Miner
+
+  progress: number
   output: { type: ItemType; count: number } | null
 }
 

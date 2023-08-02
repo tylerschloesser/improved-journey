@@ -8,6 +8,7 @@ export function newMiner(
     ...args,
     type: EntityType.Miner,
     nodes: buildNodes(args),
+    progress: 0,
     output: null,
   }
 }
