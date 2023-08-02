@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { build$, entities$, nextEntityId$, position$ } from '../game-state.js'
 import { newMiner } from '../miner.js'
-import { Entity } from '../types.js'
+import { Entity, EntityType } from '../types.js'
 import { intersects } from '../util.js'
 import { Vec2 } from '../vec2.js'
 
-import styles from './build.module.scss'
+import styles from './build-entity.module.scss'
 
 function isValid(entity: Entity, entities: Entity[]) {
   const a1 = entity.position
@@ -23,20 +23,40 @@ function isValid(entity: Entity, entities: Entity[]) {
   return true
 }
 
+interface EntityConfig {
+  init(args: Omit<Entity, 'type' | 'nodes' | 'color'>): Entity
+  size: Vec2
+}
+
+const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
+  [EntityType.Miner]: {
+    init: (args) => newMiner({ ...args, color: 'blue' }),
+    size: new Vec2(2, 2),
+  },
+}
+
+function useEntityConfig(): EntityConfig {
+  const params = useParams<{ type: EntityType }>()
+  invariant(params.type)
+  const config = ENTITY_CONFIG[params.type]
+  invariant(config)
+  return config
+}
+
 export function BuildEntity() {
   const navigate = useNavigate()
+  const config = useEntityConfig()
 
   const [valid, setValid] = useState(false)
 
   useEffect(() => {
-    const size = new Vec2(2, 2)
+    const { size } = config
     const sub = combineLatest([position$, nextEntityId$, entities$]).subscribe(
       ([position, nextEntityId, entities]) => {
-        const entity: Entity = newMiner({
+        const entity: Entity = config.init({
           id: `${nextEntityId}`,
           position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
           size,
-          color: 'blue',
         })
 
         let valid = isValid(entity, Object.values(entities))
