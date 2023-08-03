@@ -1,6 +1,6 @@
 import { curry } from 'lodash-es'
 import invariant from 'tiny-invariant'
-import { move$, tap$, wheel$ } from './game-state.js'
+import { move$, pinch$, tap$, wheel$ } from './game-state.js'
 import { Vec2 } from './vec2.js'
 
 function toVec2(ev: PointerEvent): Vec2 {
@@ -14,7 +14,29 @@ interface PointerState {
 }
 
 function handlePointerMoveTwo(state: PointerState, ev: PointerEvent): void {
+  invariant(state.pointerEventCache.size === 2)
   console.log('todo handle pointer move two')
+
+  let prev: PointerEvent
+  let other: PointerEvent
+  for (const [pointerId, events] of state.pointerEventCache.entries()) {
+    invariant(events.length > 0)
+    if (pointerId === ev.pointerId) {
+      prev = events.at(-1)!
+    } else {
+      other = events.at(-1)!
+    }
+  }
+
+  invariant(prev!)
+  invariant(other!)
+
+  const prevDist = toVec2(prev).sub(toVec2(other)).len()
+  const dist = toVec2(ev).sub(toVec2(other)).len()
+
+  const delta = dist - prevDist
+
+  pinch$.next({ delta })
 }
 
 const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {

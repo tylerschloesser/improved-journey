@@ -100,6 +100,14 @@ move$.pipe(withLatestFrom(cellSize$)).subscribe(([move, cellSize]) => {
   position$.next(position$.value.add(move.div(cellSize).mul(-1)))
 })
 
+export const pinch$ = new Subject<{ delta: number }>()
+
+pinch$.subscribe(({ delta }) => {
+  const zoom = zoom$.value
+  const nextZoom = clamp(zoom + (delta / 4_000) * -1, 0, 1)
+  zoom$.next(nextZoom)
+})
+
 wheel$
   .pipe(withLatestFrom(viewport$))
   .subscribe(([{ deltaY, position }, viewport]) => {
