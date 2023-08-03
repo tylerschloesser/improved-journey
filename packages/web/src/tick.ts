@@ -5,6 +5,7 @@ import {
   BATTERY_CHARGE_RATE,
   BATTERY_DISCHARGE_RATE,
   MINE_RATE,
+  SOLAR_PANEL_RATE,
   TICK_RATE,
 } from './const.js'
 import { BatteryEntity, EntityType } from './entity-types.js'
@@ -25,6 +26,9 @@ export function tickWorld() {
         break
       case EntityType.Generator:
         production += 2
+        break
+      case EntityType.SolarPanel:
+        production += SOLAR_PANEL_RATE
         break
       case EntityType.Battery: {
         batteries.push(entity)
