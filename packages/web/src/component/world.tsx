@@ -7,6 +7,7 @@ import { init } from '../init.js'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Vec2 } from '../vec2.js'
 import { tickWorld } from '../tick.js'
+import { TICK_RATE } from '../const.js'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
@@ -64,7 +65,7 @@ function useNavigateListener() {
 
 function useTickWorld() {
   useEffect(() => {
-    const interval = window.setInterval(tickWorld, 100)
+    const interval = window.setInterval(tickWorld, 1000 / TICK_RATE)
     return () => {
       window.clearInterval(interval)
     }

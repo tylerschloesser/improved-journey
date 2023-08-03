@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash-es'
+import { MINE_RATE, TICK_RATE } from './const.js'
 import { world$ } from './game-state.js'
+import { ItemType } from './item-types.js'
 import { EntityType } from './types.js'
 
 export function tickWorld() {
@@ -19,7 +21,28 @@ export function tickWorld() {
     }
   }
 
-  const satisfaction = consumption === 0 ? null : production / consumption
+  const satisfaction =
+    consumption === 0 ? null : Math.min(production / consumption, 1)
+
+  if (satisfaction !== null) {
+    for (const entity of Object.values(world.entities)) {
+      switch (entity.type) {
+        case EntityType.Miner:
+          entity.progress += (MINE_RATE * satisfaction) / TICK_RATE
+          if (entity.progress >= 1) {
+            const count = Math.trunc(entity.progress)
+            entity.progress = entity.progress - count
+
+            let output = entity.output
+            if (output === null) {
+              output = entity.output = { type: ItemType.Coal, count: 0 }
+            }
+            output.count += count
+          }
+          break
+      }
+    }
+  }
 
   world.tick += 1
   world$.next(world)
