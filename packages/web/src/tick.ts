@@ -28,7 +28,7 @@ export function tickWorld() {
         production += 2
         break
       case EntityType.SolarPanel:
-        production += SOLAR_PANEL_RATE
+        production += SOLAR_PANEL_RATE.perTick()
         break
       case EntityType.Battery: {
         batteries.push(entity)
@@ -49,7 +49,7 @@ export function tickWorld() {
       const needed = consumption - production
       const average = Math.min(
         needed / (batteries.length - i),
-        BATTERY_DISCHARGE_RATE,
+        BATTERY_DISCHARGE_RATE.perTick(),
       )
       invariant(average > 0)
 
@@ -69,13 +69,13 @@ export function tickWorld() {
       const extra = production - consumption
       const average = Math.min(
         extra / (batteries.length - 1),
-        BATTERY_CHARGE_RATE,
+        BATTERY_CHARGE_RATE.perTick(),
       )
       invariant(average > 0)
 
       const consume = Math.min(
         BATTERY_CAPACITY - battery.charge,
-        BATTERY_CHARGE_RATE,
+        BATTERY_CHARGE_RATE.perTick(),
       )
       battery.charge += consume
       consumption += consume
@@ -87,7 +87,7 @@ export function tickWorld() {
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.Miner: {
-        entity.progress += (MINE_RATE * satisfaction) / TICK_RATE
+        entity.progress += (MINE_RATE.perTick() * satisfaction) / TICK_RATE
         if (entity.progress >= 1) {
           const count = Math.trunc(entity.progress)
           entity.progress = entity.progress - count
