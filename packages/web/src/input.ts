@@ -139,16 +139,12 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   const exitVelocity = velocities.at(-1)
   invariant(exitVelocity)
 
-  console.log(velocities, vavg)
-
   // final velocity that we will use for decceleration is the
   // direction of the most recent 2 pointer events, and the average
   // speed of pointer over the last several hundred ms
   let v = exitVelocity.norm().mul(vavg.len())
 
-  let lastUpdate = last.timeStamp
-
-  dampen$.next({ v, lastUpdate })
+  dampen$.next({ v })
 })
 
 function onWheel(ev: WheelEvent) {

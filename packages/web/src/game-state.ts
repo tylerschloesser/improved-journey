@@ -238,15 +238,14 @@ merge(
   })
 })
 
-export const dampen$ = new Subject<{ v: Vec2; lastUpdate: number }>()
+export const dampen$ = new Subject<{ v: Vec2 }>()
 
 dampen$
   .pipe(withLatestFrom(position$, cellSize$))
-  .subscribe(([{ v, lastUpdate }, position, cellSize]) => {
+  .subscribe(([{ v }, position, cellSize]) => {
     const duration = 500
 
     const to = position.add(v.mul(-1).div(cellSize).mul(duration))
-    console.log(v, position, to)
 
     animateVec2({
       from: position,
