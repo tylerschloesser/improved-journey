@@ -240,27 +240,20 @@ merge(
 
 export const dampen$ = new Subject<{ v: Vec2; lastUpdate: number }>()
 
-dampen$.subscribe(({ v, lastUpdate }) => {
-  const acceleration = v.mul(-1).div(200)
+dampen$
+  .pipe(withLatestFrom(position$, cellSize$))
+  .subscribe(([{ v, lastUpdate }, position, cellSize]) => {
+    const duration = 500
 
-  function dampen() {
-    const now = window.performance.now()
-    const dt = now - lastUpdate
-    lastUpdate = now
+    const to = position.add(v.mul(-1).div(cellSize).mul(duration))
+    console.log(v, position, to)
 
-    // basically check the most significant digit of the
-    // angle to see if we changed direction
-    const startAngle = Math.trunc(v.angle())
-
-    v = v.add(acceleration.mul(dt))
-
-    const endAngle = Math.trunc(v.angle())
-
-    if (startAngle !== endAngle) return
-
-    move$.next(v.mul(dt))
-
-    window.requestAnimationFrame(dampen)
-  }
-  dampen()
-})
+    animateVec2({
+      from: position,
+      to,
+      duration,
+      callback(next) {
+        position$.next(next)
+      },
+    })
+  })

@@ -124,7 +124,12 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
     const b = latest[i]
     const dt = b.timeStamp - a.timeStamp
     const dp = toVec2(b).sub(toVec2(a))
-    velocities.push(dp.div(dt))
+    if (dt === 0) {
+      // TODO not sure how this happens. dp.len is not zero...
+      velocities.push(new Vec2(0))
+    } else {
+      velocities.push(dp.div(dt))
+    }
   }
 
   let vavg = velocities
@@ -133,6 +138,8 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 
   const exitVelocity = velocities.at(-1)
   invariant(exitVelocity)
+
+  console.log(velocities, vavg)
 
   // final velocity that we will use for decceleration is the
   // direction of the most recent 2 pointer events, and the average
