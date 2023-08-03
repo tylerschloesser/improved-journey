@@ -47,7 +47,6 @@ export interface SolarPanelEntity extends BaseEntity {
 export interface BatteryEntity extends BaseEntity {
   type: EntityType.Battery
   charge: number
-  capacity: number
 }
 
 export type Entity =

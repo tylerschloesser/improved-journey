@@ -8,6 +8,5 @@ export function newBattery(
     type: EntityType.Battery,
     nodes: [],
     charge: 0,
-    capacity: 100,
   }
 }
