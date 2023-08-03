@@ -1,6 +1,6 @@
 import { curry } from 'lodash-es'
 import invariant from 'tiny-invariant'
-import { move$, pinch$, tap$, wheel$ } from './game-state.js'
+import { dampen$, move$, pinch$, tap$, wheel$ } from './game-state.js'
 import { Vec2 } from './vec2.js'
 
 function toVec2(ev: PointerEvent): Vec2 {
@@ -141,28 +141,7 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 
   let lastUpdate = last.timeStamp
 
-  const acceleration = v.mul(-1).div(200)
-
-  function dampen() {
-    const now = window.performance.now()
-    const dt = now - lastUpdate
-    lastUpdate = now
-
-    // basically check the most significant digit of the
-    // angle to see if we changed direction
-    const startAngle = Math.trunc(v.angle())
-
-    v = v.add(acceleration.mul(dt))
-
-    const endAngle = Math.trunc(v.angle())
-
-    if (startAngle !== endAngle) return
-
-    move$.next(v.mul(dt))
-
-    window.requestAnimationFrame(dampen)
-  }
-  dampen()
+  dampen$.next({ v, lastUpdate })
 })
 
 function onWheel(ev: WheelEvent) {
