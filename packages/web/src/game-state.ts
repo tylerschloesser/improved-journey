@@ -104,7 +104,7 @@ export const pinch$ = new Subject<{ delta: number }>()
 
 pinch$.subscribe(({ delta }) => {
   const zoom = zoom$.value
-  const nextZoom = clamp(zoom + (-delta / 2_000) * -1, 0, 1)
+  const nextZoom = clamp(zoom + (-delta / 500) * -1, 0, 1)
   zoom$.next(nextZoom)
 })
 
