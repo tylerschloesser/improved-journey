@@ -240,19 +240,21 @@ merge(
 
 export const dampen$ = new Subject<{ v: Vec2 }>()
 
-dampen$
-  .pipe(withLatestFrom(position$, cellSize$))
-  .subscribe(([{ v }, position, cellSize]) => {
-    const duration = 200
+dampen$.pipe(withLatestFrom(cellSize$)).subscribe(([{ v }, cellSize]) => {
+  const duration = 200
 
-    const to = position.add(v.mul(-1).div(cellSize).mul(duration))
+  const from = v.mul(-1).div(cellSize)
 
-    animateVec2({
-      from: position,
-      to,
-      duration,
-      callback(next) {
-        position$.next(next)
-      },
-    })
+  // TODO not sure if it makes a noticable difference, but we could
+  // animate here, between the last pointer move and the upcoming
+  // "dampen" movement
+
+  animateVec2({
+    from,
+    to: new Vec2(0),
+    duration,
+    callback(next, elapsed) {
+      position$.next(position$.value.add(next.mul(elapsed)))
+    },
   })
+})

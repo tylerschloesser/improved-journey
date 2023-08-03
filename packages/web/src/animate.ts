@@ -5,7 +5,7 @@ export interface AnimateVec2Args {
   from: Vec2
   to: Vec2
   duration: number
-  callback(v: Vec2): void
+  callback(v: Vec2, elapsed: number): void
 }
 
 // https://css-tricks.com/emulating-css-timing-functions-javascript/
@@ -22,19 +22,21 @@ export function animateVec2({
 }: AnimateVec2Args): void {
   const d = to.sub(from)
   const start = window.performance.now()
+  let last = start
 
   function onFrame() {
     const now = window.performance.now()
-    if (now - start >= duration) {
-      callback(to)
+    const elapsed = now - start
+    if (elapsed >= duration) {
+      callback(to, now - last)
       return
     }
 
-    const elapsed = now - start
-
     const k = elapsed / duration
 
-    callback(from.add(d.mul(easeIn(k))))
+    callback(from.add(d.mul(easeIn(k))), now - last)
+
+    last = now
 
     window.requestAnimationFrame(onFrame)
   }

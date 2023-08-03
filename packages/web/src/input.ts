@@ -112,7 +112,7 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   state.pointerEventCache.delete(ev.pointerId)
 
   const latest = cache.filter((cached) => {
-    return now - cached.timeStamp < 500
+    return now - cached.timeStamp < 200
   })
 
   if (latest.length < 2) return
