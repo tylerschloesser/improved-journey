@@ -243,7 +243,7 @@ export const dampen$ = new Subject<{ v: Vec2 }>()
 dampen$
   .pipe(withLatestFrom(position$, cellSize$))
   .subscribe(([{ v }, position, cellSize]) => {
-    const duration = 500
+    const duration = 200
 
     const to = position.add(v.mul(-1).div(cellSize).mul(duration))
 

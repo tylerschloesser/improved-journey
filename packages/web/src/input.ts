@@ -144,7 +144,10 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   // speed of pointer over the last several hundred ms
   let v = exitVelocity.norm().mul(vavg.len())
 
-  dampen$.next({ v })
+  if (v.len() > 0.5) {
+    // TODO this is an arbitrary threshold...
+    dampen$.next({ v })
+  }
 })
 
 function onWheel(ev: WheelEvent) {
