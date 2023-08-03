@@ -23,6 +23,8 @@ function handlePointerMoveTwo(state: PointerState, ev: PointerEvent): void {
     invariant(events.length > 0)
     if (pointerId === ev.pointerId) {
       prev = events.at(-1)!
+      // add the next event to the cache
+      events.push(ev)
     } else {
       other = events.at(-1)!
     }
