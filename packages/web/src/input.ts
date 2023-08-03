@@ -13,11 +13,23 @@ interface PointerState {
   pointerEventCache: Map<PointerId, PointerEvent[]>
 }
 
+function handlePointerMoveTwo(state: PointerState, ev: PointerEvent): void {
+  console.log('todo handle pointer move two')
+}
+
 const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
   let cache = state.pointerEventCache.get(ev.pointerId)
   if (!cache) {
     cache = []
     state.pointerEventCache.set(ev.pointerId, cache)
+  }
+
+  if (state.pointerEventCache.size === 2) {
+    handlePointerMoveTwo(state, ev)
+    return
+  } else if (state.pointerEventCache.size > 2) {
+    // Currently don't support more than 2 pointers
+    return
   }
 
   const prev = cache.at(-1)
@@ -50,7 +62,16 @@ const onPointerDown = curry((state: PointerState, ev: PointerEvent) => {
   state.pointerEventCache.set(ev.pointerId, [ev])
 })
 
+const onPointerLeave = curry((state: PointerState, ev: PointerEvent) => {
+  state.pointerEventCache.delete(ev.pointerId)
+})
+
 const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
+  if (state.pointerEventCache.size > 1) {
+    state.pointerEventCache.delete(ev.pointerId)
+    return
+  }
+
   const now = ev.timeStamp
   const cache = state.pointerEventCache.get(ev.pointerId) ?? []
 
@@ -143,5 +164,6 @@ export function initInput({
   canvas.addEventListener('pointermove', onPointerMove(state), { signal })
   canvas.addEventListener('pointerup', onPointerUp(state), { signal })
   canvas.addEventListener('pointerdown', onPointerDown(state), { signal })
+  canvas.addEventListener('pointerleave', onPointerLeave(state), { signal })
   canvas.addEventListener('wheel', onWheel, { signal, passive: false })
 }
