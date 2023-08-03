@@ -15,7 +15,6 @@ interface PointerState {
 
 function handlePointerMoveTwo(state: PointerState, ev: PointerEvent): void {
   invariant(state.pointerEventCache.size === 2)
-  console.log('todo handle pointer move two')
 
   let prev: PointerEvent
   let other: PointerEvent
