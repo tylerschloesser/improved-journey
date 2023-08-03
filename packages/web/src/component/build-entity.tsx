@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
+import { EntityConfig, ENTITY_CONFIG } from '../entity-config.js'
 import { Entity, EntityType } from '../entity-types.js'
 import { newGenerator } from '../entity/generator.js'
 import {
@@ -32,24 +33,6 @@ function isValid(
   }
 
   return true
-}
-
-interface EntityConfig {
-  init(
-    args: Omit<Entity, 'id' | 'type' | 'nodes' | 'color'>,
-  ): Omit<Entity, 'id'>
-  size: Vec2
-}
-
-const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
-  [EntityType.Miner]: {
-    init: (args) => newMiner({ ...args, color: 'blue' }),
-    size: new Vec2(2, 2),
-  },
-  [EntityType.Generator]: {
-    init: (args) => newGenerator({ ...args, color: 'orange' }),
-    size: new Vec2(3, 2),
-  },
 }
 
 function useEntityConfig(): EntityConfig {
