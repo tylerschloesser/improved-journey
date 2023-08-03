@@ -1,4 +1,4 @@
-import { clamp, cloneDeep, times } from 'lodash-es'
+import { cloneDeep, times } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import {
   BATTERY_CAPACITY,
@@ -10,30 +10,6 @@ import {
 import { BatteryEntity, EntityType } from './entity-types.js'
 import { world$ } from './game-state.js'
 import { ItemType } from './item-types.js'
-
-interface EnergyTransfer {
-  battery: number
-  other: number
-}
-
-function getSatisfaction({
-  consumption,
-  production,
-}: {
-  consumption: EnergyTransfer
-  production: EnergyTransfer
-}): EnergyTransfer {
-  return {
-    battery:
-      consumption.battery === 0
-        ? 1
-        : Math.min(production.battery / consumption.battery, 1),
-    other:
-      consumption.other === 0
-        ? 1
-        : Math.min(production.other / consumption.other, 1),
-  }
-}
 
 export function tickWorld() {
   const world = cloneDeep(world$.value)
