@@ -1,5 +1,6 @@
 import { Graphics } from 'pixi.js'
 import { combineLatest } from 'rxjs'
+import { EntityId } from './entity-types.js'
 import {
   cellSize$,
   cursor$,
@@ -14,7 +15,6 @@ import { initConnection } from './init-connection.js'
 import { initGame } from './init-game.js'
 import { initGrid } from './init-grid.js'
 import { initInput } from './input.js'
-import { EntityId } from './types.js'
 import { ZIndex } from './z-index.js'
 
 function initCursor({ app }: InitArgs) {

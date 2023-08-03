@@ -12,8 +12,9 @@ import {
 } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
+import { Entity, EntityId } from './entity-types.js'
 import { generateWorld } from './generate-world.js'
-import { Entity, EntityId, World } from './types.js'
+import { World } from './types.js'
 import { intersects, setEntityId, toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 

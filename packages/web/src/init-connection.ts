@@ -3,6 +3,7 @@ import { Graphics } from 'pixi.js'
 import { combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { newBelt } from './belt.js'
+import { Entity, EntityNode } from './entity-types.js'
 import {
   buildConnection$,
   connection$,
@@ -12,7 +13,6 @@ import {
   position$,
 } from './game-state.js'
 import { InitArgs } from './init-args.js'
-import { Entity, EntityNode } from './types.js'
 import { toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 

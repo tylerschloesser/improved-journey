@@ -6,7 +6,7 @@ import { FocusMode, entities$, focus$ } from '../game-state.js'
 import { map } from 'rxjs'
 import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
-import { EntityId } from '../types.js'
+import { EntityId } from '../entity-types.js'
 
 const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),

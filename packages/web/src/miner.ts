@@ -1,5 +1,5 @@
+import { Entity, EntityType, MinerEntity } from './entity-types.js'
 import { buildNodes } from './entity/build-nodes.js'
-import { Entity, EntityType, MinerEntity } from './types.js'
 
 export function newMiner(
   args: Omit<Entity, 'id' | 'type' | 'nodes'>,

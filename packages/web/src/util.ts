@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
+import { EntityId } from './entity-types.js'
 import { CellId } from './game-state.js'
-import { Chunk, ChunkId, EntityId, World } from './types.js'
+import { Chunk, ChunkId, World } from './types.js'
 import { Vec2 } from './vec2.js'
 
 // https://www.geeksforgeeks.org/find-two-rectangles-overlap/#

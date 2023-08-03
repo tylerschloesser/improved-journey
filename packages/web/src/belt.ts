@@ -1,4 +1,4 @@
-import { Entity, EntityType } from './types.js'
+import { Entity, EntityType } from './entity-types.js'
 
 export function newBelt(
   args: Omit<Entity, 'id' | 'type' | 'nodes'>,

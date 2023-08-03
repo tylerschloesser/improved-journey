@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
+import { Entity, EntityType } from '../entity-types.js'
 import { newGenerator } from '../entity/generator.js'
 import {
   addEntities,
@@ -12,7 +13,6 @@ import {
   world$,
 } from '../game-state.js'
 import { newMiner } from '../miner.js'
-import { Entity, EntityType } from '../types.js'
 import { intersects } from '../util.js'
 import { Vec2 } from '../vec2.js'
 

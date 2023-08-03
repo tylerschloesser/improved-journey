@@ -1,8 +1,8 @@
 import { cloneDeep } from 'lodash-es'
 import { MINE_RATE, TICK_RATE } from './const.js'
+import { EntityType } from './entity-types.js'
 import { world$ } from './game-state.js'
 import { ItemType } from './item-types.js'
-import { EntityType } from './types.js'
 
 export function tickWorld() {
   const world = cloneDeep(world$.value)

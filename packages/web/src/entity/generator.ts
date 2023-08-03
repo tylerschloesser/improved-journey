@@ -1,4 +1,4 @@
-import { Entity, EntityType } from '../types.js'
+import { Entity, EntityType } from '../entity-types.js'
 import { buildNodes } from './build-nodes.js'
 
 export function newGenerator(

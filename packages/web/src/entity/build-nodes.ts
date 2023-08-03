@@ -1,4 +1,4 @@
-import { Entity, EntityNode } from '../types.js'
+import { Entity, EntityNode } from '../entity-types.js'
 import { Vec2 } from '../vec2.js'
 
 export function buildNodes(

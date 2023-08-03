@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { EntityId } from '../types.js'
+import { EntityId } from '../entity-types.js'
 
 export function useEntityId() {
   const params = useParams<{ id: EntityId }>()

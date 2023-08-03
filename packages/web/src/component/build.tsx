@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { EntityType } from '../types.js'
+import { EntityType } from '../entity-types.js'
 
 import styles from './build.module.scss'
 
