@@ -11,6 +11,8 @@ export enum EntityType {
   Miner = 'miner',
   Belt = 'belt',
   Generator = 'generator',
+  SolarPanel = 'solar-panel',
+  Battery = 'battery',
 }
 
 export interface BaseEntity {
@@ -38,4 +40,17 @@ export interface GeneratorEntity extends BaseEntity {
   type: EntityType.Generator
 }
 
-export type Entity = MinerEntity | BeltEntity | GeneratorEntity
+export interface SolarPanelEntity extends BaseEntity {
+  type: EntityType.SolarPanel
+}
+
+export interface BatteryEntity extends BaseEntity {
+  type: EntityType.Battery
+}
+
+export type Entity =
+  | MinerEntity
+  | BeltEntity
+  | GeneratorEntity
+  | SolarPanelEntity
+  | BatteryEntity
