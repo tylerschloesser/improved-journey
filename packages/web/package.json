@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pixi/react": "^7.1.0",
     "@react-rxjs/core": "^0.10.6",
     "@react-rxjs/utils": "^0.9.7",
     "@types/react": "^18.2.15",
