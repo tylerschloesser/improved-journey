@@ -1,10 +1,10 @@
 import { Graphics } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
-import * as PIXI from 'pixi.js'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { combineLatest, map } from 'rxjs'
 import { connection$, entities$ } from '../game-state.js'
 import { selected$ } from '../init-connection.js'
+import { useDraw } from './use-draw.js'
 
 const [useConnection] = bind(
   combineLatest([entities$, connection$]).pipe(
@@ -20,8 +20,8 @@ const [useSelected] = bind(selected$)
 function Nodes() {
   const connection = useConnection()
 
-  const draw = useCallback(
-    (g: PIXI.Graphics) => {
+  const draw = useDraw(
+    (g) => {
       g.clear()
       if (connection === null) return
 
@@ -39,12 +39,13 @@ function Nodes() {
 
 function Selected() {
   const selected = useSelected()
-  const draw = useCallback(
-    (g: PIXI.Graphics) => {
+  const draw = useDraw(
+    (g) => {
       g.clear()
       if (selected === null) return
       g.beginFill('green')
-      g.drawRect(selected.node.position.x, selected.node.position.y, 1, 1)
+      const { x, y } = selected.node.position
+      g.drawRect(x, y, 1, 1)
     },
     [selected],
   )
