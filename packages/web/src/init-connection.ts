@@ -70,21 +70,6 @@ function createGraphics(key: GraphicsKey): Graphics {
 }
 
 export function initConnection(_args: InitArgs) {
-  entity$.subscribe((entity) => {
-    if (entity === null) {
-      destroyGraphics(GraphicsKey.Nodes)
-      return
-    }
-
-    const g = createGraphics(GraphicsKey.Nodes)
-
-    g.beginFill('hsla(180, 50%, 50%, .5)')
-    for (const node of entity.nodes) {
-      const { x, y } = node.position
-      g.drawRect(x, y, 1, 1)
-    }
-  })
-
   const belt$ = combineLatest([
     selected$,
     position$.pipe(
@@ -150,18 +135,5 @@ export function initConnection(_args: InitArgs) {
       }
       g.drawRect(cell.entity.position.x, cell.entity.position.y, 1, 1)
     }
-  })
-
-  selected$.subscribe((selected) => {
-    if (selected === null) {
-      destroyGraphics(GraphicsKey.Selected)
-      return
-    }
-
-    const g = createGraphics(GraphicsKey.Selected)
-
-    g.beginFill('green')
-    const { x, y } = selected.node.position
-    g.drawRect(x, y, 1, 1)
   })
 }

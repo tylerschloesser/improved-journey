@@ -37,10 +37,25 @@ function Nodes() {
   return <Graphics draw={draw} />
 }
 
+function Selected() {
+  const selected = useSelected()
+  const draw = useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear()
+      if (selected === null) return
+      g.beginFill('green')
+      g.drawRect(selected.node.position.x, selected.node.position.y, 1, 1)
+    },
+    [selected],
+  )
+  return <Graphics draw={draw} />
+}
+
 export function Connection() {
   return (
     <>
       <Nodes />
+      <Selected />
     </>
   )
 }
