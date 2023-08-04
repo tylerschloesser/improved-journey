@@ -37,7 +37,10 @@ function handlePointerMoveTwo(state: PointerState, ev: PointerEvent): void {
 
   const delta = dist - prevDist
 
-  pinch$.next({ delta })
+  pinch$.next({
+    delta,
+    anchor: toVec2(other),
+  })
 }
 
 const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
