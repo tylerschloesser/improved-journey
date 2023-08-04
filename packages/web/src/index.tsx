@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import invariant from 'tiny-invariant'
 import { World } from './component/world.js'
@@ -54,7 +54,9 @@ const router = createBrowserRouter([
 ])
 
 root.render(
-  <Subscribe>
-    <RouterProvider router={router} />
-  </Subscribe>,
+  <StrictMode>
+    <Subscribe>
+      <RouterProvider router={router} />
+    </Subscribe>
+  </StrictMode>,
 )

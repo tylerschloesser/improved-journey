@@ -123,7 +123,7 @@ export function World() {
             // hack because @pixi/react doesn't
             // respect my initial size...
             window.setTimeout(() => {
-              app.resize()
+              app.resize?.()
             }, 0)
           }}
         >

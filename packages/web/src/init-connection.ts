@@ -10,7 +10,6 @@ import {
   occupiedCellIds$,
   position$,
 } from './game-state.js'
-import { InitArgs } from './init-args.js'
 import { toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -88,8 +87,6 @@ export const belt$ = combineLatest([
   }),
 )
 
-export function initConnection(_args: InitArgs) {
-  belt$.subscribe((belt) => {
-    buildConnection$.next(belt)
-  })
-}
+belt$.subscribe((belt) => {
+  buildConnection$.next(belt)
+})
