@@ -100,23 +100,27 @@ move$.pipe(withLatestFrom(cellSize$)).subscribe(([move, cellSize]) => {
   position$.next(position$.value.add(move.div(cellSize).mul(-1)))
 })
 
-export const pinch$ = new Subject<{ delta: number; anchor: Vec2 }>()
+export const pinch$ = new Subject<{
+  center: Vec2
+  drag: Vec2
+  zoom: number
+}>()
 
-pinch$
-  .pipe(withLatestFrom(viewport$))
-  .subscribe(([{ delta, anchor }, viewport]) => {
-    const zoom = zoom$.value
-    const nextZoom = clamp(zoom + (-delta / 500) * -1, 0, 1)
+pinch$.pipe(withLatestFrom(viewport$)).subscribe(([pinch, viewport]) => {
+  const zoom = zoom$.value
+  const nextZoom = clamp(zoom + pinch.zoom / 1_000, 0, 1)
 
-    anchor = anchor.sub(viewport.div(2))
+  const anchor = pinch.center.sub(viewport.div(2))
+  const adjust = anchor
+    .div(zoomToCellSize(zoom))
+    .sub(anchor.div(zoomToCellSize(nextZoom)))
 
-    const adjust = anchor
-      .div(zoomToCellSize(zoom))
-      .sub(anchor.div(zoomToCellSize(nextZoom)))
-    position$.next(position$.value.add(adjust))
+  position$.next(
+    position$.value.add(adjust.add(pinch.drag.div(zoomToCellSize(nextZoom)))),
+  )
 
-    zoom$.next(nextZoom)
-  })
+  zoom$.next(nextZoom)
+})
 
 wheel$
   .pipe(withLatestFrom(viewport$))
@@ -131,6 +135,7 @@ wheel$
     const adjust = anchor
       .div(zoomToCellSize(zoom))
       .sub(anchor.div(zoomToCellSize(nextZoom)))
+
     position$.next(position$.value.add(adjust))
 
     zoom$.next(nextZoom)

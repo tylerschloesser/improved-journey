@@ -16,30 +16,39 @@ interface PointerState {
 function handlePointerMoveTwo(state: PointerState, ev: PointerEvent): void {
   invariant(state.pointerEventCache.size === 2)
 
-  let prev: PointerEvent
-  let other: PointerEvent
+  let prev: Vec2
+  let other: Vec2
+
   for (const [pointerId, events] of state.pointerEventCache.entries()) {
     invariant(events.length > 0)
     if (pointerId === ev.pointerId) {
-      prev = events.at(-1)!
+      prev = toVec2(events.at(-1)!)
       // add the next event to the cache
       events.push(ev)
     } else {
-      other = events.at(-1)!
+      other = toVec2(events.at(-1)!)
     }
   }
 
   invariant(prev!)
   invariant(other!)
 
-  const prevDist = toVec2(prev).sub(toVec2(other)).len()
-  const dist = toVec2(ev).sub(toVec2(other)).len()
+  const next = toVec2(ev)
 
-  const delta = dist - prevDist
+  const center = {
+    prev: other.add(prev.sub(other).div(2)),
+    next: other.add(next.sub(other).div(2)),
+  }
+
+  const dist = {
+    prev: other.sub(prev).len(),
+    next: other.sub(next).len(),
+  }
 
   pinch$.next({
-    delta,
-    anchor: toVec2(other),
+    center: center.next,
+    drag: center.next.sub(center.prev).mul(-1),
+    zoom: dist.next - dist.prev,
   })
 }
 
