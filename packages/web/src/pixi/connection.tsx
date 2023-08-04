@@ -3,7 +3,7 @@ import { bind } from '@react-rxjs/core'
 import React from 'react'
 import { combineLatest, map } from 'rxjs'
 import { connection$, entities$ } from '../game-state.js'
-import { belt$, selected$ } from '../init-connection.js'
+import { belt$, selected$ } from '../connection.js'
 import { useDraw } from './use-draw.js'
 
 const [useConnection] = bind(
