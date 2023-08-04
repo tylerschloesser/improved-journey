@@ -4,6 +4,7 @@ import * as PIXI from 'pixi.js'
 import React, { useCallback } from 'react'
 import { combineLatest, map } from 'rxjs'
 import { connection$, entities$ } from '../game-state.js'
+import { selected$ } from '../init-connection.js'
 
 const [useConnection] = bind(
   combineLatest([entities$, connection$]).pipe(
@@ -13,6 +14,8 @@ const [useConnection] = bind(
     }),
   ),
 )
+
+const [useSelected] = bind(selected$)
 
 export function Connection() {
   const connection = useConnection()

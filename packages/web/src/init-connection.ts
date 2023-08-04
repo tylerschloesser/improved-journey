@@ -26,6 +26,31 @@ enum GraphicsKey {
   Belt,
 }
 
+const entity$ = combineLatest([connection$, entities$]).pipe(
+  map(([connection, entities]) =>
+    connection ? entities[connection.entityId] : null,
+  ),
+  distinctUntilChanged<Entity | null>(isEqual),
+)
+
+export const selected$ = combineLatest([entity$, position$]).pipe(
+  map(([entity, position]) => {
+    if (entity === null) return null
+
+    let closest: { node: EntityNode; dist: number } | null = null
+    for (const node of entity.nodes) {
+      const dist = position.sub(node.position.add(new Vec2(0.5))).len()
+
+      if (closest === null || dist < closest.dist) {
+        closest = { node, dist }
+      }
+    }
+    invariant(closest)
+    return { node: closest.node }
+  }),
+  distinctUntilChanged<Selected | null>(isEqual),
+)
+
 const gcache = new Map<GraphicsKey, Graphics>()
 
 function destroyGraphics(key: GraphicsKey) {
@@ -45,13 +70,6 @@ function createGraphics(key: GraphicsKey): Graphics {
 }
 
 export function initConnection(_args: InitArgs) {
-  const entity$ = combineLatest([connection$, entities$]).pipe(
-    map(([connection, entities]) =>
-      connection ? entities[connection.entityId] : null,
-    ),
-    distinctUntilChanged<Entity | null>(isEqual),
-  )
-
   entity$.subscribe((entity) => {
     if (entity === null) {
       destroyGraphics(GraphicsKey.Nodes)
@@ -66,24 +84,6 @@ export function initConnection(_args: InitArgs) {
       g.drawRect(x, y, 1, 1)
     }
   })
-
-  const selected$ = combineLatest([entity$, position$]).pipe(
-    map(([entity, position]) => {
-      if (entity === null) return null
-
-      let closest: { node: EntityNode; dist: number } | null = null
-      for (const node of entity.nodes) {
-        const dist = position.sub(node.position.add(new Vec2(0.5))).len()
-
-        if (closest === null || dist < closest.dist) {
-          closest = { node, dist }
-        }
-      }
-      invariant(closest)
-      return { node: closest.node }
-    }),
-    distinctUntilChanged<Selected | null>(isEqual),
-  )
 
   const belt$ = combineLatest([
     selected$,
