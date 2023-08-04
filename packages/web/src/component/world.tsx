@@ -9,47 +9,47 @@ import { Vec2 } from '../vec2.js'
 import { tickWorld } from '../tick.js'
 import { TICK_RATE } from '../const.js'
 
-function useResizeObserver(canvas: HTMLCanvasElement | null) {
-  useEffect(() => {
-    if (!canvas) return
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      viewport$.next(
-        new Vec2(entry.contentRect.width, entry.contentRect.height),
-      )
-    })
-    resizeObserver.observe(canvas)
-
-    return () => {
-      resizeObserver.disconnect()
-    }
-  }, [canvas])
-}
-
-function useInitCanvas(canvas: HTMLCanvasElement | null) {
-  useEffect(() => {
-    if (!canvas) return
-
-    const app = new Application({
-      resizeTo: canvas,
-      view: canvas,
-    })
-
-    app.stage.sortableChildren = true
-
-    const abortController = new AbortController()
-
-    init({
-      canvas,
-      app,
-      signal: abortController.signal,
-    })
-
-    return () => {
-      abortController.abort()
-    }
-  }, [canvas])
-}
+// function useResizeObserver(canvas: HTMLCanvasElement | null) {
+//   useEffect(() => {
+//     if (!canvas) return
+//
+//     const resizeObserver = new ResizeObserver(([entry]) => {
+//       viewport$.next(
+//         new Vec2(entry.contentRect.width, entry.contentRect.height),
+//       )
+//     })
+//     resizeObserver.observe(canvas)
+//
+//     return () => {
+//       resizeObserver.disconnect()
+//     }
+//   }, [canvas])
+// }
+//
+// function useInitCanvas(canvas: HTMLCanvasElement | null) {
+//   useEffect(() => {
+//     if (!canvas) return
+//
+//     const app = new Application({
+//       resizeTo: canvas,
+//       view: canvas,
+//     })
+//
+//     app.stage.sortableChildren = true
+//
+//     const abortController = new AbortController()
+//
+//     init({
+//       canvas,
+//       app,
+//       signal: abortController.signal,
+//     })
+//
+//     return () => {
+//       abortController.abort()
+//     }
+//   }, [canvas])
+// }
 
 function useNavigateListener() {
   const navigate = useNavigate()
@@ -74,8 +74,8 @@ function useTickWorld() {
 
 export function World() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
-  useResizeObserver(canvas)
-  useInitCanvas(canvas)
+  // useResizeObserver(canvas)
+  // useInitCanvas(canvas)
   useNavigateListener()
   useTickWorld()
   return (
