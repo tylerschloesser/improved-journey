@@ -1,4 +1,4 @@
-import { curry } from 'lodash-es'
+import { curry, flow } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import { dampen$, move$, pinch$, tap$, wheel$ } from './game-state.js'
 import { Vec2 } from './vec2.js'
@@ -70,7 +70,10 @@ const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
   const prev = cache.at(-1)
   cache.push(ev)
 
+  console.log('will we move?')
+
   if (prev && prev.pressure > 0 && ev.pressure > 0) {
+    console.log('yes')
     const dp = toVec2(ev).sub(toVec2(prev))
     move$.next(dp)
   }
@@ -167,6 +170,17 @@ function onWheel(ev: WheelEvent) {
   })
 }
 
+function hackPointerEvent(ev: PointerEvent) {
+  if (ev.pointerType === 'touch') {
+    // Safari iOS doesn't set pressure for some reason...
+    // It's readonly so we need to hack it...
+    Object.defineProperty(ev, 'pressure', {
+      value: 0.5,
+    })
+  }
+  return ev
+}
+
 export function initInput({
   canvas,
   signal,
@@ -178,9 +192,26 @@ export function initInput({
     pointerEventCache: new Map(),
   }
 
-  canvas.addEventListener('pointermove', onPointerMove(state), { signal })
-  canvas.addEventListener('pointerup', onPointerUp(state), { signal })
-  canvas.addEventListener('pointerdown', onPointerDown(state), { signal })
-  canvas.addEventListener('pointerleave', onPointerLeave(state), { signal })
+  canvas.addEventListener(
+    'pointermove',
+    flow(hackPointerEvent, onPointerMove(state)),
+    { signal },
+  )
+  canvas.addEventListener(
+    'pointerup',
+    flow(hackPointerEvent, onPointerUp(state)),
+    { signal },
+  )
+  canvas.addEventListener(
+    'pointerdown',
+    flow(hackPointerEvent, onPointerDown(state)),
+    { signal },
+  )
+  canvas.addEventListener(
+    'pointerleave',
+    flow(hackPointerEvent, onPointerLeave(state)),
+    { signal },
+  )
+
   canvas.addEventListener('wheel', onWheel, { signal, passive: false })
 }
