@@ -70,10 +70,7 @@ const onPointerMove = curry((state: PointerState, ev: PointerEvent) => {
   const prev = cache.at(-1)
   cache.push(ev)
 
-  console.log('will we move?')
-
   if (prev && prev.pressure > 0 && ev.pressure > 0) {
-    console.log('yes')
     const dp = toVec2(ev).sub(toVec2(prev))
     move$.next(dp)
   }

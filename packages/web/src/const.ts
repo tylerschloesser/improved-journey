@@ -30,3 +30,5 @@ export const BATTERY_DISCHARGE_RATE = new Rate(20, RateType.PerSecond) // energy
 export const BATTERY_CAPACITY = 1000 // energy
 
 export const SOLAR_PANEL_RATE = new Rate(1, RateType.PerSecond) // energy/second
+
+export const CHUNK_SIZE = 10
