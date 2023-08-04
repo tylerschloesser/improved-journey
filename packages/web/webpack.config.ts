@@ -68,6 +68,7 @@ const config: Configuration = {
     }),
   ],
   devServer: {
+    hot: false,
     watchFiles: ['./src/index.html'],
     historyApiFallback: {
       disableDotRule: true,
