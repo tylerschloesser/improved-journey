@@ -17,7 +17,7 @@ const [useConnection] = bind(
 
 const [useSelected] = bind(selected$)
 
-export function Connection() {
+function Nodes() {
   const connection = useConnection()
 
   const draw = useCallback(
@@ -35,4 +35,12 @@ export function Connection() {
   )
 
   return <Graphics draw={draw} />
+}
+
+export function Connection() {
+  return (
+    <>
+      <Nodes />
+    </>
+  )
 }
