@@ -106,6 +106,7 @@ export const pinch$ = new Subject<{
   zoom: number
 }>()
 
+// TODO this is roughly the same as wheel$ below
 pinch$.pipe(withLatestFrom(viewport$)).subscribe(([pinch, viewport]) => {
   const zoom = {
     prev: zoom$.value,
@@ -128,6 +129,7 @@ pinch$.pipe(withLatestFrom(viewport$)).subscribe(([pinch, viewport]) => {
   zoom$.next(zoom.next)
 })
 
+// TODO this is roughly the same as pinch$ above
 wheel$
   .pipe(withLatestFrom(viewport$))
   .subscribe(([{ deltaY, position }, viewport]) => {
