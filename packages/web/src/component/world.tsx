@@ -12,6 +12,7 @@ import { Vec2 } from '../vec2.js'
 import { Grid } from './grid.js'
 import { Entities } from './entities.js'
 import { Build } from '../pixi/build.js'
+import { Connection } from '../pixi/connection.js'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
@@ -134,6 +135,7 @@ export function World() {
               <Transform>
                 <Entities />
                 <Build />
+                <Connection />
               </Transform>
             </Suspense>
           </Subscribe>
