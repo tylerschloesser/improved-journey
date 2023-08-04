@@ -107,19 +107,25 @@ export const pinch$ = new Subject<{
 }>()
 
 pinch$.pipe(withLatestFrom(viewport$)).subscribe(([pinch, viewport]) => {
-  const zoom = zoom$.value
-  const nextZoom = clamp(zoom + pinch.zoom / 1_000, 0, 1)
+  const zoom = {
+    prev: zoom$.value,
+    next: clamp(zoom$.value + pinch.zoom / 1_000, 0, 1),
+  }
+
+  const scale = {
+    prev: zoomToCellSize(zoom.prev),
+    next: zoomToCellSize(zoom.next),
+  }
 
   const anchor = pinch.center.sub(viewport.div(2))
+
   const adjust = anchor
-    .div(zoomToCellSize(zoom))
-    .sub(anchor.div(zoomToCellSize(nextZoom)))
+    .div(scale.prev)
+    .sub(anchor.div(scale.next))
+    .add(pinch.drag.div(scale.next))
 
-  position$.next(
-    position$.value.add(adjust.add(pinch.drag.div(zoomToCellSize(nextZoom)))),
-  )
-
-  zoom$.next(nextZoom)
+  position$.next(position$.value.add(adjust))
+  zoom$.next(zoom.next)
 })
 
 wheel$
