@@ -20,9 +20,6 @@ export interface BaseEntity {
   position: Vec2
   size: Vec2
   color: string
-
-  // TODO move nodes to specific entities
-  nodes: EntityNode[]
 }
 
 export interface MinerEntity extends BaseEntity {

@@ -4,9 +4,13 @@ export type ChunkId = string
 export type NodeId = string
 export type CellId = string
 
-export interface Cell {
+export interface Node {
   entityId: EntityId
-  nodeIds: NodeId[]
+}
+
+export interface Cell {
+  entityId: EntityId | null
+  nodes: Node[]
 }
 
 export interface Chunk {

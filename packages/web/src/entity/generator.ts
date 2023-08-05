@@ -1,13 +1,11 @@
 import { Entity, EntityType, GeneratorEntity } from '../entity-types.js'
-import { buildNodes } from './build-nodes.js'
 
 export function newGenerator(
-  args: Omit<Entity, 'id' | 'type' | 'nodes'>,
+  args: Omit<Entity, 'id' | 'type'>,
 ): Omit<GeneratorEntity, 'id'> {
   return {
     ...args,
     type: EntityType.Generator,
-    nodes: buildNodes(args),
     fuel: null,
     burning: null,
   }

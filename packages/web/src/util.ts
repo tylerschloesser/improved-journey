@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { EntityId } from './entity-types.js'
-import { CellId, Chunk, ChunkId, World } from './types.js'
+import { Cell, CellId, Chunk, ChunkId, World } from './types.js'
 import { Vec2 } from './vec2.js'
 
 // https://www.geeksforgeeks.org/find-two-rectangles-overlap/#
@@ -42,15 +42,16 @@ export function generateChunk(id: ChunkId): Chunk {
   }
 }
 
-export function setEntityId({
-  position,
-  entityId,
-  chunks,
-}: {
-  position: Vec2
-  entityId: EntityId
-  chunks: World['chunks']
-}) {
+function updateCell(
+  {
+    position,
+    chunks,
+  }: {
+    position: Vec2
+    chunks: World['chunks']
+  },
+  callback: (cell: Cell | null) => Cell | null,
+): void {
   const scaled = position.div(CHUNK_SIZE).floor()
   const chunkId = toChunkId(scaled)
 
@@ -64,5 +65,54 @@ export function setEntityId({
   }
 
   invariant(index < chunk.cells.length)
-  chunk.cells[index] = { entityId, nodeIds: [] }
+
+  chunk.cells[index] = callback(chunk.cells[index])
+}
+
+export function setEntityId({
+  position,
+  entityId,
+  chunks,
+}: {
+  position: Vec2
+  entityId: EntityId
+  chunks: World['chunks']
+}) {
+  updateCell({ position, chunks }, (cell) => {
+    if (!cell) {
+      cell = { entityId: null, nodes: [] }
+    }
+    invariant(cell.entityId === null)
+    cell.entityId = entityId
+    return cell
+  })
+}
+
+export function setNodes({
+  nodes,
+  entityId,
+  chunks,
+}: {
+  nodes: Vec2[]
+  entityId: EntityId
+  chunks: World['chunks']
+}): void {
+  for (const position of nodes) {
+    updateCell({ position, chunks }, (cell) => {
+      if (!cell) {
+        cell = { entityId: null, nodes: [] }
+      }
+      const entityIds = new Set(cell.nodes.map((node) => node.entityId))
+      entityIds.add(entityId)
+
+      cell.nodes = Array.from(entityIds).map((entityId) => ({ entityId }))
+      return cell
+    })
+  }
+}
+
+export function cellIndexToPosition(chunk: Chunk, index: number) {
+  return chunkIdToPosition(chunk.id).add(
+    new Vec2(index % CHUNK_SIZE, Math.floor(index / CHUNK_SIZE)),
+  )
 }

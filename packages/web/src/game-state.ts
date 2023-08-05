@@ -13,14 +13,22 @@ import {
 } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
-import { Entity, EntityId } from './entity-types.js'
+import {
+  Entity,
+  EntityId,
+  EntityType,
+  GeneratorEntity,
+  MinerEntity,
+} from './entity-types.js'
 import { generateWorld } from './generate-world.js'
 import { Cell, CellId, World } from './types.js'
 import {
+  cellIndexToPosition,
   chunkIdToPosition,
   CHUNK_SIZE,
   intersects,
   setEntityId,
+  setNodes,
   toCellId,
 } from './util.js'
 import { Vec2 } from './vec2.js'
@@ -40,6 +48,20 @@ export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 export const tap$ = new Subject<Vec2>()
 
 export const world$ = new BehaviorSubject<World>(generateWorld())
+
+function getNodes(entity: Omit<Entity, 'id'>) {
+  const { size } = entity
+  const nodes: Vec2[] = []
+  for (let x = 0; x < size.x; x++) {
+    nodes.push(new Vec2(x, -1))
+    nodes.push(new Vec2(x, size.y))
+  }
+  for (let y = 0; y < size.y; y++) {
+    nodes.push(new Vec2(-1, y))
+    nodes.push(new Vec2(size.x, y))
+  }
+  return nodes.map((v) => entity.position.add(v))
+}
 
 export function addEntities(
   world: World,
@@ -63,6 +85,11 @@ export function addEntities(
         })
       }
     }
+
+    if ([EntityType.Miner, EntityType.Generator].includes(entity.type)) {
+      const nodes = getNodes(entity)
+      setNodes({ nodes, entityId, chunks: world.chunks })
+    }
   }
 }
 
@@ -78,15 +105,12 @@ export const cells$ = chunks$.pipe(
     const cells = new Map<CellId, Cell>()
 
     for (const chunk of Object.values(chunks)) {
-      const position = chunkIdToPosition(chunk.id)
       invariant(chunk.cells.length === CHUNK_SIZE ** 2)
 
       for (let i = 0; i < chunk.cells.length; i++) {
         const cell = chunk.cells[i]
         if (cell) {
-          const cellId = toCellId(
-            position.add(new Vec2(i % CHUNK_SIZE, Math.floor(i / CHUNK_SIZE))),
-          )
+          const cellId = toCellId(cellIndexToPosition(chunk, i))
           cells.set(cellId, cell)
         }
       }
