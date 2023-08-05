@@ -9,5 +9,6 @@ export function newGenerator(
     type: EntityType.Generator,
     nodes: buildNodes(args),
     fuel: null,
+    burning: null,
   }
 }

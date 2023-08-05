@@ -24,9 +24,10 @@ export function tickWorld() {
       case EntityType.Miner:
         consumption += 1
         break
-      case EntityType.Generator:
+      case EntityType.Generator: {
         production += 2
         break
+      }
       case EntityType.SolarPanel:
         production += SOLAR_PANEL_RATE.perTick()
         break

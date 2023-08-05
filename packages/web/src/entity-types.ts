@@ -40,6 +40,7 @@ export interface GeneratorEntity extends BaseEntity {
   type: EntityType.Generator
 
   fuel: { type: ItemType; count: number } | null
+  burning: { type: ItemType; progress: number } | null
 }
 
 export interface SolarPanelEntity extends BaseEntity {
