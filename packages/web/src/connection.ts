@@ -10,6 +10,7 @@ import {
   entities$,
   position$,
 } from './game-state.js'
+import { Cell } from './types.js'
 import { cellIndexToPosition, toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -49,6 +50,12 @@ export const nodes$ = combineLatest([entity$, chunks$]).pipe(
   }),
 )
 
+export const target$ = combineLatest([entity$, chunks$]).pipe(
+  map(([entity, chunks]) => {
+    if (entity === null) return null
+  }),
+)
+
 export const selected$ = combineLatest([nodes$, position$]).pipe(
   map(([nodes, position]) => {
     if (nodes === null) return null
@@ -68,6 +75,7 @@ export const selected$ = combineLatest([nodes$, position$]).pipe(
 )
 
 export const buildConnection$ = combineLatest([
+  entity$,
   selected$,
   position$.pipe(
     map((position) => position.floor()),
@@ -75,8 +83,8 @@ export const buildConnection$ = combineLatest([
   ),
   cells$,
 ]).pipe(
-  map(([selected, position, cells]) => {
-    if (selected === null) return null
+  map(([entity, selected, position, cells]) => {
+    if (entity === null || selected === null) return null
 
     let dp = position.sub(selected.node)
 
@@ -95,6 +103,7 @@ export const buildConnection$ = combineLatest([
       cells: [],
       valid: true,
     }
+
     while (true) {
       const p = selected.node.add(dp)
       build.cells.push({
@@ -104,12 +113,26 @@ export const buildConnection$ = combineLatest([
           size: new Vec2(1),
         }),
       })
+
       const valid = !cells.get(toCellId(p))?.entityId
       build.valid &&= valid
       if (dp.len() === 0) {
         break
       }
       dp = dp.sub(norm)
+    }
+
+    if (build.valid) {
+      // ugly, last because we iterate backwards above
+      const last = build.cells[0]
+      const target = cells.get(toCellId(last.entity.position))
+      build.valid &&= !!target
+      if (target) {
+        // for now, only allow to connect to node for other entities
+        build.valid &&=
+          target.nodes.length > 0 &&
+          !target.nodes.find((node) => node.entityId === entity.id)
+      }
     }
 
     return build
