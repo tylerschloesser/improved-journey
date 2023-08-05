@@ -6,7 +6,7 @@ import { FocusMode, entities$, focus$ } from '../game-state.js'
 import { map } from 'rxjs'
 import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
-import { EntityId } from '../entity-types.js'
+import { EntityId, EntityType } from '../entity-types.js'
 import { BackButton } from './back-button.js'
 
 const [useEntity] = bind((id: EntityId) =>
@@ -23,19 +23,31 @@ export function Entity() {
     focus$.next({ entityId: entity.id, mode: FocusMode.Entity })
   }, [entityId])
 
+  const buttons: JSX.Element[] = []
+  buttons.push(<BackButton className={styles.button} />)
+
+  if ([EntityType.Miner, EntityType.Generator].includes(entity.type)) {
+    buttons.push(
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          navigate('connection')
+        }}
+      >
+        Add Output
+      </button>,
+    )
+  }
+
   return (
     <div className={styles.container}>
       <pre className={styles.json}>{JSON.stringify(entity, null, 2)}</pre>
       <div className={styles.controls}>
-        <BackButton className={styles.button} />
-        <button
-          className={styles.button}
-          onPointerUp={() => {
-            navigate('connection')
-          }}
-        >
-          Add Output
-        </button>
+        {buttons
+          .map((button) => () => button)
+          .map((Wrapper, i) => (
+            <Wrapper key={i} />
+          ))}
       </div>
     </div>
   )
