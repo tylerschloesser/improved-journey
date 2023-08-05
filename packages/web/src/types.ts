@@ -3,14 +3,14 @@ import { Entity, EntityId } from './entity-types.js'
 export type ChunkId = string
 export type NodeId = string
 
-interface Tile {
+interface Cell {
   entityId: EntityId
   nodeIds: NodeId[]
 }
 
 export interface Chunk {
   id: ChunkId
-  tiles: (Tile | null)[]
+  cells: (Cell | null)[]
 }
 
 export interface World {

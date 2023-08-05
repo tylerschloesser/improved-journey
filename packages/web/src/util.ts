@@ -39,7 +39,7 @@ export function chunkIdToPosition(chunkId: ChunkId): Vec2 {
 export function generateChunk(id: ChunkId): Chunk {
   return {
     id,
-    tiles: new Array(CHUNK_SIZE ** 2).fill(null),
+    cells: new Array(CHUNK_SIZE ** 2).fill(null),
   }
 }
 
@@ -64,6 +64,6 @@ export function setEntityId({
     chunk = chunks[chunkId] = generateChunk(chunkId)
   }
 
-  invariant(index < chunk.tiles.length)
-  chunk.tiles[index] = { entityId, nodeIds: [] }
+  invariant(index < chunk.cells.length)
+  chunk.cells[index] = { entityId, nodeIds: [] }
 }

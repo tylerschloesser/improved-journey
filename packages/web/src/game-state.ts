@@ -81,10 +81,10 @@ export const occupiedCellIds$ = chunks$.pipe(
 
     for (const chunk of Object.values(chunks)) {
       const position = chunkIdToPosition(chunk.id)
-      invariant(chunk.tiles.length === CHUNK_SIZE ** 2)
+      invariant(chunk.cells.length === CHUNK_SIZE ** 2)
 
-      for (let i = 0; i < chunk.tiles.length; i++) {
-        if (chunk.tiles[i]?.entityId) {
+      for (let i = 0; i < chunk.cells.length; i++) {
+        if (chunk.cells[i]?.entityId) {
           const cellId = toCellId(
             position.add(new Vec2(i % CHUNK_SIZE, Math.floor(i / CHUNK_SIZE))),
           )
