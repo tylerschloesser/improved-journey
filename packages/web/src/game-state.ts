@@ -15,7 +15,7 @@ import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
 import { Entity, EntityId } from './entity-types.js'
 import { generateWorld } from './generate-world.js'
-import { CellId, World } from './types.js'
+import { Cell, CellId, World } from './types.js'
 import {
   chunkIdToPosition,
   CHUNK_SIZE,
@@ -73,25 +73,26 @@ export const chunks$ = world$.pipe(
   distinctUntilChanged<World['chunks']>(isEqual),
 )
 
-export const occupiedCellIds$ = chunks$.pipe(
+export const cells$ = chunks$.pipe(
   map((chunks) => {
-    const occupiedCellIds = new Set<CellId>()
+    const cells = new Map<CellId, Cell>()
 
     for (const chunk of Object.values(chunks)) {
       const position = chunkIdToPosition(chunk.id)
       invariant(chunk.cells.length === CHUNK_SIZE ** 2)
 
       for (let i = 0; i < chunk.cells.length; i++) {
-        if (chunk.cells[i]?.entityId) {
+        const cell = chunk.cells[i]
+        if (cell) {
           const cellId = toCellId(
             position.add(new Vec2(i % CHUNK_SIZE, Math.floor(i / CHUNK_SIZE))),
           )
-          occupiedCellIds.add(cellId)
+          cells.set(cellId, cell)
         }
       }
     }
 
-    return occupiedCellIds
+    return cells
   }),
 )
 

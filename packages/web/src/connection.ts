@@ -3,12 +3,7 @@ import { combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { newBelt } from './belt.js'
 import { Entity, EntityNode } from './entity-types.js'
-import {
-  connection$,
-  entities$,
-  occupiedCellIds$,
-  position$,
-} from './game-state.js'
+import { cells$, connection$, entities$, position$ } from './game-state.js'
 import { toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -47,9 +42,9 @@ export const buildConnection$ = combineLatest([
     map((position) => position.floor()),
     distinctUntilChanged<Vec2>(isEqual),
   ),
-  occupiedCellIds$,
+  cells$,
 ]).pipe(
-  map(([selected, position, occupiedCellIds]) => {
+  map(([selected, position, cells]) => {
     if (selected === null) return null
 
     let dp = position.sub(selected.node.position)
@@ -62,16 +57,20 @@ export const buildConnection$ = combineLatest([
 
     const norm = dp.norm()
 
-    const cells: { entity: Omit<Entity, 'id'>; valid: boolean }[] = []
+    const build: {
+      cells: { entity: Omit<Entity, 'id'>; valid: boolean }[]
+    } = {
+      cells: [],
+    }
     while (true) {
       const p = selected.node.position.add(dp)
-      cells.push({
+      build.cells.push({
         entity: newBelt({
           color: 'yellow',
           position: p,
           size: new Vec2(1),
         }),
-        valid: !occupiedCellIds.has(toCellId(p)),
+        valid: !cells.get(toCellId(p))?.entityId,
       })
       if (dp.len() === 0) {
         break
@@ -80,8 +79,8 @@ export const buildConnection$ = combineLatest([
     }
 
     return {
-      valid: cells.every((cell) => cell.valid),
-      cells,
+      ...build,
+      valid: build.cells.every((cell) => cell.valid),
     }
   }),
 )

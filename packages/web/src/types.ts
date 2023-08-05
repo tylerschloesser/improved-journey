@@ -4,7 +4,7 @@ export type ChunkId = string
 export type NodeId = string
 export type CellId = string
 
-interface Cell {
+export interface Cell {
   entityId: EntityId
   nodeIds: NodeId[]
 }
