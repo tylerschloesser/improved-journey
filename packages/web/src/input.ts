@@ -80,6 +80,13 @@ function isTap(cache: PointerEvent[], ev: PointerEvent) {
   invariant(cache.length > 0)
   const first = cache.at(0)
 
+  if (first?.type === 'pointermove') {
+    // this can happen when we start dragging,
+    // move the mouse off the browser window,
+    // then move it back.
+    return
+  }
+
   invariant(first?.type === 'pointerdown')
   if (cache.length === 1) {
     return true
