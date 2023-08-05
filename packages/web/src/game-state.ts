@@ -1,8 +1,9 @@
-import { clamp } from 'lodash-es'
+import { clamp, isEqual } from 'lodash-es'
 import { Container } from 'pixi.js'
 import {
   BehaviorSubject,
   combineLatest,
+  distinctUntilChanged,
   map,
   merge,
   skip,
@@ -60,6 +61,11 @@ export function addEntities(
 }
 
 export const entities$ = world$.pipe(map((world) => world.entities))
+
+export const chunks$ = world$.pipe(
+  map((world) => world.chunks),
+  distinctUntilChanged(isEqual),
+)
 
 export type CellId = string
 
