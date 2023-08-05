@@ -10,6 +10,7 @@ import { Subscribe } from '@react-rxjs/core'
 import { Connection } from './component/connection.js'
 import { BuildEntity } from './component/build-entity.js'
 import { Build } from './component/build.js'
+import { Debug } from './component/debug.js'
 
 const container = document.getElementById('root')
 invariant(container)
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <WorldControls />,
+      },
+      {
+        path: 'debug',
+        element: <Debug />,
       },
       {
         path: 'build',
