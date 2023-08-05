@@ -112,6 +112,7 @@ export function setNodes({
 }
 
 export function cellIndexToPosition(chunk: Chunk, index: number) {
+  // TODO could memoize chunkIdToPosition to be faster
   return chunkIdToPosition(chunk.id).add(
     new Vec2(index % CHUNK_SIZE, Math.floor(index / CHUNK_SIZE)),
   )
