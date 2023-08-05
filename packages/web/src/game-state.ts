@@ -16,7 +16,13 @@ import { animateVec2 } from './animate.js'
 import { Entity, EntityId } from './entity-types.js'
 import { generateWorld } from './generate-world.js'
 import { World } from './types.js'
-import { intersects, setEntityId, toCellId } from './util.js'
+import {
+  chunkIdToPosition,
+  CHUNK_SIZE,
+  intersects,
+  setEntityId,
+  toCellId,
+} from './util.js'
 import { Vec2 } from './vec2.js'
 
 export const build$ = new BehaviorSubject<null | {
@@ -64,21 +70,25 @@ export const entities$ = world$.pipe(map((world) => world.entities))
 
 export const chunks$ = world$.pipe(
   map((world) => world.chunks),
-  distinctUntilChanged(isEqual),
+  distinctUntilChanged<World['chunks']>(isEqual),
 )
 
 export type CellId = string
 
-// TODO refactor this to use world.chunks
-export const occupiedCellIds$ = entities$.pipe(
-  map((entities) => {
+export const occupiedCellIds$ = chunks$.pipe(
+  map((chunks) => {
     const occupiedCellIds = new Set<CellId>()
 
-    for (const entity of Object.values(entities)) {
-      for (let x = 0; x < entity.size.x; x++) {
-        for (let y = 0; y < entity.size.y; y++) {
-          const position = entity.position.add(new Vec2(x, y))
-          occupiedCellIds.add(toCellId(position))
+    for (const chunk of Object.values(chunks)) {
+      const position = chunkIdToPosition(chunk.id)
+      invariant(chunk.tiles.length === CHUNK_SIZE ** 2)
+
+      for (let i = 0; i < chunk.tiles.length; i++) {
+        if (chunk.tiles[i]?.entityId) {
+          const cellId = toCellId(
+            position.add(new Vec2(i % CHUNK_SIZE, Math.floor(i / CHUNK_SIZE))),
+          )
+          occupiedCellIds.add(cellId)
         }
       }
     }
