@@ -21,6 +21,12 @@ function Nodes() {
         const { x, y } = node
         g.drawRect(x, y, 1, 1)
       }
+
+      g.beginFill('hsla(240, 50%, 50%, .2)')
+      for (const node of nodes.target) {
+        const { x, y } = node
+        g.drawRect(x, y, 1, 1)
+      }
     },
     [nodes],
   )
