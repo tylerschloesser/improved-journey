@@ -1,0 +1,22 @@
+@import 'core';
+
+.container {
+  @include container-default;
+
+  height: 50dvh;
+  width: 100dvw;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+  @include button-default;
+}
+
+.controls {
+}
+
+.main {
+  flex: 1;
+}
