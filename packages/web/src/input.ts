@@ -215,4 +215,16 @@ export function initInput({
   )
 
   canvas.addEventListener('wheel', onWheel, { signal, passive: false })
+
+  let queue: PointerEvent[] = []
+
+  canvas.addEventListener('pointermove', (ev) => {
+    if (queue.length === 0) {
+      queueMicrotask(() => {
+        console.log(queue)
+        queue = []
+      })
+    }
+    queue.push(ev)
+  })
 }

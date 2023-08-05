@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash-es'
-import { combineLatest, distinctUntilChanged, map } from 'rxjs'
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { newBelt } from './belt.js'
 import { Entity } from './entity-types.js'
@@ -67,7 +67,12 @@ export const selected$ = combineLatest([nodes$, position$]).pipe(
   distinctUntilChanged<Selected | null>(isEqual),
 )
 
-export const buildConnection$ = combineLatest([
+export const buildConnection$ = new BehaviorSubject<{
+  cells: { entity: Omit<Entity, 'id'> }[]
+  valid: boolean
+} | null>(null)
+
+combineLatest([
   entity$,
   selected$,
   position$.pipe(
@@ -75,59 +80,57 @@ export const buildConnection$ = combineLatest([
     distinctUntilChanged<Vec2>(isEqual),
   ),
   cells$,
-]).pipe(
-  map(([entity, selected, position, cells]) => {
-    if (entity === null || selected === null) return null
+]).subscribe(([entity, selected, position, cells]) => {
+  if (entity === null || selected === null) return null
 
-    let dp = position.sub(selected.node)
+  let dp = position.sub(selected.node)
 
-    if (Math.abs(dp.x) >= Math.abs(dp.y)) {
-      dp = new Vec2(dp.x, 0)
-    } else {
-      dp = new Vec2(0, dp.y)
+  if (Math.abs(dp.x) >= Math.abs(dp.y)) {
+    dp = new Vec2(dp.x, 0)
+  } else {
+    dp = new Vec2(0, dp.y)
+  }
+
+  const norm = dp.norm()
+
+  const build: {
+    cells: { entity: Omit<Entity, 'id'> }[]
+    valid: boolean
+  } = {
+    cells: [],
+    valid: true,
+  }
+
+  while (true) {
+    const p = selected.node.add(dp)
+    build.cells.push({
+      entity: newBelt({
+        color: 'yellow',
+        position: p,
+        size: new Vec2(1),
+      }),
+    })
+
+    const valid = !cells.get(toCellId(p))?.entityId
+    build.valid &&= valid
+    if (dp.len() === 0) {
+      break
     }
+    dp = dp.sub(norm)
+  }
 
-    const norm = dp.norm()
-
-    const build: {
-      cells: { entity: Omit<Entity, 'id'> }[]
-      valid: boolean
-    } = {
-      cells: [],
-      valid: true,
+  if (build.valid) {
+    // ugly, last because we iterate backwards above
+    const last = build.cells[0]
+    const target = cells.get(toCellId(last.entity.position))
+    build.valid &&= !!target
+    if (target) {
+      // for now, only allow to connect to node for other entities
+      build.valid &&=
+        target.nodes.length > 0 &&
+        !target.nodes.find((node) => node.entityId === entity.id)
     }
+  }
 
-    while (true) {
-      const p = selected.node.add(dp)
-      build.cells.push({
-        entity: newBelt({
-          color: 'yellow',
-          position: p,
-          size: new Vec2(1),
-        }),
-      })
-
-      const valid = !cells.get(toCellId(p))?.entityId
-      build.valid &&= valid
-      if (dp.len() === 0) {
-        break
-      }
-      dp = dp.sub(norm)
-    }
-
-    if (build.valid) {
-      // ugly, last because we iterate backwards above
-      const last = build.cells[0]
-      const target = cells.get(toCellId(last.entity.position))
-      build.valid &&= !!target
-      if (target) {
-        // for now, only allow to connect to node for other entities
-        build.valid &&=
-          target.nodes.length > 0 &&
-          !target.nodes.find((node) => node.entityId === entity.id)
-      }
-    }
-
-    return build
-  }),
-)
+  buildConnection$.next(build)
+})

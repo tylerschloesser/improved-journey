@@ -8,14 +8,19 @@ import { useEntityId } from './use-entity-id.js'
 import { cloneDeep } from 'lodash-es'
 import { buildConnection$ } from '../connection.js'
 import { BackButton } from './back-button.js'
+import { distinctUntilChanged, map } from 'rxjs'
 
-const [useBuildConnection] = bind(buildConnection$)
+const [useValid] = bind(
+  buildConnection$.pipe(
+    map((build) => !!build?.valid),
+    distinctUntilChanged(),
+  ),
+)
 
 export function Connection() {
   const entityId = useEntityId()
-  const build = useBuildConnection()
 
-  const valid = build?.valid ?? false
+  const valid = useValid()
 
   useEffect(() => {
     connection$.next({ entityId })
@@ -32,6 +37,7 @@ export function Connection() {
         disabled={!valid}
         onPointerUp={() => {
           if (!valid) return
+          const build = buildConnection$.value
           invariant(build)
 
           const world = cloneDeep(world$.value)
