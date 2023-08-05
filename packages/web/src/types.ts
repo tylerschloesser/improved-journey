@@ -2,6 +2,7 @@ import { Entity, EntityId } from './entity-types.js'
 
 export type ChunkId = string
 export type NodeId = string
+export type CellId = string
 
 interface Cell {
   entityId: EntityId
