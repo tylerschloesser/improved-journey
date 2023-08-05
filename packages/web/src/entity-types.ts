@@ -38,6 +38,8 @@ export interface BeltEntity extends BaseEntity {
 
 export interface GeneratorEntity extends BaseEntity {
   type: EntityType.Generator
+
+  fuel: { type: ItemType; count: number } | null
 }
 
 export interface SolarPanelEntity extends BaseEntity {
