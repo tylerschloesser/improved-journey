@@ -1,13 +1,16 @@
 import { bind } from '@react-rxjs/core'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FocusMode, entities$, focus$ } from '../game-state.js'
+import { FocusMode, entities$, focus$, world$ } from '../game-state.js'
 
 import { map } from 'rxjs'
 import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
 import { EntityId, EntityType } from '../entity-types.js'
 import { BackButton } from './back-button.js'
+import { cloneDeep } from 'lodash-es'
+import invariant from 'tiny-invariant'
+import { ItemType } from '../item-types.js'
 
 const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),
@@ -44,7 +47,12 @@ export function Entity() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          console.log('todo')
+          const world = cloneDeep(world$.value)
+          const generator = world.entities[entityId]
+          invariant(generator.type === EntityType.Generator)
+
+          generator.burning = { type: ItemType.Coal, progress: 0 }
+          world$.next(world)
         }}
       >
         Test Burn Coal
