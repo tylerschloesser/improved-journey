@@ -58,9 +58,11 @@ export const buildConnection$ = combineLatest([
     const norm = dp.norm()
 
     const build: {
-      cells: { entity: Omit<Entity, 'id'>; valid: boolean }[]
+      cells: { entity: Omit<Entity, 'id'> }[]
+      valid: boolean
     } = {
       cells: [],
+      valid: true,
     }
     while (true) {
       const p = selected.node.position.add(dp)
@@ -70,17 +72,15 @@ export const buildConnection$ = combineLatest([
           position: p,
           size: new Vec2(1),
         }),
-        valid: !cells.get(toCellId(p))?.entityId,
       })
+      const valid = !cells.get(toCellId(p))?.entityId
+      build.valid &&= valid
       if (dp.len() === 0) {
         break
       }
       dp = dp.sub(norm)
     }
 
-    return {
-      ...build,
-      valid: build.cells.every((cell) => cell.valid),
-    }
+    return build
   }),
 )
