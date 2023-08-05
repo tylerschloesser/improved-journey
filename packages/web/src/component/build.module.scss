@@ -5,8 +5,22 @@
 
   width: 100dvw;
   height: 50dvh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  flex: 1;
 }
 
 .button {
   @include button-default;
+}
+
+.controls {
+}
+
+.divider {
+  @include divider-default;
 }

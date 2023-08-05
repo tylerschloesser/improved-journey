@@ -25,3 +25,8 @@
     background: var(--background-button-disabled);
   }
 }
+
+@mixin divider-default {
+  margin: var(--padding-md) 0;
+  border-top: var(--border-divider-default);
+}

@@ -9,7 +9,7 @@ export function Build() {
   const navigate = useNavigate()
   return (
     <div className={styles.container}>
-      <div>
+      <div className={styles.list}>
         {Object.values(EntityType).map((type) => (
           <button
             className={styles.button}
@@ -22,7 +22,10 @@ export function Build() {
           </button>
         ))}
       </div>
-      <BackButton className={styles.button} />
+      <div className={styles.divider} />
+      <div className={styles.controls}>
+        <BackButton className={styles.button} />
+      </div>
     </div>
   )
 }
