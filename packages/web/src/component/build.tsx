@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { EntityType } from '../entity-types.js'
+import { BackButton } from './back-button.js'
 
 import styles from './build.module.scss'
 
@@ -21,14 +22,7 @@ export function Build() {
           </button>
         ))}
       </div>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('..')
-        }}
-      >
-        Back
-      </button>
+      <BackButton className={styles.button} />
     </div>
   )
 }
