@@ -1,3 +1,5 @@
+import invariant from 'tiny-invariant'
+
 function mod(n: number, m: number) {
   return ((n % m) + m) % m
 }
@@ -7,6 +9,9 @@ export class Vec2 {
   readonly y: number
 
   constructor(x: number = 0, y?: number) {
+    invariant(!Number.isNaN(x))
+    invariant(!Number.isNaN(y))
+
     this.x = x
     this.y = y ?? x
   }
@@ -39,6 +44,9 @@ export class Vec2 {
 
   norm(): Vec2 {
     const l = this.len()
+    if (l === 0) {
+      return new Vec2(0)
+    }
     return new Vec2(this.x / l, this.y / l)
   }
 
