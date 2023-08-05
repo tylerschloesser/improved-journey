@@ -5,7 +5,6 @@ import { World } from './component/world.js'
 import './index.scss'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { WorldControls } from './component/world-controls.js'
-import { Cursor } from './component/cursor.js'
 import { Entity } from './component/entity.js'
 import { Subscribe } from '@react-rxjs/core'
 import { Connection } from './component/connection.js'
@@ -28,10 +27,6 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <WorldControls />,
-      },
-      {
-        path: 'cursor',
-        element: <Cursor />,
       },
       {
         path: 'build',
