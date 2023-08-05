@@ -6,12 +6,20 @@ export interface AnimateVec2Args {
   to: Vec2
   duration: number
   callback(v: Vec2, elapsed: number): void
+  timingFn?: TimingFn
 }
 
+export type TimingFn = (x: number) => number
+
 // https://css-tricks.com/emulating-css-timing-functions-javascript/
-function easeIn(k: number) {
+export const easeIn: TimingFn = (k: number) => {
   invariant(k >= 0 && k <= 1)
   return 1 - Math.pow(1 - k, 1.675)
+}
+
+// https://easings.net/#easeOutCirc
+export const easeOutCirc: TimingFn = (x: number) => {
+  return Math.sqrt(1 - Math.pow(x - 1, 2))
 }
 
 export function animateVec2({
@@ -19,6 +27,7 @@ export function animateVec2({
   to,
   duration,
   callback,
+  timingFn = easeOutCirc,
 }: AnimateVec2Args): void {
   const d = to.sub(from)
   const start = window.performance.now()
@@ -34,7 +43,7 @@ export function animateVec2({
 
     const k = elapsed / duration
 
-    callback(from.add(d.mul(easeIn(k))), now - last)
+    callback(from.add(d.mul(timingFn(k))), now - last)
 
     last = now
 
