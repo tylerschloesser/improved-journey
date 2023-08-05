@@ -297,7 +297,7 @@ merge(
 export const dampen$ = new Subject<{ v: Vec2 }>()
 
 dampen$.pipe(withLatestFrom(cellSize$)).subscribe(([{ v }, cellSize]) => {
-  const duration = 200
+  const duration = 500
 
   const from = v.mul(-1).div(cellSize)
 
