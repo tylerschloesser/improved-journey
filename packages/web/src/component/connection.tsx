@@ -7,6 +7,7 @@ import styles from './connection.module.scss'
 import { useEntityId } from './use-entity-id.js'
 import { cloneDeep } from 'lodash-es'
 import { buildConnection$ } from '../connection.js'
+import { BackButton } from './back-button.js'
 
 const [useBuildConnection] = bind(buildConnection$)
 
@@ -25,6 +26,7 @@ export function Connection() {
 
   return (
     <div className={styles.container}>
+      <BackButton className={styles.button} />
       <button
         className={styles.button}
         disabled={!valid}
