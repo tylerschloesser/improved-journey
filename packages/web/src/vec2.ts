@@ -5,6 +5,7 @@ function mod(n: number, m: number) {
 }
 
 export class Vec2 {
+  readonly __type = 'Vec2'
   readonly x: number
   readonly y: number
 

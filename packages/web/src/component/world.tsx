@@ -5,14 +5,20 @@ import { Container, Stage } from '@pixi/react'
 import { bind, Subscribe } from '@react-rxjs/core'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { TICK_RATE } from '../const.js'
-import { cellSize$, navigate$, position$, viewport$ } from '../game-state.js'
+import {
+  cellSize$,
+  navigate$,
+  position$,
+  viewport$,
+  world$,
+} from '../game-state.js'
 import { init } from '../init.js'
-import { tickWorld } from '../tick.js'
 import { Vec2 } from '../vec2.js'
 import { Grid } from './grid.js'
 import { Entities } from './entities.js'
 import { Build } from '../pixi/build.js'
 import { Connection } from '../pixi/connection.js'
+import { worker } from '../worker.js'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
@@ -70,6 +76,11 @@ function useNavigateListener() {
 
 function useTickWorld() {
   useEffect(() => {
+    const tickWorld = () => {
+      worker.postMessage({
+        world: world$.value,
+      })
+    }
     const interval = window.setInterval(tickWorld, 1000 / TICK_RATE)
     return () => {
       window.clearInterval(interval)

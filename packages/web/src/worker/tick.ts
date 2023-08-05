@@ -1,4 +1,4 @@
-import { cloneDeep, times } from 'lodash-es'
+import { times } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import {
   BATTERY_CAPACITY,
@@ -9,13 +9,13 @@ import {
   MINE_RATE,
   SOLAR_PANEL_RATE,
   TICK_RATE,
-} from './const.js'
-import { BatteryEntity, EntityType } from './entity-types.js'
-import { world$ } from './game-state.js'
-import { ItemType } from './item-types.js'
+} from '../const.js'
+import { BatteryEntity, EntityType } from '../entity-types.js'
+import { ItemType } from '../item-types.js'
+import { World } from '../types.js'
 
-export function tickWorld() {
-  const world = cloneDeep(world$.value)
+export function tickWorld(world: World) {
+  // const world = cloneDeep(world$.value)
 
   let consumption = 0
   let production = 0
@@ -124,5 +124,7 @@ export function tickWorld() {
   }
 
   world.tick += 1
-  world$.next(world)
+  // world$.next(world)
+
+  return world
 }

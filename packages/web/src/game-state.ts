@@ -4,6 +4,7 @@ import {
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
+  fromEvent,
   map,
   merge,
   skip,
@@ -13,25 +14,20 @@ import {
 } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
-import {
-  Entity,
-  EntityId,
-  EntityType,
-  GeneratorEntity,
-  MinerEntity,
-} from './entity-types.js'
+import { Entity, EntityId, EntityType } from './entity-types.js'
 import { generateWorld } from './generate-world.js'
 import { Cell, CellId, World } from './types.js'
 import {
   cellIndexToPosition,
-  chunkIdToPosition,
   CHUNK_SIZE,
+  fixWorld,
   intersects,
   setEntityId,
   setNodes,
   toCellId,
 } from './util.js'
 import { Vec2 } from './vec2.js'
+import { worker } from './worker.js'
 
 export const build$ = new BehaviorSubject<null | {
   entity: Omit<Entity, 'id'>
@@ -48,6 +44,13 @@ export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 export const tap$ = new Subject<Vec2>()
 
 export const world$ = new BehaviorSubject<World>(generateWorld())
+
+fromEvent<MessageEvent<{ world: World }>>(worker, 'message').subscribe(
+  (message) => {
+    fixWorld(message.data.world)
+    world$.next(message.data.world)
+  },
+)
 
 function getNodes(entity: Omit<Entity, 'id'>) {
   const { size } = entity
