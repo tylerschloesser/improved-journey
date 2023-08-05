@@ -58,5 +58,5 @@ export function setEntityId({
   }
 
   invariant(index < chunk.tiles.length)
-  chunk.tiles[index] = entityId
+  chunk.tiles[index] = { entityId, nodeIds: [] }
 }

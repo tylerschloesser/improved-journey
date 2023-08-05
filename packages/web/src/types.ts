@@ -1,10 +1,16 @@
 import { Entity, EntityId } from './entity-types.js'
 
 export type ChunkId = string
+export type NodeId = string
+
+interface Tile {
+  entityId: EntityId
+  nodeIds: NodeId[]
+}
 
 export interface Chunk {
   id: ChunkId
-  tiles: (EntityId | null)[]
+  tiles: (Tile | null)[]
 }
 
 export interface World {
