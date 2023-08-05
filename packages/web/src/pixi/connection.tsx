@@ -17,7 +17,7 @@ function Nodes() {
       if (nodes === null) return
 
       g.beginFill('hsla(180, 50%, 50%, .5)')
-      for (const node of nodes) {
+      for (const node of nodes.source) {
         const { x, y } = node
         g.drawRect(x, y, 1, 1)
       }

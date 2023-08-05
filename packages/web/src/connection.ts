@@ -27,12 +27,21 @@ const entity$ = combineLatest([connection$, entities$]).pipe(
 export const nodes$ = combineLatest([entity$, chunks$]).pipe(
   map(([entity, chunks]) => {
     if (entity === null) return null
-    const nodes: Vec2[] = []
+    const nodes: {
+      source: Vec2[]
+      target: Vec2[]
+    } = {
+      source: [],
+      target: [],
+    }
     for (const chunk of Object.values(chunks)) {
       for (let i = 0; i < chunk.cells.length; i++) {
         const cell = chunk.cells[i]
-        if (cell?.nodes.find((node) => node.entityId === entity.id)) {
-          nodes.push(cellIndexToPosition(chunk, i))
+        if (!cell) continue
+        if (cell.nodes.find((node) => node.entityId === entity.id)) {
+          nodes.source.push(cellIndexToPosition(chunk, i))
+        } else if (cell.nodes.length > 0) {
+          nodes.target.push(cellIndexToPosition(chunk, i))
         }
       }
     }
@@ -45,7 +54,7 @@ export const selected$ = combineLatest([nodes$, position$]).pipe(
     if (nodes === null) return null
 
     let closest: { node: Vec2; dist: number } | null = null
-    for (const node of nodes) {
+    for (const node of nodes.source) {
       const dist = position.sub(node.add(new Vec2(0.5))).len()
 
       if (closest === null || dist < closest.dist) {
