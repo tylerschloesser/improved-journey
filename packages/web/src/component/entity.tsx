@@ -39,6 +39,19 @@ export function Entity() {
     )
   }
 
+  if ([EntityType.Generator].includes(entity.type)) {
+    buttons.push(
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          console.log('todo')
+        }}
+      >
+        Test Burn Coal
+      </button>,
+    )
+  }
+
   return (
     <div className={styles.container}>
       <pre className={styles.json}>{JSON.stringify(entity, null, 2)}</pre>
