@@ -4,6 +4,8 @@ import {
   BATTERY_CAPACITY,
   BATTERY_CHARGE_RATE,
   BATTERY_DISCHARGE_RATE,
+  COAL_BURN_RATE,
+  COAL_ENERGY,
   MINE_RATE,
   SOLAR_PANEL_RATE,
   TICK_RATE,
@@ -25,7 +27,24 @@ export function tickWorld() {
         consumption += 1
         break
       case EntityType.Generator: {
-        production += 2
+        const { burning } = entity
+        if (burning) {
+          invariant(burning.type === ItemType.Coal)
+
+          const remaining = COAL_ENERGY * (1 - burning.progress)
+
+          let burned: number
+          if (remaining <= COAL_BURN_RATE.perTick()) {
+            burned = remaining
+            entity.burning = null
+          } else {
+            burned = COAL_BURN_RATE.perTick()
+            burning.progress += burned / COAL_ENERGY
+          }
+
+          production += burned
+        }
+
         break
       }
       case EntityType.SolarPanel:

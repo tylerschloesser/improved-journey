@@ -32,3 +32,6 @@ export const BATTERY_CAPACITY = 1000 // energy
 export const SOLAR_PANEL_RATE = new Rate(1, RateType.PerSecond) // energy/second
 
 export const CHUNK_SIZE = 10
+
+export const COAL_ENERGY = 1000
+export const COAL_BURN_RATE = new Rate(2, RateType.PerTick)
