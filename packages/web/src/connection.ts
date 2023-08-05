@@ -4,7 +4,6 @@ import invariant from 'tiny-invariant'
 import { newBelt } from './belt.js'
 import { Entity, EntityNode } from './entity-types.js'
 import {
-  buildConnection$,
   connection$,
   entities$,
   occupiedCellIds$,
@@ -42,7 +41,7 @@ export const selected$ = combineLatest([entity$, position$]).pipe(
   distinctUntilChanged<Selected | null>(isEqual),
 )
 
-export const belt$ = combineLatest([
+export const buildConnection$ = combineLatest([
   selected$,
   position$.pipe(
     map((position) => position.floor()),
@@ -86,7 +85,3 @@ export const belt$ = combineLatest([
     }
   }),
 )
-
-belt$.subscribe((belt) => {
-  buildConnection$.next(belt)
-})

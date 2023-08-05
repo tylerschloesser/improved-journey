@@ -3,7 +3,7 @@ import { bind } from '@react-rxjs/core'
 import React from 'react'
 import { combineLatest, map } from 'rxjs'
 import { connection$, entities$ } from '../game-state.js'
-import { belt$, selected$ } from '../connection.js'
+import { buildConnection$, selected$ } from '../connection.js'
 import { useDraw } from './use-draw.js'
 
 const [useConnection] = bind(
@@ -16,7 +16,7 @@ const [useConnection] = bind(
 )
 
 const [useSelected] = bind(selected$)
-const [useBelt] = bind(belt$)
+const [useBuild] = bind(buildConnection$)
 
 function Nodes() {
   const connection = useConnection()
@@ -53,22 +53,22 @@ function Selected() {
   return <Graphics draw={draw} />
 }
 
-function Belt() {
-  const belt = useBelt()
+function Build() {
+  const build = useBuild()
   const draw = useDraw(
     (g) => {
       g.clear()
 
-      if (belt === null) return
+      if (build === null) return
 
-      for (const cell of belt.cells) {
-        const color = `hsla(${belt.valid ? 100 : 0}, 50%, 50%, .5)`
+      for (const cell of build.cells) {
+        const color = `hsla(${build.valid ? 100 : 0}, 50%, 50%, .5)`
         g.beginFill(color)
         const { x, y } = cell.entity.position
         g.drawRect(x, y, 1, 1)
       }
     },
-    [belt],
+    [build],
   )
   return <Graphics draw={draw} />
 }
@@ -78,7 +78,7 @@ export function Connection() {
     <>
       <Nodes />
       <Selected />
-      <Belt />
+      <Build />
     </>
   )
 }

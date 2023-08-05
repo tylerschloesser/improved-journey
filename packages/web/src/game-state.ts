@@ -214,11 +214,6 @@ export const connection$ = new BehaviorSubject<null | {
   entityId: EntityId
 }>(null)
 
-export const buildConnection$ = new BehaviorSubject<{
-  cells: { entity: Omit<Entity, 'id'>; valid: boolean }[]
-  valid: boolean
-} | null>(null)
-
 connection$.subscribe((connection) => {
   if (connection) {
     focus$.next({

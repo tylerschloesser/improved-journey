@@ -2,15 +2,11 @@ import React, { useEffect } from 'react'
 
 import { bind } from '@react-rxjs/core'
 import invariant from 'tiny-invariant'
-import {
-  addEntities,
-  buildConnection$,
-  connection$,
-  world$,
-} from '../game-state.js'
+import { addEntities, connection$, world$ } from '../game-state.js'
 import styles from './connection.module.scss'
 import { useEntityId } from './use-entity-id.js'
 import { cloneDeep } from 'lodash-es'
+import { buildConnection$ } from '../connection.js'
 
 const [useBuildConnection] = bind(buildConnection$)
 
