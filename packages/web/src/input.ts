@@ -94,9 +94,6 @@ function isTap(cache: PointerEvent[], ev: PointerEvent) {
 
   const dt = ev.timeStamp - first.timeStamp
 
-  // const dp = toVec2(up).sub(toVec2(down))
-  // const dist = dp.len()
-
   return dt < 100
 }
 
