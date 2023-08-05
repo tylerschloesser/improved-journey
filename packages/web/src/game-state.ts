@@ -32,10 +32,6 @@ export const move$ = new Subject<Vec2>()
 export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 export const tap$ = new Subject<Vec2>()
 
-export const cursor$ = new BehaviorSubject<{ enabled: boolean }>({
-  enabled: false,
-})
-
 export const world$ = new BehaviorSubject<World>(generateWorld())
 
 export function addEntities(

@@ -11,14 +11,6 @@ export function WorldControls() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          navigate('cursor')
-        }}
-      >
-        Cursor
-      </button>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
           navigate('build')
         }}
       >
