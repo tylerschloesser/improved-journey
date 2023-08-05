@@ -7,6 +7,7 @@ import { map } from 'rxjs'
 import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
 import { EntityId } from '../entity-types.js'
+import { BackButton } from './back-button.js'
 
 const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),
@@ -24,15 +25,18 @@ export function Entity() {
 
   return (
     <div className={styles.container}>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('connection')
-        }}
-      >
-        Add Output
-      </button>
-      <pre>{JSON.stringify(entity, null, 2)}</pre>
+      <pre className={styles.json}>{JSON.stringify(entity, null, 2)}</pre>
+      <div className={styles.controls}>
+        <BackButton className={styles.button} />
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            navigate('connection')
+          }}
+        >
+          Add Output
+        </button>
+      </div>
     </div>
   )
 }

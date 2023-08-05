@@ -5,8 +5,20 @@
 
   height: 50dvh;
   width: 100dvw;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .button {
   @include button-default;
+}
+
+.controls {
+}
+
+.json {
+  margin: 0;
+  padding: var(--padding-md);
+  overflow: scroll;
 }
