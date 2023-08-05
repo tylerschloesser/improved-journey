@@ -10,7 +10,6 @@ import {
   entities$,
   position$,
 } from './game-state.js'
-import { Cell } from './types.js'
 import { cellIndexToPosition, toCellId } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -47,12 +46,6 @@ export const nodes$ = combineLatest([entity$, chunks$]).pipe(
       }
     }
     return nodes
-  }),
-)
-
-export const target$ = combineLatest([entity$, chunks$]).pipe(
-  map(([entity, chunks]) => {
-    if (entity === null) return null
   }),
 )
 
