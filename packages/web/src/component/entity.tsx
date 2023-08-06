@@ -29,7 +29,7 @@ export function Entity() {
   const buttons: JSX.Element[] = []
   buttons.push(<BackButton className={styles.button} />)
 
-  if ([EntityType.Miner, EntityType.Generator].includes(entity.type)) {
+  if ([EntityType.Miner].includes(entity.type)) {
     buttons.push(
       <button
         className={styles.button}
