@@ -15,8 +15,6 @@ import { ItemType } from '../item-types.js'
 import { World } from '../types.js'
 
 export function tickWorld(world: World) {
-  // const world = cloneDeep(world$.value)
-
   let consumption = 0
   let production = 0
   let batteries: BatteryEntity[] = []
@@ -124,7 +122,6 @@ export function tickWorld(world: World) {
   }
 
   world.tick += 1
-  // world$.next(world)
 
   return world
 }
