@@ -3,10 +3,6 @@ import { Vec2 } from './vec2.js'
 
 export type EntityId = string
 
-export interface EntityNode {
-  position: Vec2
-}
-
 export enum EntityType {
   Miner = 'miner',
   Belt = 'belt',
