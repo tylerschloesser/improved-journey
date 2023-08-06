@@ -81,7 +81,10 @@ combineLatest([
   ),
   cells$,
 ]).subscribe(([entity, selected, position, cells]) => {
-  if (entity === null || selected === null) return null
+  if (entity === null || selected === null) {
+    buildConnection$.next(null)
+    return
+  }
 
   let dp = position.sub(selected.node)
 
