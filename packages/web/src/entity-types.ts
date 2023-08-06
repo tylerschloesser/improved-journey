@@ -27,6 +27,8 @@ export interface MinerEntity extends BaseEntity {
 
 export interface BeltEntity extends BaseEntity {
   type: EntityType.Belt
+  // prev: EntityId
+  // next: EntityId
 }
 
 export interface GeneratorEntity extends BaseEntity {

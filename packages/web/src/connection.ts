@@ -86,15 +86,17 @@ combineLatest([
     return
   }
 
-  let dp = position.sub(selected.node)
+  let start = selected.node
+  let end = position.sub(start)
 
-  if (Math.abs(dp.x) >= Math.abs(dp.y)) {
-    dp = new Vec2(dp.x, 0)
+  if (Math.abs(end.x) >= Math.abs(end.y)) {
+    end = new Vec2(end.x, 0)
   } else {
-    dp = new Vec2(0, dp.y)
+    end = new Vec2(0, end.y)
   }
 
-  const norm = dp.norm()
+  const step = end.norm()
+  end = start.add(end)
 
   const build: {
     cells: { entity: Omit<Entity, 'id'> }[]
@@ -104,27 +106,24 @@ combineLatest([
     valid: true,
   }
 
-  while (true) {
-    const p = selected.node.add(dp)
+  do {
     build.cells.push({
       entity: newBelt({
         color: 'yellow',
-        position: p,
+        position: start,
         size: new Vec2(1),
       }),
     })
 
-    const valid = !cells.get(toCellId(p))?.entityId
+    const valid = !cells.get(toCellId(start))?.entityId
     build.valid &&= valid
-    if (dp.len() === 0) {
-      break
-    }
-    dp = dp.sub(norm)
-  }
+
+    start = start.add(step)
+  } while (!start.equals(end))
 
   if (build.valid) {
-    // ugly, last because we iterate backwards above
-    const last = build.cells[0]
+    const last = build.cells.at(-1)
+    invariant(last)
     const target = cells.get(toCellId(last.entity.position))
     build.valid &&= !!target
     if (target) {

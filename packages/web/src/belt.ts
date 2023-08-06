@@ -1,5 +1,7 @@
-import { Entity, EntityType } from './entity-types.js'
+import { BeltEntity, EntityType } from './entity-types.js'
 
-export function newBelt(args: Omit<Entity, 'id' | 'type'>): Omit<Entity, 'id'> {
+export function newBelt(
+  args: Omit<BeltEntity, 'id' | 'type'>,
+): Omit<BeltEntity, 'id'> {
   return { ...args, type: EntityType.Belt }
 }
