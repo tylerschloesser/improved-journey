@@ -1,4 +1,4 @@
-import { Entity, EntityType } from './entity-types.js'
+import { BuildEntity, EntityType } from './entity-types.js'
 import { newBattery } from './entity/battery.js'
 import { newGenerator } from './entity/generator.js'
 import { newSolarPanel } from './entity/solar-panel.js'
@@ -6,9 +6,7 @@ import { newMiner } from './miner.js'
 import { Vec2 } from './vec2.js'
 
 export interface EntityConfig {
-  init(
-    args: Omit<Entity, 'id' | 'type' | 'nodes' | 'color'>,
-  ): Omit<Entity, 'id'>
+  init(args: Omit<BuildEntity, 'id' | 'type' | 'nodes' | 'color'>): BuildEntity
   size: Vec2
 }
 

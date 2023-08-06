@@ -14,7 +14,7 @@ import {
 } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
-import { Entity, EntityId, EntityType } from './entity-types.js'
+import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
 import { generateWorld } from './generate-world.js'
 import { Cell, CellId, World } from './types.js'
 import {
@@ -30,7 +30,7 @@ import { Vec2 } from './vec2.js'
 import { worker } from './worker.js'
 
 export const build$ = new BehaviorSubject<null | {
-  entity: Omit<Entity, 'id'>
+  entity: BuildEntity
   valid: boolean
 }>(null)
 
@@ -66,18 +66,34 @@ function getNodes(entity: Omit<Entity, 'id'>) {
   return nodes.map((v) => entity.position.add(v))
 }
 
-export function addEntities(
-  world: World,
-  entities: Omit<Entity, 'id'>[],
-): void {
-  for (const entity of entities) {
+export function addEntities(world: World, entities: BuildEntity[]): void {
+  for (let i = 0; i < entities.length; i++) {
+    const entity = entities[i]
+
     const entityId = `${world.nextEntityId++}`
     invariant(world.entities[entityId] === undefined)
 
-    world.entities[entityId] = {
-      id: entityId,
-      ...entity,
-    } as Entity // TODO not happy about this type cast
+    if (entity.type === EntityType.Belt) {
+      let { prev, next } = entity
+      if (!prev) {
+        prev = `${world.nextEntityId - 2}`
+      }
+      if (!next) {
+        next = `${world.nextEntityId}`
+      }
+
+      world.entities[entityId] = {
+        id: entityId,
+        prev,
+        next,
+        ...entity,
+      }
+    } else {
+      world.entities[entityId] = {
+        id: entityId,
+        ...entity,
+      }
+    }
 
     for (let x = 0; x < entity.size.x; x++) {
       for (let y = 0; y < entity.size.y; y++) {

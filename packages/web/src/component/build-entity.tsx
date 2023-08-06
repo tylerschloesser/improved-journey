@@ -4,8 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { EntityConfig, ENTITY_CONFIG } from '../entity-config.js'
-import { Entity, EntityType } from '../entity-types.js'
-import { newGenerator } from '../entity/generator.js'
+import { BuildEntity, Entity, EntityType } from '../entity-types.js'
 import {
   addEntities,
   build$,
@@ -13,7 +12,6 @@ import {
   position$,
   world$,
 } from '../game-state.js'
-import { newMiner } from '../miner.js'
 import { intersects } from '../util.js'
 import { Vec2 } from '../vec2.js'
 
@@ -53,7 +51,7 @@ export function BuildEntity() {
     const { size } = config
     const sub = combineLatest([position$, entities$]).subscribe(
       ([position, entities]) => {
-        const entity: Omit<Entity, 'id'> = config.init({
+        const entity: BuildEntity = config.init({
           position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
           size,
         })

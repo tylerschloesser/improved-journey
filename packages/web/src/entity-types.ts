@@ -27,8 +27,8 @@ export interface MinerEntity extends BaseEntity {
 
 export interface BeltEntity extends BaseEntity {
   type: EntityType.Belt
-  // prev: EntityId
-  // next: EntityId
+  prev: EntityId
+  next: EntityId
 }
 
 export interface GeneratorEntity extends BaseEntity {
@@ -53,3 +53,13 @@ export type Entity =
   | GeneratorEntity
   | SolarPanelEntity
   | BatteryEntity
+
+export type BuildEntity =
+  | Omit<MinerEntity, 'id'>
+  | (Omit<BeltEntity, 'id' | 'prev' | 'next'> & {
+      prev?: EntityId
+      next?: EntityId
+    })
+  | Omit<GeneratorEntity, 'id'>
+  | Omit<SolarPanelEntity, 'id'>
+  | Omit<BatteryEntity, 'id'>
