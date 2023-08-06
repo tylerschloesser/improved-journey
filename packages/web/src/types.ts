@@ -3,6 +3,7 @@ import { Entity, EntityId } from './entity-types.js'
 export type ChunkId = string
 export type NodeId = string
 export type CellId = string
+export type ConnectionId = string
 
 export interface Node {
   entityId: EntityId
@@ -18,11 +19,18 @@ export interface Chunk {
   cells: (Cell | null)[]
 }
 
+export interface Connection {
+  id: ConnectionId
+  entityIds: [EntityId, EntityId]
+  cellIds: CellId[]
+}
+
 export interface World {
   tick: number
 
   chunks: Record<ChunkId, Chunk>
   entities: Record<EntityId, Entity>
+  connections: Record<ConnectionId, Connection>
 
   nextEntityId: number
 }
