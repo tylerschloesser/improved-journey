@@ -1,7 +1,7 @@
 import { BeltEntity, EntityId, EntityType } from './entity-types.js'
 
 export function newBelt(
-  args: Omit<BeltEntity, 'id' | 'type' | 'prev' | 'next'> & {
+  args: Omit<BeltEntity, 'id' | 'type' | 'prev' | 'next' | 'items'> & {
     prev?: EntityId
     next?: EntityId
   },
@@ -9,5 +9,5 @@ export function newBelt(
   prev?: EntityId
   next?: EntityId
 } {
-  return { ...args, type: EntityType.Belt }
+  return { ...args, type: EntityType.Belt, items: [] }
 }

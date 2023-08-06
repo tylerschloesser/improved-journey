@@ -29,6 +29,7 @@ export interface BeltEntity extends BaseEntity {
   type: EntityType.Belt
   prev: EntityId
   next: EntityId
+  items: { type: ItemType; progress: number }[]
 }
 
 export interface GeneratorEntity extends BaseEntity {
