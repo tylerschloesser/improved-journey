@@ -29,6 +29,25 @@ function MinerAddOutputButton() {
   )
 }
 
+function MinerTestOutputCoalButton({ entityId }: { entityId: EntityId }) {
+  return (
+    <button
+      className={styles.button}
+      onPointerUp={() => {
+        world$.pipe(first()).subscribe((world) => {
+          world = cloneDeep(world)
+          const miner = world.entities[entityId]
+          invariant(miner.type === EntityType.Miner)
+          miner.output = { type: ItemType.Coal, count: 1 }
+          world$.next(world)
+        })
+      }}
+    >
+      Test Output Coal
+    </button>
+  )
+}
+
 export function Entity() {
   const entityId = useEntityId()
   const entity = useEntity(entityId)
@@ -42,21 +61,10 @@ export function Entity() {
 
   if ([EntityType.Miner].includes(entity.type)) {
     buttons.push(
-      <MinerAddOutputButton />,
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          world$.pipe(first()).subscribe((world) => {
-            world = cloneDeep(world)
-            const miner = world.entities[entityId]
-            invariant(miner.type === EntityType.Miner)
-            miner.output = { type: ItemType.Coal, count: 1 }
-            world$.next(world)
-          })
-        }}
-      >
-        Test Output Coal
-      </button>,
+      <>
+        <MinerAddOutputButton />
+        <MinerTestOutputCoalButton entityId={entityId} />
+      </>,
     )
   }
 
