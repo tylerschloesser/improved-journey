@@ -16,6 +16,7 @@ import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
 import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
 import { generateWorld } from './generate-world.js'
+import { saveWorld } from './storage.js'
 import { Cell, CellId, World } from './types.js'
 import {
   cellIndexToPosition,
@@ -65,9 +66,13 @@ fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
   worker,
   'message',
 ).subscribe((message) => {
-  fixWorld(message.data.world)
-  satisfaction$.next(message.data.satisfaction)
-  world$.next(message.data.world)
+  const { world, satisfaction } = message.data
+
+  fixWorld(world)
+  satisfaction$.next(satisfaction)
+  world$.next(world)
+
+  saveWorld(world)
 })
 
 function getNodes(entity: Omit<Entity, 'id'>) {
