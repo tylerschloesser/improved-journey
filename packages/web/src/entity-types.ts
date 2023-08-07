@@ -10,6 +10,7 @@ export enum EntityType {
   SolarPanel = 'solar-panel',
   Battery = 'battery',
   Display = 'display',
+  Smelter = 'smelter',
 }
 
 export interface BaseEntity {
@@ -60,6 +61,13 @@ export interface DisplayEntity extends BaseEntity {
   }
 }
 
+export interface SmelterEntity extends BaseEntity {
+  type: EntityType.Smelter
+  target: ItemType | null
+  input: { type: ItemType; count: number } | null
+  output: { type: ItemType; count: number } | null
+}
+
 export type Entity =
   | MinerEntity
   | BeltEntity
@@ -67,6 +75,7 @@ export type Entity =
   | SolarPanelEntity
   | BatteryEntity
   | DisplayEntity
+  | SmelterEntity
 
 export type BuildEntity =
   | Omit<MinerEntity, 'id'>
@@ -78,3 +87,4 @@ export type BuildEntity =
   | Omit<SolarPanelEntity, 'id'>
   | Omit<BatteryEntity, 'id'>
   | Omit<DisplayEntity, 'id'>
+  | Omit<SmelterEntity, 'id'>

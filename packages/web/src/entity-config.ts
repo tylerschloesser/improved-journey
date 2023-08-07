@@ -2,6 +2,7 @@ import { BuildEntity, EntityType } from './entity-types.js'
 import { newBattery } from './entity/battery.js'
 import { newDisplay } from './entity/display.js'
 import { newGenerator } from './entity/generator.js'
+import { newSmelter } from './entity/smelter.js'
 import { newSolarPanel } from './entity/solar-panel.js'
 import { newMiner } from './miner.js'
 import { Vec2 } from './vec2.js'
@@ -31,5 +32,16 @@ export const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
   [EntityType.Display]: {
     init: (args) => newDisplay({ ...args, color: 'white' }),
     size: new Vec2(1, 1),
+  },
+  [EntityType.Smelter]: {
+    init: (args) =>
+      newSmelter({
+        ...args,
+        color: '#DAFEB7',
+        target: null,
+        input: null,
+        output: null,
+      }),
+    size: new Vec2(2),
   },
 }
