@@ -15,14 +15,26 @@ const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),
 )
 
+function MinerAddOutputButton() {
+  const navigate = useNavigate()
+  return (
+    <button
+      className={styles.button}
+      onPointerUp={() => {
+        navigate('connection')
+      }}
+    >
+      Add Output
+    </button>
+  )
+}
+
 export function Entity() {
   const entityId = useEntityId()
   const entity = useEntity(entityId)
 
-  const navigate = useNavigate()
-
   useEffect(() => {
-    focus$.next({ entityId: entity.id, mode: FocusMode.Entity })
+    focus$.next({ entityId, mode: FocusMode.Entity })
   }, [entityId])
 
   const buttons: JSX.Element[] = []
@@ -30,14 +42,7 @@ export function Entity() {
 
   if ([EntityType.Miner].includes(entity.type)) {
     buttons.push(
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('connection')
-        }}
-      >
-        Add Output
-      </button>,
+      <MinerAddOutputButton />,
       <button
         className={styles.button}
         onPointerUp={() => {
