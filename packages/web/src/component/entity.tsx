@@ -4,12 +4,13 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { first, map } from 'rxjs'
 import invariant from 'tiny-invariant'
+import { TARGET_OPTIONS } from '../const.js'
 import { EntityId, EntityType } from '../entity-types.js'
 import {
   entities$,
   focus$,
   FocusMode,
-  setMinerTarget$,
+  setTarget$,
   world$,
 } from '../game-state.js'
 import { ItemType } from '../item-types.js'
@@ -79,22 +80,27 @@ function DumpJson({ entityId }: { entityId: EntityId }) {
   return <pre className={styles.json}>{JSON.stringify(entity, null, 2)}</pre>
 }
 
-function MinerTargetSelect({ entityId }: { entityId: EntityId }) {
+function TargetSelect({ entityId }: { entityId: EntityId }) {
   const entity = useEntity(entityId)
-  invariant(entity.type === EntityType.Miner)
+  invariant(
+    entity.type === EntityType.Miner || entity.type === EntityType.Smelter,
+  )
 
-  const options = [ItemType.Coal]
+  const options = TARGET_OPTIONS[entity.type]
+
+  invariant(entity.target === null || options.includes(entity.target))
 
   const onChange: React.ChangeEventHandler<HTMLSelectElement> = useCallback(
     (ev) => {
       const target = ev.target.value as ItemType
-      setMinerTarget$.next({ entityId, target })
+      setTarget$.next({ entityId, target })
     },
     [entityId],
   )
 
   return (
     <select
+      className={styles.select}
       value={entity.target ?? ''}
       onChange={onChange}
       disabled={entity.target !== null}
@@ -128,13 +134,16 @@ export function Entity() {
         <>
           <MinerAddOutputButton />
           <MinerTestOutputCoalButton entityId={entityId} />
-          <MinerTargetSelect entityId={entityId} />
         </>,
       )
     }
 
     if ([EntityType.Generator].includes(entity.type)) {
       buttons.push(<GeneratorTestBurnCoalButton entityId={entityId} />)
+    }
+
+    if ([EntityType.Miner, EntityType.Smelter].includes(entity.type)) {
+      buttons.push(<TargetSelect entityId={entityId} />)
     }
 
     const content = <DumpJson entityId={entityId} />

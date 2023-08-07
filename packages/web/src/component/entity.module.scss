@@ -16,6 +16,10 @@
   @include button-default;
 }
 
+.select {
+  @include select-default;
+}
+
 .content {
   flex: 1;
   border: 1px solid gray;
