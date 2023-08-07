@@ -4,8 +4,10 @@ import {
   BATTERY_CAPACITY,
   BATTERY_CHARGE_RATE,
   BATTERY_DISCHARGE_RATE,
+  BELT_CONSUMPTION,
   COAL_BURN_RATE,
   COAL_ENERGY,
+  MINER_CONSUMPTION,
   MINE_RATE,
   SOLAR_PANEL_RATE,
   TICK_RATE,
@@ -21,8 +23,10 @@ export function tickWorld(world: World) {
 
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
+      case EntityType.Belt:
+        consumption += BELT_CONSUMPTION.perTick()
       case EntityType.Miner:
-        consumption += 1
+        consumption += MINER_CONSUMPTION.perTick()
         break
       case EntityType.Generator: {
         const { burning } = entity
