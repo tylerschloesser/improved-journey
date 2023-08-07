@@ -1,7 +1,7 @@
 import { Entity, EntityType, MinerEntity } from './entity-types.js'
 
 export function newMiner(
-  args: Omit<Entity, 'id' | 'type'>,
+  args: Omit<MinerEntity, 'id' | 'type' | 'progress' | 'output'>,
 ): Omit<MinerEntity, 'id'> {
   return {
     ...args,

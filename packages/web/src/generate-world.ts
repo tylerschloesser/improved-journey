@@ -1,3 +1,4 @@
+import { newDisplay } from './entity/display.js'
 import { newGenerator } from './entity/generator.js'
 import { addEntities } from './game-state.js'
 import { newMiner } from './miner.js'
@@ -24,6 +25,12 @@ export function generateWorld(): World {
       position: new Vec2(6, 2),
       size: new Vec2(3, 2),
       color: 'orange',
+    }),
+
+    newDisplay({
+      position: new Vec2(3, -1),
+      size: new Vec2(1, 1),
+      color: 'white',
     }),
   ])
 

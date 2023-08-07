@@ -1,9 +1,4 @@
-import {
-  BuildEntity,
-  DisplayContentType,
-  DisplayEntity,
-  EntityType,
-} from './entity-types.js'
+import { BuildEntity, EntityType } from './entity-types.js'
 import { newBattery } from './entity/battery.js'
 import { newGenerator } from './entity/generator.js'
 import { newSolarPanel } from './entity/solar-panel.js'
@@ -33,17 +28,7 @@ export const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
     size: new Vec2(1, 1),
   },
   [EntityType.Display]: {
-    init: (args) => {
-      const entity: Omit<DisplayEntity, 'id'> = {
-        ...args,
-        type: EntityType.Display,
-        color: 'white',
-        content: {
-          type: DisplayContentType.Satisfaction,
-        },
-      }
-      return entity
-    },
+    init: (args) => newMiner({ ...args, color: 'white' }),
     size: new Vec2(1, 1),
   },
 }
