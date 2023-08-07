@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FocusMode, entities$, focus$, world$ } from '../game-state.js'
 
-import { map } from 'rxjs'
+import { first, map } from 'rxjs'
 import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
 import { EntityId, EntityType } from '../entity-types.js'
@@ -42,11 +42,13 @@ export function Entity() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          const world = cloneDeep(world$.value)
-          const miner = world.entities[entityId]
-          invariant(miner.type === EntityType.Miner)
-          miner.output = { type: ItemType.Coal, count: 1 }
-          world$.next(world)
+          world$.pipe(first()).subscribe((world) => {
+            world = cloneDeep(world)
+            const miner = world.entities[entityId]
+            invariant(miner.type === EntityType.Miner)
+            miner.output = { type: ItemType.Coal, count: 1 }
+            world$.next(world)
+          })
         }}
       >
         Test Output Coal
@@ -59,12 +61,14 @@ export function Entity() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          const world = cloneDeep(world$.value)
-          const generator = world.entities[entityId]
-          invariant(generator.type === EntityType.Generator)
+          world$.pipe(first()).subscribe((world) => {
+            world = cloneDeep(world)
+            const generator = world.entities[entityId]
+            invariant(generator.type === EntityType.Generator)
 
-          generator.burning = { type: ItemType.Coal, progress: 0 }
-          world$.next(world)
+            generator.burning = { type: ItemType.Coal, progress: 0 }
+            world$.next(world)
+          })
         }}
       >
         Test Burn Coal

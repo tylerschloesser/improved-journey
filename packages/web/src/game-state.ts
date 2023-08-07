@@ -1,4 +1,4 @@
-import { clamp, isEqual } from 'lodash-es'
+import { clamp, cloneDeep, isEqual } from 'lodash-es'
 import { Container } from 'pixi.js'
 import {
   BehaviorSubject,
@@ -7,6 +7,7 @@ import {
   fromEvent,
   map,
   merge,
+  ReplaySubject,
   skip,
   Subject,
   take,
@@ -60,11 +61,17 @@ export const move$ = new Subject<Vec2>()
 export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
 export const tap$ = new Subject<Vec2>()
 
-export const world$ = new BehaviorSubject<World>(generateWorld())
+export const world$ = new ReplaySubject<World>(1)
 
-// export const world$ = new Subject<World>()
-//
-// world$.next(generateWorld())
+export const addEntities$ = new Subject<BuildEntity[]>()
+
+addEntities$.pipe(withLatestFrom(world$)).subscribe(([entities, world]) => {
+  world = cloneDeep(world)
+  addEntities(world, entities)
+  world$.next(world)
+})
+
+world$.next(generateWorld())
 
 fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
   worker,

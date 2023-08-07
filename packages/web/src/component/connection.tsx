@@ -2,7 +2,12 @@ import React, { useEffect } from 'react'
 
 import { bind } from '@react-rxjs/core'
 import invariant from 'tiny-invariant'
-import { addEntities, connection$, world$ } from '../game-state.js'
+import {
+  addEntities,
+  addEntities$,
+  connection$,
+  world$,
+} from '../game-state.js'
 import styles from './connection.module.scss'
 import { useEntityId } from './use-entity-id.js'
 import { cloneDeep } from 'lodash-es'
@@ -39,13 +44,7 @@ export function Connection() {
           if (!valid) return
           const build = buildConnection$.value
           invariant(build)
-
-          const world = cloneDeep(world$.value)
-          addEntities(
-            world,
-            build.cells.map((cell) => cell.entity),
-          )
-          world$.next(world)
+          addEntities$.next(build.cells.map((cell) => cell.entity))
         }}
       >
         Build

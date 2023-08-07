@@ -7,6 +7,7 @@ import { EntityConfig, ENTITY_CONFIG } from '../entity-config.js'
 import { BuildEntity, Entity, EntityType } from '../entity-types.js'
 import {
   addEntities,
+  addEntities$,
   build$,
   entities$,
   position$,
@@ -83,13 +84,9 @@ export function BuildEntity() {
         disabled={!valid}
         onPointerUp={() => {
           if (!valid) return
-
           const entity = build$.value?.entity
           invariant(entity)
-
-          const world = cloneDeep(world$.value)
-          addEntities(world, [entity])
-          world$.next(world)
+          addEntities$.next([entity])
         }}
       >
         Build
