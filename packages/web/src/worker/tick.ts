@@ -17,7 +17,10 @@ import { BatteryEntity, EntityType } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
 import { World } from '../types.js'
 
-export function tickWorld(world: World) {
+export function tickWorld(world: World): {
+  world: World
+  satisfaction: number
+} {
   let consumption = 0
   let production = 0
   let batteries: BatteryEntity[] = []
@@ -114,7 +117,10 @@ export function tickWorld(world: World) {
     }
   }
 
-  const satisfaction = consumption === 0 ? 1 : production / consumption
+  const satisfaction = Math.min(
+    consumption === 0 ? 1 : production / consumption,
+    1,
+  )
 
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
@@ -180,5 +186,8 @@ export function tickWorld(world: World) {
 
   world.tick += 1
 
-  return world
+  return {
+    world,
+    satisfaction,
+  }
 }

@@ -9,6 +9,6 @@ interface MessageData {
 self.onmessage = (message: MessageEvent<MessageData>) => {
   let { world } = message.data
   fixWorld(world)
-  world = tickWorld(world)
-  self.postMessage({ world })
+  const response = tickWorld(world)
+  self.postMessage(response)
 }

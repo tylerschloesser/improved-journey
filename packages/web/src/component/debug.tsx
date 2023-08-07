@@ -1,20 +1,23 @@
 import { bind } from '@react-rxjs/core'
 import React from 'react'
-import { position$, zoom$ } from '../game-state.js'
+import { position$, satisfaction$, zoom$ } from '../game-state.js'
 import { BackButton } from './back-button.js'
 
 import styles from './debug.module.scss'
 
 const [usePosition] = bind(position$)
 const [useZoom] = bind(zoom$)
+const [useSatisfaction] = bind(satisfaction$)
 
 export function Debug() {
   const position = usePosition()
   const zoom = useZoom()
+  const satisfaction = useSatisfaction()
 
   const rows = [
     { key: 'position', value: position.toString() },
     { key: 'zoom', value: zoom.toFixed(2) },
+    { key: 'satisfaction', value: satisfaction.toFixed(2) },
   ]
 
   return (

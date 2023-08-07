@@ -34,6 +34,7 @@ export const build$ = new BehaviorSubject<null | {
   valid: boolean
 }>(null)
 
+export const satisfaction$ = new BehaviorSubject<number>(0)
 export const viewport$ = new Subject<Vec2>()
 export const zoom$ = new BehaviorSubject<number>(0.5)
 
@@ -45,12 +46,14 @@ export const tap$ = new Subject<Vec2>()
 
 export const world$ = new BehaviorSubject<World>(generateWorld())
 
-fromEvent<MessageEvent<{ world: World }>>(worker, 'message').subscribe(
-  (message) => {
-    fixWorld(message.data.world)
-    world$.next(message.data.world)
-  },
-)
+fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
+  worker,
+  'message',
+).subscribe((message) => {
+  fixWorld(message.data.world)
+  satisfaction$.next(message.data.satisfaction)
+  world$.next(message.data.world)
+})
 
 function getNodes(entity: Omit<Entity, 'id'>) {
   const { size } = entity
