@@ -2,7 +2,12 @@ import { Container, Graphics, Text } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
 import * as PIXI from 'pixi.js'
 import { useMemo } from 'react'
-import { DisplayEntity, Entity, EntityType } from '../entity-types.js'
+import {
+  BeltEntity,
+  DisplayEntity,
+  Entity,
+  EntityType,
+} from '../entity-types.js'
 import {
   entities$,
   satisfaction$,
@@ -10,6 +15,7 @@ import {
   zoomLevel$,
 } from '../game-state.js'
 import { useDraw } from './use-draw.js'
+import { ZIndex } from './z-index.js'
 
 const [useEntities] = bind(entities$)
 const [useSatisfaction] = bind(satisfaction$)
@@ -41,9 +47,8 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
 
   return (
     <>
-      <Graphics draw={drawBackground} zIndex={1} />
+      <Graphics draw={drawBackground} />
       <Container
-        zIndex={2}
         x={entity.position.x}
         y={entity.position.y}
         width={entity.size.x}
@@ -60,6 +65,45 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
   )
 }
 
+function BeltEntity({ entity }: { entity: BeltEntity }) {
+  const drawBelt = useDraw(
+    (g) => {
+      g.clear()
+      g.beginFill(entity.color)
+      g.drawRect(
+        entity.position.x,
+        entity.position.y,
+        entity.size.x,
+        entity.size.y,
+      )
+    },
+    [entity],
+  )
+
+  const drawItems = useDraw(
+    (g) => {
+      g.clear()
+      g.beginFill('black')
+      g.lineStyle(0.05, 'gray')
+      for (const item of entity.items) {
+        g.drawCircle(
+          entity.position.x + item.progress,
+          entity.position.y + 0.5,
+          0.25,
+        )
+      }
+    },
+    [entity],
+  )
+
+  return (
+    <>
+      <Graphics draw={drawBelt} zIndex={ZIndex.belt} />
+      <Graphics draw={drawItems} zIndex={ZIndex.beltItems} />
+    </>
+  )
+}
+
 function Entity({ entity }: { entity: Entity }) {
   const draw = useDraw(
     (g) => {
@@ -72,24 +116,10 @@ function Entity({ entity }: { entity: Entity }) {
         entity.size.x,
         entity.size.y,
       )
-
-      switch (entity.type) {
-        case EntityType.Belt:
-          g.beginFill('black')
-          g.lineStyle(0.05, 'gray')
-          for (const item of entity.items) {
-            g.drawCircle(
-              entity.position.x + item.progress,
-              entity.position.y + 0.5,
-              0.25,
-            )
-          }
-          break
-      }
     },
     [entity],
   )
-  return <Graphics draw={draw} />
+  return <Graphics draw={draw} zIndex={ZIndex.entity} />
 }
 
 export function Entities() {
@@ -100,6 +130,8 @@ export function Entities() {
         switch (entity.type) {
           case EntityType.Display:
             return <DisplayEntity key={entity.id} entity={entity} />
+          case EntityType.Belt:
+            return <BeltEntity key={entity.id} entity={entity} />
         }
         return <Entity key={entity.id} entity={entity} />
       })}
