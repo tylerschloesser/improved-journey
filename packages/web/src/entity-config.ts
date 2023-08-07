@@ -48,7 +48,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
         input: null,
         output: null,
       }),
-    color: '#DAFEB7',
+    color: '#688E26',
     size: new Vec2(2),
   },
   [EntityType.Belt]: {
