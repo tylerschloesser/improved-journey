@@ -1,5 +1,5 @@
 import { generateWorld } from './generate-world.js'
-import { World } from './types.js'
+import { Client, World } from './types.js'
 
 export async function saveWorld(world: World): Promise<void> {
   localStorage.setItem('world', JSON.stringify(world))
@@ -12,3 +12,5 @@ export async function loadWorld(): Promise<World> {
   }
   return generateWorld()
 }
+
+export async function saveClient(client: Client): Promise<void> {}

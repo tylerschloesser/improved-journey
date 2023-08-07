@@ -1,4 +1,5 @@
 import { Entity, EntityId } from './entity-types.js'
+import { Vec2 } from './vec2.js'
 
 export type ChunkId = string
 export type NodeId = string
@@ -33,4 +34,9 @@ export interface World {
   connections: Record<ConnectionId, Connection>
 
   nextEntityId: number
+}
+
+export interface Client {
+  position: Vec2
+  zoom: number
 }

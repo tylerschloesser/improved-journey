@@ -21,7 +21,7 @@ import { Cell, CellId, World } from './types.js'
 import {
   cellIndexToPosition,
   CHUNK_SIZE,
-  fixWorld,
+  fixVec2,
   intersects,
   setEntityId,
   setNodes,
@@ -81,7 +81,7 @@ fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
 ).subscribe((message) => {
   const { world, satisfaction } = message.data
 
-  fixWorld(world)
+  fixVec2(world)
   satisfaction$.next(satisfaction)
   world$.next(world)
 
