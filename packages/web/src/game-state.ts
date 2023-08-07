@@ -373,7 +373,9 @@ dampen$
       to: new Vec2(0),
       duration,
       callback(next, elapsed) {
-        position$.next(position.add(next.mul(elapsed)))
+        // FIXME hacky way to store position...
+        position = position.add(next.mul(elapsed))
+        position$.next(position)
       },
     })
   })
