@@ -42,15 +42,19 @@ export const zoom$ = new ReplaySubject<number>(1)
 
 export enum ZoomLevel {
   High,
+  Medium,
   Low,
 }
 
 export const zoomLevel$ = zoom$.pipe(
   map((zoom) => {
-    if (zoom >= 0.5) {
+    if (zoom >= 0.8) {
       return ZoomLevel.High
     }
-    return ZoomLevel.Low
+    if (zoom < 0.2) {
+      return ZoomLevel.Low
+    }
+    return ZoomLevel.Medium
   }),
   distinctUntilChanged(),
 )
