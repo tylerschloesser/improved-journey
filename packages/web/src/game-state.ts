@@ -16,6 +16,7 @@ import {
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
 import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
+import { ItemType } from './item-types.js'
 import { saveClient, saveWorld } from './storage.js'
 import { Cell, CellId, Client, World } from './types.js'
 import {
@@ -74,6 +75,26 @@ addEntities$.pipe(withLatestFrom(world$)).subscribe(([entities, world]) => {
   addEntities(world, entities)
   world$.next(world)
 })
+
+export const setMinerTarget$ = new Subject<{
+  entityId: EntityId
+  target: ItemType
+}>()
+
+setMinerTarget$
+  .pipe(withLatestFrom(world$))
+  .subscribe(([{ entityId, target }, world]) => {
+    world = cloneDeep(world)
+
+    const entity = world.entities[entityId]
+    invariant(entity.type === EntityType.Miner)
+
+    invariant(target === ItemType.Coal)
+
+    entity.target = target
+
+    world$.next(world)
+  })
 
 export const tick$ = world$.pipe(map((world) => world.tick))
 

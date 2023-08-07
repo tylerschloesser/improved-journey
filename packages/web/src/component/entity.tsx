@@ -1,11 +1,17 @@
 import { bind } from '@react-rxjs/core'
 import { cloneDeep } from 'lodash-es'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { first, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { EntityId, EntityType } from '../entity-types.js'
-import { entities$, focus$, FocusMode, world$ } from '../game-state.js'
+import {
+  entities$,
+  focus$,
+  FocusMode,
+  setMinerTarget$,
+  world$,
+} from '../game-state.js'
 import { ItemType } from '../item-types.js'
 import { BackButton } from './back-button.js'
 import styles from './entity.module.scss'
@@ -73,6 +79,38 @@ function DumpJson({ entityId }: { entityId: EntityId }) {
   return <pre className={styles.json}>{JSON.stringify(entity, null, 2)}</pre>
 }
 
+function MinerTargetSelect({ entityId }: { entityId: EntityId }) {
+  const entity = useEntity(entityId)
+  invariant(entity.type === EntityType.Miner)
+
+  const options = [ItemType.Coal]
+
+  const onChange: React.ChangeEventHandler<HTMLSelectElement> = useCallback(
+    (ev) => {
+      const target = ev.target.value as ItemType
+      setMinerTarget$.next({ entityId, target })
+    },
+    [entityId],
+  )
+
+  return (
+    <select
+      value={entity.target ?? ''}
+      onChange={onChange}
+      disabled={entity.target !== null}
+    >
+      <option value="" disabled>
+        Select Target
+      </option>
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  )
+}
+
 export function Entity() {
   const entityId = useEntityId()
   const entity = useEntity(entityId)
@@ -90,6 +128,7 @@ export function Entity() {
         <>
           <MinerAddOutputButton />
           <MinerTestOutputCoalButton entityId={entityId} />
+          <MinerTargetSelect entityId={entityId} />
         </>,
       )
     }
