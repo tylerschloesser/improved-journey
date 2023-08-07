@@ -54,7 +54,9 @@ export const zoomLevel$ = zoom$.pipe(
   distinctUntilChanged(),
 )
 
-export const position$ = new BehaviorSubject(new Vec2(0, 0))
+export const position$ = new ReplaySubject<Vec2>(1)
+
+position$.next(new Vec2(0, 0))
 
 export const move$ = new Subject<Vec2>()
 export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
@@ -186,9 +188,11 @@ function zoomToCellSize(zoom: number) {
 
 export const cellSize$ = zoom$.pipe(map(zoomToCellSize))
 
-move$.pipe(withLatestFrom(cellSize$)).subscribe(([move, cellSize]) => {
-  position$.next(position$.value.add(move.div(cellSize).mul(-1)))
-})
+move$
+  .pipe(withLatestFrom(cellSize$, position$))
+  .subscribe(([move, cellSize, position]) => {
+    position$.next(position.add(move.div(cellSize).mul(-1)))
+  })
 
 export const pinch$ = new Subject<{
   center: Vec2
@@ -197,44 +201,46 @@ export const pinch$ = new Subject<{
 }>()
 
 // TODO this is roughly the same as wheel$ below
-pinch$.pipe(withLatestFrom(viewport$)).subscribe(([pinch, viewport]) => {
-  const zoom = {
-    prev: zoom$.value,
-    next: clamp(zoom$.value + pinch.zoom / 1_000, 0, 1),
-  }
+pinch$
+  .pipe(withLatestFrom(viewport$, position$))
+  .subscribe(([pinch, viewport, position]) => {
+    const zoom = {
+      prev: zoom$.value,
+      next: clamp(zoom$.value + pinch.zoom / 1_000, 0, 1),
+    }
 
-  const scale = {
-    prev: zoomToCellSize(zoom.prev),
-    next: zoomToCellSize(zoom.next),
-  }
+    const scale = {
+      prev: zoomToCellSize(zoom.prev),
+      next: zoomToCellSize(zoom.next),
+    }
 
-  const anchor = pinch.center.sub(viewport.div(2))
+    const anchor = pinch.center.sub(viewport.div(2))
 
-  const adjust = anchor
-    .div(scale.prev)
-    .sub(anchor.div(scale.next))
-    .add(pinch.drag.div(scale.next))
+    const adjust = anchor
+      .div(scale.prev)
+      .sub(anchor.div(scale.next))
+      .add(pinch.drag.div(scale.next))
 
-  position$.next(position$.value.add(adjust))
-  zoom$.next(zoom.next)
-})
+    position$.next(position.add(adjust))
+    zoom$.next(zoom.next)
+  })
 
 // TODO this is roughly the same as pinch$ above
 wheel$
-  .pipe(withLatestFrom(viewport$))
-  .subscribe(([{ deltaY, position }, viewport]) => {
+  .pipe(withLatestFrom(viewport$, position$))
+  .subscribe(([wheel, viewport, position]) => {
     const zoom = zoom$.value
 
-    const nextZoom = clamp(zoom + (deltaY / 4_000) * -1, 0, 1)
+    const nextZoom = clamp(zoom + (wheel.deltaY / 4_000) * -1, 0, 1)
 
     if (zoom === nextZoom) return
 
-    const anchor = position.sub(viewport.div(2))
+    const anchor = wheel.position.sub(viewport.div(2))
     const adjust = anchor
       .div(zoomToCellSize(zoom))
       .sub(anchor.div(zoomToCellSize(nextZoom)))
 
-    position$.next(position$.value.add(adjust))
+    position$.next(position.add(adjust))
 
     zoom$.next(nextZoom)
   })
@@ -348,21 +354,23 @@ merge(
 
 export const dampen$ = new Subject<{ v: Vec2 }>()
 
-dampen$.pipe(withLatestFrom(cellSize$)).subscribe(([{ v }, cellSize]) => {
-  const duration = 500
+dampen$
+  .pipe(withLatestFrom(cellSize$, position$))
+  .subscribe(([{ v }, cellSize, position]) => {
+    const duration = 500
 
-  const from = v.mul(-1).div(cellSize)
+    const from = v.mul(-1).div(cellSize)
 
-  // TODO not sure if it makes a noticable difference, but we could
-  // animate here, between the last pointer move and the upcoming
-  // "dampen" movement
+    // TODO not sure if it makes a noticable difference, but we could
+    // animate here, between the last pointer move and the upcoming
+    // "dampen" movement
 
-  animateVec2({
-    from,
-    to: new Vec2(0),
-    duration,
-    callback(next, elapsed) {
-      position$.next(position$.value.add(next.mul(elapsed)))
-    },
+    animateVec2({
+      from,
+      to: new Vec2(0),
+      duration,
+      callback(next, elapsed) {
+        position$.next(position.add(next.mul(elapsed)))
+      },
+    })
   })
-})
