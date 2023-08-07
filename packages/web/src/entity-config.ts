@@ -14,11 +14,11 @@ export interface EntityConfig {
 
 export const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
   [EntityType.Miner]: {
-    init: (args) => newMiner({ ...args, color: 'blue', target: null }),
+    init: (args) => newMiner({ ...args, color: '#2176AE', target: null }),
     size: new Vec2(2, 2),
   },
   [EntityType.Generator]: {
-    init: (args) => newGenerator({ ...args, color: 'orange' }),
+    init: (args) => newGenerator({ ...args, color: '#FBB13C' }),
     size: new Vec2(3, 2),
   },
   [EntityType.SolarPanel]: {
