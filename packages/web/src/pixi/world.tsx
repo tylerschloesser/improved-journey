@@ -1,12 +1,11 @@
 import React, { Suspense } from 'react'
-
 import { Container, Stage } from '@pixi/react'
 import { bind, Subscribe } from '@react-rxjs/core'
-import { Entities } from '../component/entities.js'
-import { Grid } from '../component/grid.js'
 import { cellSize$, position$, viewport$ } from '../game-state.js'
 import { Build } from './build.js'
 import { Connection } from './connection.js'
+import { Grid } from './grid.js'
+import { Entities } from './entities.js'
 
 const [usePosition] = bind(position$)
 const [useCellSize] = bind(cellSize$)

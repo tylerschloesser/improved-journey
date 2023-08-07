@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import styles from './world.module.scss'
-
 import { Outlet, useNavigate } from 'react-router-dom'
 import { TICK_RATE } from '../const.js'
 import { navigate$, viewport$, world$ } from '../game-state.js'
