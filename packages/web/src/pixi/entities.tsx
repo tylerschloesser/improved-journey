@@ -50,7 +50,10 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
         scale={0.01}
         visible={zoomLevel === ZoomLevel.High}
       >
-        <Text text={`sat\n${satisfaction.toFixed(2)}`} style={textStyle} />
+        <Text
+          text={`sat\n${Math.trunc(satisfaction * 100)}%`}
+          style={textStyle}
+        />
       </Container>
     </>
   )
