@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
@@ -91,7 +91,9 @@ export function World() {
       {canvas && <PixiWorld canvas={canvas} />}
       <canvas className={styles.canvas} ref={setCanvas}></canvas>
       <div className={styles.outlet}>
-        <Outlet />
+        <Suspense>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   )

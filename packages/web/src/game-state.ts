@@ -70,6 +70,8 @@ addEntities$.pipe(withLatestFrom(world$)).subscribe(([entities, world]) => {
   world$.next(world)
 })
 
+export const tick$ = world$.pipe(map((world) => world.tick))
+
 fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
   worker,
   'message',
