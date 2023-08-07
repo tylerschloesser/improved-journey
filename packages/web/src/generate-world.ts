@@ -6,6 +6,7 @@ import { World } from './types.js'
 import { Vec2 } from './vec2.js'
 
 export function generateWorld(): World {
+  console.log('generating world...')
   const world: World = {
     tick: 0,
     nextEntityId: 0,
