@@ -1,16 +1,44 @@
-import { Graphics } from '@pixi/react'
+import { Container, Graphics, Text } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
-import * as PIXI from 'pixi.js'
 import React from 'react'
-import { useCallback } from 'react'
-import { Entity, EntityType } from '../entity-types.js'
-import { entities$ } from '../game-state.js'
+import { DisplayEntity, Entity, EntityType } from '../entity-types.js'
+import { entities$, satisfaction$ } from '../game-state.js'
+import { useDraw } from './use-draw.js'
 
 const [useEntities] = bind(entities$)
+const [useSatisfaction] = bind(satisfaction$)
+
+function DisplayEntity({ entity }: { entity: DisplayEntity }) {
+  const satisfaction = useSatisfaction()
+
+  const drawBackground = useDraw(
+    (g) => {
+      g.clear()
+
+      g.beginFill(entity.color)
+      g.drawRect(
+        entity.position.x,
+        entity.position.y,
+        entity.size.x,
+        entity.size.y,
+      )
+    },
+    [entity],
+  )
+
+  return (
+    <>
+      <Graphics draw={drawBackground} />
+      <Container x={entity.position.x} y={entity.position.y}>
+        <Text text={`${satisfaction.toFixed(2)}`} />
+      </Container>
+    </>
+  )
+}
 
 function Entity({ entity }: { entity: Entity }) {
-  const draw = useCallback(
-    (g: PIXI.Graphics) => {
+  const draw = useDraw(
+    (g) => {
       g.clear()
 
       g.beginFill(entity.color)
@@ -42,7 +70,11 @@ function Entity({ entity }: { entity: Entity }) {
 
 export function Entities() {
   const entities = useEntities()
-  return Object.values(entities).map((entity) => (
-    <Entity key={entity.id} entity={entity} />
-  ))
+  return Object.values(entities).map((entity) => {
+    switch (entity.type) {
+      case EntityType.Display:
+        return <DisplayEntity key={entity.id} entity={entity} />
+    }
+    return <Entity key={entity.id} entity={entity} />
+  })
 }

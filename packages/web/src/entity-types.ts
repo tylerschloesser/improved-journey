@@ -50,7 +50,7 @@ export interface BatteryEntity extends BaseEntity {
 }
 
 export enum DisplayContentType {
-  Satisfaction,
+  Satisfaction = 'satisfaction',
 }
 
 export interface DisplayEntity extends BaseEntity {
