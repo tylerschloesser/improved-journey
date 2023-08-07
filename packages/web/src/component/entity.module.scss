@@ -16,12 +16,16 @@
   @include button-default;
 }
 
+.content {
+  flex: 1;
+  border: 1px solid gray;
+  overflow: scroll;
+  padding: var(--padding-md);
+}
+
 .controls {
 }
 
 .json {
   margin: 0;
-  overflow: scroll;
-  padding: var(--padding-md);
-  border: 1px solid gray;
 }

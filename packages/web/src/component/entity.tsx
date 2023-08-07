@@ -99,7 +99,9 @@ export function Entity() {
 
   return (
     <div className={styles.container}>
-      <DumpJson entityId={entityId} />
+      <div className={styles.content}>
+        <DumpJson entityId={entityId} />
+      </div>
       <div className={styles.controls}>
         {buttons
           .map((button) => () => button)
