@@ -11,7 +11,6 @@ import {
   MINER_CONSUMPTION,
   MINE_RATE,
   SOLAR_PANEL_RATE,
-  TICK_RATE,
 } from '../const.js'
 import { BatteryEntity, EntityType } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
@@ -125,7 +124,7 @@ export function tickWorld(world: World): {
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.Miner: {
-        entity.progress += (MINE_RATE.perTick() * satisfaction) / TICK_RATE
+        entity.progress += MINE_RATE.perTick() * satisfaction
         if (entity.progress >= 1) {
           const count = Math.trunc(entity.progress)
           entity.progress = entity.progress - count
