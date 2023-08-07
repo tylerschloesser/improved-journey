@@ -39,6 +39,18 @@ export function Entity() {
       >
         Add Output
       </button>,
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          const world = cloneDeep(world$.value)
+          const miner = world.entities[entityId]
+          invariant(miner.type === EntityType.Miner)
+          miner.output = { type: ItemType.Coal, count: 1 }
+          world$.next(world)
+        }}
+      >
+        Test Output Coal
+      </button>,
     )
   }
 
