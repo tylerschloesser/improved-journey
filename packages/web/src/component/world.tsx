@@ -30,18 +30,10 @@ function useInitCanvas(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
     if (!canvas) return
 
-    // const app = new Application({
-    //   resizeTo: canvas,
-    //   view: canvas,
-    // })
-
-    // app.stage.sortableChildren = true
-
     const abortController = new AbortController()
 
     init({
       canvas,
-      // app,
       signal: abortController.signal,
     })
 
