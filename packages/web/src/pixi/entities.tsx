@@ -90,11 +90,15 @@ function Entity({ entity }: { entity: Entity }) {
 
 export function Entities() {
   const entities = useEntities()
-  return Object.values(entities).map((entity) => {
-    switch (entity.type) {
-      case EntityType.Display:
-        return <DisplayEntity key={entity.id} entity={entity} />
-    }
-    return <Entity key={entity.id} entity={entity} />
-  })
+  return (
+    <>
+      {Object.values(entities).map((entity) => {
+        switch (entity.type) {
+          case EntityType.Display:
+            return <DisplayEntity key={entity.id} entity={entity} />
+        }
+        return <Entity key={entity.id} entity={entity} />
+      })}
+    </>
+  )
 }
