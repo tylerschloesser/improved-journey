@@ -2,10 +2,16 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
-import { navigate$, viewport$, world$ } from '../game-state.js'
+import {
+  navigate$,
+  position$,
+  viewport$,
+  world$,
+  zoom$,
+} from '../game-state.js'
 import { init } from '../init.js'
 import { World as PixiWorld } from '../pixi/world.js'
-import { loadWorld } from '../storage.js'
+import { loadClient, loadWorld } from '../storage.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
 import styles from './world.module.scss'
@@ -72,6 +78,10 @@ function useTickWorld() {
 
 function useInitWorld() {
   useEffect(() => {
+    loadClient().then((client) => {
+      position$.next(client.position)
+      zoom$.next(client.zoom)
+    })
     loadWorld().then((world) => {
       world$.next(world)
     })

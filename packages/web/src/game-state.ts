@@ -16,8 +16,8 @@ import {
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
 import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
-import { saveWorld } from './storage.js'
-import { Cell, CellId, World } from './types.js'
+import { saveClient, saveWorld } from './storage.js'
+import { Cell, CellId, Client, World } from './types.js'
 import {
   cellIndexToPosition,
   CHUNK_SIZE,
@@ -37,8 +37,8 @@ export const build$ = new BehaviorSubject<null | {
 
 export const satisfaction$ = new BehaviorSubject<number>(0)
 export const viewport$ = new Subject<Vec2>()
+
 export const zoom$ = new ReplaySubject<number>(1)
-zoom$.next(0.5)
 
 export enum ZoomLevel {
   High,
@@ -56,8 +56,6 @@ export const zoomLevel$ = zoom$.pipe(
 )
 
 export const position$ = new ReplaySubject<Vec2>(1)
-
-position$.next(new Vec2(0, 0))
 
 export const move$ = new Subject<Vec2>()
 export const wheel$ = new Subject<{ deltaY: number; position: Vec2 }>()
@@ -375,3 +373,8 @@ dampen$
       },
     })
   })
+
+combineLatest([zoom$, position$]).subscribe(([zoom, position]) => {
+  const client: Client = { zoom, position }
+  saveClient(client)
+})
