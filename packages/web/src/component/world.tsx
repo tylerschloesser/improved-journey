@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import styles from './world.module.scss'
 import { Outlet, useNavigate } from 'react-router-dom'
+import { interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
 import { navigate$, viewport$, world$ } from '../game-state.js'
+import { generateWorld } from '../generate-world.js'
 import { init } from '../init.js'
 import { World as PixiWorld } from '../pixi/world.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
-import { interval, withLatestFrom } from 'rxjs'
+import styles from './world.module.scss'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
@@ -69,12 +70,19 @@ function useTickWorld() {
   }, [])
 }
 
+function useInitWorld() {
+  useEffect(() => {
+    world$.next(generateWorld())
+  }, [])
+}
+
 export function World() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useResizeObserver(canvas)
   useInitCanvas(canvas)
   useNavigateListener()
   useTickWorld()
+  useInitWorld()
 
   return (
     <div className={styles.container}>

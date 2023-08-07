@@ -16,7 +16,6 @@ import {
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
 import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
-import { generateWorld } from './generate-world.js'
 import { saveWorld } from './storage.js'
 import { Cell, CellId, World } from './types.js'
 import {
@@ -70,8 +69,6 @@ addEntities$.pipe(withLatestFrom(world$)).subscribe(([entities, world]) => {
   addEntities(world, entities)
   world$.next(world)
 })
-
-world$.next(generateWorld())
 
 fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
   worker,
