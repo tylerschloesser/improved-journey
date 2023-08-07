@@ -46,6 +46,6 @@ export const MINER_CONSUMPTION = new Rate(1, RateType.PerTick)
 export const BELT_SPEED = new Rate(0.5, RateType.PerSecond)
 
 export const TARGET_OPTIONS = {
-  [EntityType.Miner]: [ItemType.Coal],
+  [EntityType.Miner]: [ItemType.Coal, ItemType.IronOre],
   [EntityType.Smelter]: [ItemType.IronPlate],
 }

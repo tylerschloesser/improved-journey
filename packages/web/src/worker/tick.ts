@@ -132,7 +132,6 @@ export function tickWorld(world: World): {
     switch (entity.type) {
       case EntityType.Miner: {
         if (entity.target === null) break
-        invariant(entity.target === ItemType.Coal)
 
         entity.progress += MINE_RATE.perTick() * satisfaction
         if (entity.progress >= 1) {
@@ -141,7 +140,7 @@ export function tickWorld(world: World): {
 
           let output = entity.output
           if (output === null) {
-            output = entity.output = { type: ItemType.Coal, count: 0 }
+            output = entity.output = { type: entity.target, count: 0 }
           }
           output.count += count
         }
