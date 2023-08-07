@@ -1,11 +1,11 @@
 import { bind } from '@react-rxjs/core'
+import { cloneDeep } from 'lodash-es'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { entities$, focus$, FocusMode, world$ } from '../game-state.js'
-import { cloneDeep } from 'lodash-es'
 import { first, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { EntityId, EntityType } from '../entity-types.js'
+import { entities$, focus$, FocusMode, world$ } from '../game-state.js'
 import { ItemType } from '../item-types.js'
 import { BackButton } from './back-button.js'
 import styles from './entity.module.scss'
@@ -68,6 +68,11 @@ function GeneratorTestBurnCoalButton({ entityId }: { entityId: EntityId }) {
   )
 }
 
+function DumpJson({ entityId }: { entityId: EntityId }) {
+  const entity = useEntity(entityId)
+  return <pre className={styles.json}>{JSON.stringify(entity, null, 2)}</pre>
+}
+
 export function Entity() {
   const entityId = useEntityId()
   const entity = useEntity(entityId)
@@ -94,7 +99,7 @@ export function Entity() {
 
   return (
     <div className={styles.container}>
-      <pre className={styles.json}>{JSON.stringify(entity, null, 2)}</pre>
+      <DumpJson entityId={entityId} />
       <div className={styles.controls}>
         {buttons
           .map((button) => () => button)
