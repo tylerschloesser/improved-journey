@@ -5,6 +5,7 @@ import {
   BATTERY_CHARGE_RATE,
   BATTERY_DISCHARGE_RATE,
   BELT_CONSUMPTION,
+  BELT_SPEED,
   COAL_BURN_RATE,
   COAL_ENERGY,
   MINER_CONSUMPTION,
@@ -119,6 +120,49 @@ export function tickWorld(world: World) {
             output = entity.output = { type: ItemType.Coal, count: 0 }
           }
           output.count += count
+        }
+        break
+      }
+      case EntityType.Belt: {
+        const prev = world.entities[entity.prev]
+        invariant(prev)
+        switch (prev.type) {
+          case EntityType.Miner:
+            if (prev.output) {
+              for (let i = 0; i < prev.output.count; i++) {
+                entity.items.push({ type: prev.output.type, progress: 0 })
+              }
+              prev.output = null
+            }
+            break
+        }
+
+        const next = world.entities[entity.next]
+        invariant(next)
+        const remove = new Set<(typeof entity.items)[0]>()
+        for (const item of entity.items) {
+          item.progress += BELT_SPEED.perTick() * satisfaction
+          if (item.progress >= 1) {
+            remove.add(item)
+            switch (next.type) {
+              case EntityType.Belt: {
+                next.items.push(item)
+                item.progress -= 1
+                break
+              }
+              case EntityType.Generator: {
+                let fuel = next.fuel
+                if (!fuel) {
+                  fuel = next.fuel = { type: item.type, count: 0 }
+                }
+                invariant(fuel.type === item.type)
+                fuel.count += 1
+              }
+            }
+          }
+        }
+        if (remove.size) {
+          entity.items = entity.items.filter((item) => !remove.has(item))
         }
         break
       }

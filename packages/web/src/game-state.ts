@@ -82,11 +82,14 @@ export function addEntities(world: World, entities: BuildEntity[]): void {
         next = `${world.nextEntityId}`
       }
 
+      invariant(prev)
+      invariant(next)
+
       world.entities[entityId] = {
+        ...entity,
         id: entityId,
         prev,
         next,
-        ...entity,
       }
     } else {
       world.entities[entityId] = {
