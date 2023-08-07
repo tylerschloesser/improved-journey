@@ -62,6 +62,10 @@ export const tap$ = new Subject<Vec2>()
 
 export const world$ = new BehaviorSubject<World>(generateWorld())
 
+// export const world$ = new Subject<World>()
+//
+// world$.next(generateWorld())
+
 fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
   worker,
   'message',

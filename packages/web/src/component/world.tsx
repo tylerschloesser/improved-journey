@@ -7,6 +7,7 @@ import { init } from '../init.js'
 import { World as PixiWorld } from '../pixi/world.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
+import { interval, withLatestFrom } from 'rxjs'
 
 function useResizeObserver(canvas: HTMLCanvasElement | null) {
   useEffect(() => {
@@ -56,14 +57,14 @@ function useNavigateListener() {
 
 function useTickWorld() {
   useEffect(() => {
-    const tickWorld = () => {
-      worker.postMessage({
-        world: world$.value,
+    const sub = interval(1000 / TICK_RATE)
+      .pipe(withLatestFrom(world$))
+      .subscribe(([_, world]) => {
+        worker.postMessage({ world })
       })
-    }
-    const interval = window.setInterval(tickWorld, 1000 / TICK_RATE)
+
     return () => {
-      window.clearInterval(interval)
+      sub.unsubscribe()
     }
   }, [])
 }
