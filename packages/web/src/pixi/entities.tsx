@@ -3,14 +3,21 @@ import * as PIXI from 'pixi.js'
 import { bind } from '@react-rxjs/core'
 import React from 'react'
 import { DisplayEntity, Entity, EntityType } from '../entity-types.js'
-import { entities$, satisfaction$ } from '../game-state.js'
+import {
+  entities$,
+  satisfaction$,
+  ZoomLevel,
+  zoomLevel$,
+} from '../game-state.js'
 import { useDraw } from './use-draw.js'
 
 const [useEntities] = bind(entities$)
 const [useSatisfaction] = bind(satisfaction$)
+const [useZoomLevel] = bind(zoomLevel$)
 
 function DisplayEntity({ entity }: { entity: DisplayEntity }) {
   const satisfaction = useSatisfaction()
+  const zoomLevel = useZoomLevel()
 
   const drawBackground = useDraw(
     (g) => {
@@ -36,6 +43,7 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
         width={entity.size.x}
         height={entity.size.y}
         scale={0.01}
+        visible={zoomLevel === ZoomLevel.High}
       >
         <Text
           text={`sat\n${satisfaction.toFixed(2)}`}

@@ -38,6 +38,21 @@ export const satisfaction$ = new BehaviorSubject<number>(0)
 export const viewport$ = new Subject<Vec2>()
 export const zoom$ = new BehaviorSubject<number>(0.5)
 
+export enum ZoomLevel {
+  High,
+  Low,
+}
+
+export const zoomLevel$ = zoom$.pipe(
+  map((zoom) => {
+    if (zoom >= 0.5) {
+      return ZoomLevel.High
+    }
+    return ZoomLevel.Low
+  }),
+  distinctUntilChanged(),
+)
+
 export const position$ = new BehaviorSubject(new Vec2(0, 0))
 
 export const move$ = new Subject<Vec2>()
