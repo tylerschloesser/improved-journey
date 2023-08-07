@@ -12,7 +12,7 @@ import {
   MINE_RATE,
   SOLAR_PANEL_RATE,
 } from '../const.js'
-import { BatteryEntity, EntityType } from '../entity-types.js'
+import { BatteryEntity, BeltEntity, EntityType } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
 import { World } from '../types.js'
 
@@ -121,6 +121,10 @@ export function tickWorld(world: World): {
     1,
   )
 
+  // not super elegent, but a simple way to ensure
+  // we don't move items twice in one tick
+  const moved = new Set<BeltEntity['items'][0]>()
+
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.Miner: {
@@ -155,11 +159,15 @@ export function tickWorld(world: World): {
         invariant(next)
         const remove = new Set<(typeof entity.items)[0]>()
         for (const item of entity.items) {
+          // check if the item was just moved onto this belt
+          if (moved.has(item)) continue
+
           item.progress += BELT_SPEED.perTick() * satisfaction
           if (item.progress >= 1) {
             remove.add(item)
             switch (next.type) {
               case EntityType.Belt: {
+                moved.add(item)
                 next.items.push(item)
                 item.progress -= 1
                 break
