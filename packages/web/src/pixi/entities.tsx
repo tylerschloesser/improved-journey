@@ -1,7 +1,7 @@
 import { Container, Graphics, Text } from '@pixi/react'
-import * as PIXI from 'pixi.js'
 import { bind } from '@react-rxjs/core'
-import React, { useMemo } from 'react'
+import * as PIXI from 'pixi.js'
+import { useMemo } from 'react'
 import { DisplayEntity, Entity, EntityType } from '../entity-types.js'
 import {
   entities$,
@@ -41,8 +41,9 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
 
   return (
     <>
-      <Graphics draw={drawBackground} />
+      <Graphics draw={drawBackground} zIndex={1} />
       <Container
+        zIndex={2}
         x={entity.position.x}
         y={entity.position.y}
         width={entity.size.x}
@@ -94,7 +95,7 @@ function Entity({ entity }: { entity: Entity }) {
 export function Entities() {
   const entities = useEntities()
   return (
-    <>
+    <Container sortableChildren>
       {Object.values(entities).map((entity) => {
         switch (entity.type) {
           case EntityType.Display:
@@ -102,6 +103,6 @@ export function Entities() {
         }
         return <Entity key={entity.id} entity={entity} />
       })}
-    </>
+    </Container>
   )
 }

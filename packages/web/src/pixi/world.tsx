@@ -6,6 +6,7 @@ import { Build } from './build.js'
 import { Connection } from './connection.js'
 import { Grid } from './grid.js'
 import { Entities } from './entities.js'
+import * as PIXI from 'pixi.js'
 
 const [usePosition] = bind(position$)
 const [useCellSize] = bind(cellSize$)
@@ -28,6 +29,7 @@ function Transform({ children }: React.PropsWithChildren) {
       x={transform.translate.x}
       y={transform.translate.y}
       scale={transform.scale}
+      sortableChildren={true}
     >
       {children}
     </Container>
@@ -46,6 +48,7 @@ export function World({ canvas }: WorldProps) {
         view: canvas,
       }}
       onMount={(app) => {
+        PIXI.Container.defaultSortableChildren = true
         // hack because @pixi/react doesn't
         // respect my initial size...
         window.setTimeout(() => {
