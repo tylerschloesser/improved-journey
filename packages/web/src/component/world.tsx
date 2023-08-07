@@ -6,6 +6,7 @@ import { navigate$, viewport$, world$ } from '../game-state.js'
 import { generateWorld } from '../generate-world.js'
 import { init } from '../init.js'
 import { World as PixiWorld } from '../pixi/world.js'
+import { loadWorld } from '../storage.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
 import styles from './world.module.scss'
@@ -72,7 +73,9 @@ function useTickWorld() {
 
 function useInitWorld() {
   useEffect(() => {
-    world$.next(generateWorld())
+    loadWorld().then((world) => {
+      world$.next(world)
+    })
   }, [])
 }
 
