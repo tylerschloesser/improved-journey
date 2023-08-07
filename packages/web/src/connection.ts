@@ -140,7 +140,6 @@ combineLatest([
 
     build.cells.push({
       entity: newBelt({
-        color: 'yellow',
         position: cur,
         size: new Vec2(1),
         prev,

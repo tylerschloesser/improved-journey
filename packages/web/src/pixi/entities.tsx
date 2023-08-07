@@ -2,6 +2,8 @@ import { Container, Graphics, Text } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
 import * as PIXI from 'pixi.js'
 import { useMemo } from 'react'
+import invariant from 'tiny-invariant'
+import { EntityConfig, ENTITY_CONFIG } from '../entity-config.js'
 import {
   BeltEntity,
   DisplayEntity,
@@ -22,12 +24,17 @@ const [useEntities] = bind(entities$)
 const [useSatisfaction] = bind(satisfaction$)
 const [useZoomLevel] = bind(zoomLevel$)
 
-function MinerEntity({ entity }: { entity: MinerEntity }) {
+interface BaseEntityProps<T> {
+  entity: T
+  config: EntityConfig
+}
+
+function MinerEntity({ entity, config }: BaseEntityProps<MinerEntity>) {
   const drawBackground = useDraw(
     (g) => {
       g.clear()
 
-      g.beginFill(entity.color)
+      g.beginFill(config.color)
       g.drawRect(
         entity.position.x,
         entity.position.y,
@@ -61,7 +68,7 @@ function MinerEntity({ entity }: { entity: MinerEntity }) {
   )
 }
 
-function DisplayEntity({ entity }: { entity: DisplayEntity }) {
+function DisplayEntity({ entity, config }: BaseEntityProps<DisplayEntity>) {
   const satisfaction = useSatisfaction()
   const zoomLevel = useZoomLevel()
 
@@ -69,7 +76,7 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
     (g) => {
       g.clear()
 
-      g.beginFill(entity.color)
+      g.beginFill(config.color)
       g.drawRect(
         entity.position.x,
         entity.position.y,
@@ -105,11 +112,11 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
   )
 }
 
-function BeltEntity({ entity }: { entity: BeltEntity }) {
+function BeltEntity({ entity, config }: BaseEntityProps<BeltEntity>) {
   const drawBelt = useDraw(
     (g) => {
       g.clear()
-      g.beginFill(entity.color)
+      g.beginFill(config.color)
       g.drawRect(
         entity.position.x,
         entity.position.y,
@@ -144,12 +151,12 @@ function BeltEntity({ entity }: { entity: BeltEntity }) {
   )
 }
 
-function Entity({ entity }: { entity: Entity }) {
+function Entity({ entity, config }: BaseEntityProps<Entity>) {
   const draw = useDraw(
     (g) => {
       g.clear()
 
-      g.beginFill(entity.color)
+      g.beginFill(config.color)
       g.drawRect(
         entity.position.x,
         entity.position.y,
@@ -167,15 +174,23 @@ export function Entities() {
   return (
     <Container sortableChildren>
       {Object.values(entities).map((entity) => {
+        const config = ENTITY_CONFIG[entity.type]
+        invariant(config)
         switch (entity.type) {
           case EntityType.Display:
-            return <DisplayEntity key={entity.id} entity={entity} />
+            return (
+              <DisplayEntity key={entity.id} entity={entity} config={config} />
+            )
           case EntityType.Belt:
-            return <BeltEntity key={entity.id} entity={entity} />
+            return (
+              <BeltEntity key={entity.id} entity={entity} config={config} />
+            )
           case EntityType.Miner:
-            return <MinerEntity key={entity.id} entity={entity} />
+            return (
+              <MinerEntity key={entity.id} entity={entity} config={config} />
+            )
         }
-        return <Entity key={entity.id} entity={entity} />
+        return <Entity key={entity.id} entity={entity} config={config} />
       })}
     </Container>
   )

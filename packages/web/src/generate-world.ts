@@ -19,20 +19,17 @@ export function generateWorld(): World {
     newMiner({
       position: new Vec2(1, 2),
       size: new Vec2(2, 2),
-      color: 'blue',
       target: null,
     }),
 
     newGenerator({
       position: new Vec2(6, 2),
       size: new Vec2(3, 2),
-      color: 'orange',
     }),
 
     newDisplay({
       position: new Vec2(3, -1),
       size: new Vec2(1, 1),
-      color: 'white',
     }),
   ])
 

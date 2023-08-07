@@ -17,7 +17,6 @@ export interface BaseEntity {
   id: EntityId
   position: Vec2
   size: Vec2
-  color: string
 }
 
 export interface MinerEntity extends BaseEntity {

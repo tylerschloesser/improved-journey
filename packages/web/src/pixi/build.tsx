@@ -1,10 +1,10 @@
 import { Graphics } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
-import { build$ } from '../game-state.js'
 import * as PIXI from 'pixi.js'
-import { useCallback, useMemo } from 'react'
-import React from 'react'
 import { ColorMatrixFilter } from 'pixi.js'
+import { useCallback, useMemo } from 'react'
+import { ENTITY_CONFIG } from '../entity-config.js'
+import { build$ } from '../game-state.js'
 
 const [useBuild] = bind(build$)
 
@@ -46,7 +46,8 @@ export function Build() {
     (g: PIXI.Graphics) => {
       g.clear()
       if (!build) return
-      g.beginFill(build.entity.color)
+      const config = ENTITY_CONFIG[build.entity.type]
+      g.beginFill(config.color)
       g.drawRect(
         build.entity.position.x,
         build.entity.position.y,

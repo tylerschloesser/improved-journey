@@ -1,3 +1,4 @@
+import { newBelt } from './belt.js'
 import { BuildEntity, EntityType } from './entity-types.js'
 import { newBattery } from './entity/battery.js'
 import { newDisplay } from './entity/display.js'
@@ -8,40 +9,51 @@ import { newMiner } from './miner.js'
 import { Vec2 } from './vec2.js'
 
 export interface EntityConfig {
-  init(args: Omit<BuildEntity, 'type' | 'color'>): BuildEntity
+  init(args: Omit<BuildEntity, 'type'>): BuildEntity
+  color: string
   size: Vec2
 }
 
-export const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
+export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
   [EntityType.Miner]: {
-    init: (args) => newMiner({ ...args, color: '#2176AE', target: null }),
+    init: (args) => newMiner({ ...args, target: null }),
+    color: '#2176AE',
     size: new Vec2(2, 2),
   },
   [EntityType.Generator]: {
-    init: (args) => newGenerator({ ...args, color: '#FBB13C' }),
+    init: (args) => newGenerator({ ...args }),
+    color: '#FBB13C',
     size: new Vec2(3, 2),
   },
   [EntityType.SolarPanel]: {
-    init: (args) => newSolarPanel({ ...args, color: 'cyan' }),
+    init: (args) => newSolarPanel({ ...args }),
+    color: 'cyan',
     size: new Vec2(3, 3),
   },
   [EntityType.Battery]: {
-    init: (args) => newBattery({ ...args, color: 'purple' }),
+    init: (args) => newBattery({ ...args }),
+    color: 'purple',
     size: new Vec2(1, 1),
   },
   [EntityType.Display]: {
-    init: (args) => newDisplay({ ...args, color: 'white' }),
+    init: (args) => newDisplay({ ...args }),
+    color: 'white',
     size: new Vec2(1, 1),
   },
   [EntityType.Smelter]: {
     init: (args) =>
       newSmelter({
         ...args,
-        color: '#DAFEB7',
         target: null,
         input: null,
         output: null,
       }),
+    color: '#DAFEB7',
     size: new Vec2(2),
+  },
+  [EntityType.Belt]: {
+    init: (args) => newBelt({ ...args }),
+    color: '#3D348B',
+    size: new Vec2(1),
   },
 }
