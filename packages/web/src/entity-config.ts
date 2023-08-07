@@ -1,5 +1,6 @@
 import { BuildEntity, EntityType } from './entity-types.js'
 import { newBattery } from './entity/battery.js'
+import { newDisplay } from './entity/display.js'
 import { newGenerator } from './entity/generator.js'
 import { newSolarPanel } from './entity/solar-panel.js'
 import { newMiner } from './miner.js'
@@ -12,7 +13,7 @@ export interface EntityConfig {
 
 export const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
   [EntityType.Miner]: {
-    init: (args) => newMiner({ ...args, color: 'blue' }),
+    init: (args) => newMiner({ ...args, color: 'blue', target: null }),
     size: new Vec2(2, 2),
   },
   [EntityType.Generator]: {
@@ -28,7 +29,7 @@ export const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
     size: new Vec2(1, 1),
   },
   [EntityType.Display]: {
-    init: (args) => newMiner({ ...args, color: 'white' }),
+    init: (args) => newDisplay({ ...args, color: 'white' }),
     size: new Vec2(1, 1),
   },
 }

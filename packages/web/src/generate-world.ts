@@ -20,6 +20,7 @@ export function generateWorld(): World {
       position: new Vec2(1, 2),
       size: new Vec2(2, 2),
       color: 'blue',
+      target: null,
     }),
 
     newGenerator({

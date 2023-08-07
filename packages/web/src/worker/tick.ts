@@ -28,8 +28,11 @@ export function tickWorld(world: World): {
     switch (entity.type) {
       case EntityType.Belt:
         consumption += BELT_CONSUMPTION.perTick()
+        break
       case EntityType.Miner:
-        consumption += MINER_CONSUMPTION.perTick()
+        if (entity.target !== null) {
+          consumption += MINER_CONSUMPTION.perTick()
+        }
         break
       case EntityType.Generator: {
         let { burning } = entity
@@ -128,6 +131,8 @@ export function tickWorld(world: World): {
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.Miner: {
+        if (entity.target === null) break
+
         entity.progress += MINE_RATE.perTick() * satisfaction
         if (entity.progress >= 1) {
           const count = Math.trunc(entity.progress)
