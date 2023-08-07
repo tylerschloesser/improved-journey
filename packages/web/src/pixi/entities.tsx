@@ -41,7 +41,7 @@ function MinerEntity({ entity }: { entity: MinerEntity }) {
   const progress = Math.trunc(entity.progress * 100)
 
   const textStyle = useMemo(
-    () => new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 40 }),
+    () => new PIXI.TextStyle({ fill: 'white', align: 'center', fontSize: 40 }),
     [],
   )
 
