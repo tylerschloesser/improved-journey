@@ -1,6 +1,6 @@
 import { bind } from '@react-rxjs/core'
 import { cloneDeep } from 'lodash-es'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { first, map } from 'rxjs'
 import invariant from 'tiny-invariant'
@@ -81,34 +81,37 @@ export function Entity() {
     focus$.next({ entityId, mode: FocusMode.Entity })
   }, [entityId])
 
-  const buttons: JSX.Element[] = []
-  buttons.push(<BackButton className={styles.button} />)
+  const layout = useMemo(() => {
+    const buttons: JSX.Element[] = []
+    buttons.push(<BackButton className={styles.button} />)
 
-  if ([EntityType.Miner].includes(entity.type)) {
-    buttons.push(
-      <>
-        <MinerAddOutputButton />
-        <MinerTestOutputCoalButton entityId={entityId} />
-      </>,
-    )
-  }
+    if ([EntityType.Miner].includes(entity.type)) {
+      buttons.push(
+        <>
+          <MinerAddOutputButton />
+          <MinerTestOutputCoalButton entityId={entityId} />
+        </>,
+      )
+    }
 
-  if ([EntityType.Generator].includes(entity.type)) {
-    buttons.push(<GeneratorTestBurnCoalButton entityId={entityId} />)
-  }
+    if ([EntityType.Generator].includes(entity.type)) {
+      buttons.push(<GeneratorTestBurnCoalButton entityId={entityId} />)
+    }
+
+    const content = <DumpJson entityId={entityId} />
+
+    return {
+      content,
+      controls: buttons
+        .map((button) => () => button)
+        .map((Wrapper, i) => <Wrapper key={i} />),
+    }
+  }, [entityId, entity.type])
 
   return (
     <div className={styles.container}>
-      <div className={styles.content}>
-        <DumpJson entityId={entityId} />
-      </div>
-      <div className={styles.controls}>
-        {buttons
-          .map((button) => () => button)
-          .map((Wrapper, i) => (
-            <Wrapper key={i} />
-          ))}
-      </div>
+      <div className={styles.content}>{layout.content}</div>
+      <div className={styles.controls}>{layout.controls}</div>
     </div>
   )
 }
