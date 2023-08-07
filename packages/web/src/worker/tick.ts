@@ -132,6 +132,7 @@ export function tickWorld(world: World): {
     switch (entity.type) {
       case EntityType.Miner: {
         if (entity.target === null) break
+        invariant(entity.target === ItemType.Coal)
 
         entity.progress += MINE_RATE.perTick() * satisfaction
         if (entity.progress >= 1) {
