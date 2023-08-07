@@ -24,6 +24,7 @@ function Entity({ entity }: { entity: Entity }) {
       switch (entity.type) {
         case EntityType.Belt:
           g.beginFill('black')
+          g.lineStyle(0.05, 'gray')
           for (const item of entity.items) {
             g.drawCircle(
               entity.position.x + item.progress,
