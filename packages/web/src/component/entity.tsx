@@ -48,6 +48,26 @@ function MinerTestOutputCoalButton({ entityId }: { entityId: EntityId }) {
   )
 }
 
+function GeneratorTestBurnCoalButton({ entityId }: { entityId: EntityId }) {
+  return (
+    <button
+      className={styles.button}
+      onPointerUp={() => {
+        world$.pipe(first()).subscribe((world) => {
+          world = cloneDeep(world)
+          const generator = world.entities[entityId]
+          invariant(generator.type === EntityType.Generator)
+
+          generator.burning = { type: ItemType.Coal, progress: 0 }
+          world$.next(world)
+        })
+      }}
+    >
+      Test Burn Coal
+    </button>
+  )
+}
+
 export function Entity() {
   const entityId = useEntityId()
   const entity = useEntity(entityId)
@@ -69,23 +89,7 @@ export function Entity() {
   }
 
   if ([EntityType.Generator].includes(entity.type)) {
-    buttons.push(
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          world$.pipe(first()).subscribe((world) => {
-            world = cloneDeep(world)
-            const generator = world.entities[entityId]
-            invariant(generator.type === EntityType.Generator)
-
-            generator.burning = { type: ItemType.Coal, progress: 0 }
-            world$.next(world)
-          })
-        }}
-      >
-        Test Burn Coal
-      </button>,
-    )
+    buttons.push(<GeneratorTestBurnCoalButton entityId={entityId} />)
   }
 
   return (
