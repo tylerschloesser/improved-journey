@@ -1,7 +1,7 @@
 import { Container, Graphics, Text } from '@pixi/react'
 import * as PIXI from 'pixi.js'
 import { bind } from '@react-rxjs/core'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { DisplayEntity, Entity, EntityType } from '../entity-types.js'
 import {
   entities$,
@@ -34,6 +34,11 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
     [entity],
   )
 
+  const textStyle = useMemo(
+    () => new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 40 }),
+    [],
+  )
+
   return (
     <>
       <Graphics draw={drawBackground} />
@@ -45,12 +50,7 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
         scale={0.01}
         visible={zoomLevel === ZoomLevel.High}
       >
-        <Text
-          text={`sat\n${satisfaction.toFixed(2)}`}
-          style={
-            new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 40 })
-          }
-        />
+        <Text text={`sat\n${satisfaction.toFixed(2)}`} style={textStyle} />
       </Container>
     </>
   )
