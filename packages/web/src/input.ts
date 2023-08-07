@@ -122,8 +122,8 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
   const last = cache.at(-1)
   invariant(last)
 
-  // only dampen if last pointermove was <= 100ms ago
-  if (now - last.timeStamp > 100) return
+  // only dampen if last pointermove was <= 10ms ago
+  if (now - last.timeStamp > 10) return
 
   state.pointerEventCache.delete(ev.pointerId)
 
