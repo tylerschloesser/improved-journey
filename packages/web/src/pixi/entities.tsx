@@ -7,6 +7,7 @@ import {
   DisplayEntity,
   Entity,
   EntityType,
+  MinerEntity,
 } from '../entity-types.js'
 import {
   entities$,
@@ -20,6 +21,45 @@ import { ZIndex } from './z-index.js'
 const [useEntities] = bind(entities$)
 const [useSatisfaction] = bind(satisfaction$)
 const [useZoomLevel] = bind(zoomLevel$)
+
+function MinerEntity({ entity }: { entity: MinerEntity }) {
+  const drawBackground = useDraw(
+    (g) => {
+      g.clear()
+
+      g.beginFill(entity.color)
+      g.drawRect(
+        entity.position.x,
+        entity.position.y,
+        entity.size.x,
+        entity.size.y,
+      )
+    },
+    [entity],
+  )
+
+  const progress = Math.trunc(entity.progress * 100)
+
+  const textStyle = useMemo(
+    () => new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 40 }),
+    [],
+  )
+
+  return (
+    <Container zIndex={ZIndex.entity}>
+      <Graphics draw={drawBackground} />
+      <Container
+        x={entity.position.x}
+        y={entity.position.y}
+        width={entity.size.x}
+        height={entity.size.y}
+        scale={0.01}
+      >
+        <Text text={`${progress}%`} style={textStyle} />
+      </Container>
+    </Container>
+  )
+}
 
 function DisplayEntity({ entity }: { entity: DisplayEntity }) {
   const satisfaction = useSatisfaction()
@@ -132,6 +172,8 @@ export function Entities() {
             return <DisplayEntity key={entity.id} entity={entity} />
           case EntityType.Belt:
             return <BeltEntity key={entity.id} entity={entity} />
+          case EntityType.Miner:
+            return <MinerEntity key={entity.id} entity={entity} />
         }
         return <Entity key={entity.id} entity={entity} />
       })}
