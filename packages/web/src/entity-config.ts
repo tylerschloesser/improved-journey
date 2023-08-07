@@ -1,4 +1,9 @@
-import { BuildEntity, DisplayEntity, EntityType } from './entity-types.js'
+import {
+  BuildEntity,
+  DisplayContentType,
+  DisplayEntity,
+  EntityType,
+} from './entity-types.js'
 import { newBattery } from './entity/battery.js'
 import { newGenerator } from './entity/generator.js'
 import { newSolarPanel } from './entity/solar-panel.js'
@@ -33,7 +38,9 @@ export const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
         ...args,
         type: EntityType.Display,
         color: 'white',
-        text: 'tbd',
+        content: {
+          type: DisplayContentType.Satisfaction,
+        },
       }
       return entity
     },

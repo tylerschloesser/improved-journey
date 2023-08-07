@@ -49,9 +49,15 @@ export interface BatteryEntity extends BaseEntity {
   charge: number
 }
 
+export enum DisplayContentType {
+  Satisfaction,
+}
+
 export interface DisplayEntity extends BaseEntity {
   type: EntityType.Display
-  text: string
+  content: {
+    type: DisplayContentType
+  }
 }
 
 export type Entity =
