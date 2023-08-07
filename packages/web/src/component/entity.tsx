@@ -1,16 +1,15 @@
 import { bind } from '@react-rxjs/core'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FocusMode, entities$, focus$, world$ } from '../game-state.js'
-
+import { entities$, focus$, FocusMode, world$ } from '../game-state.js'
+import { cloneDeep } from 'lodash-es'
 import { first, map } from 'rxjs'
+import invariant from 'tiny-invariant'
+import { EntityId, EntityType } from '../entity-types.js'
+import { ItemType } from '../item-types.js'
+import { BackButton } from './back-button.js'
 import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
-import { EntityId, EntityType } from '../entity-types.js'
-import { BackButton } from './back-button.js'
-import { cloneDeep } from 'lodash-es'
-import invariant from 'tiny-invariant'
-import { ItemType } from '../item-types.js'
 
 const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),
