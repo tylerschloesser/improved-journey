@@ -1,8 +1,6 @@
 import { bind } from '@react-rxjs/core'
-import React from 'react'
 import { position$, satisfaction$, tick$, zoom$ } from '../game-state.js'
 import { BackButton } from './back-button.js'
-
 import styles from './debug.module.scss'
 
 const [useTick] = bind(tick$)
