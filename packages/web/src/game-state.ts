@@ -37,7 +37,8 @@ export const build$ = new BehaviorSubject<null | {
 
 export const satisfaction$ = new BehaviorSubject<number>(0)
 export const viewport$ = new Subject<Vec2>()
-export const zoom$ = new BehaviorSubject<number>(0.5)
+export const zoom$ = new ReplaySubject<number>(1)
+zoom$.next(0.5)
 
 export enum ZoomLevel {
   High,
@@ -202,11 +203,11 @@ export const pinch$ = new Subject<{
 
 // TODO this is roughly the same as wheel$ below
 pinch$
-  .pipe(withLatestFrom(viewport$, position$))
-  .subscribe(([pinch, viewport, position]) => {
+  .pipe(withLatestFrom(viewport$, position$, zoom$))
+  .subscribe(([pinch, viewport, position, prevZoom]) => {
     const zoom = {
-      prev: zoom$.value,
-      next: clamp(zoom$.value + pinch.zoom / 1_000, 0, 1),
+      prev: prevZoom,
+      next: clamp(prevZoom + pinch.zoom / 1_000, 0, 1),
     }
 
     const scale = {
@@ -227,22 +228,22 @@ pinch$
 
 // TODO this is roughly the same as pinch$ above
 wheel$
-  .pipe(withLatestFrom(viewport$, position$))
-  .subscribe(([wheel, viewport, position]) => {
-    const zoom = zoom$.value
+  .pipe(withLatestFrom(viewport$, position$, zoom$))
+  .subscribe(([wheel, viewport, position, prevZoom]) => {
+    const zoom = {
+      prev: prevZoom,
+      next: clamp(prevZoom + (wheel.deltaY / 4_000) * -1, 0, 1),
+    }
 
-    const nextZoom = clamp(zoom + (wheel.deltaY / 4_000) * -1, 0, 1)
-
-    if (zoom === nextZoom) return
+    if (zoom.prev === zoom.next) return
 
     const anchor = wheel.position.sub(viewport.div(2))
     const adjust = anchor
-      .div(zoomToCellSize(zoom))
-      .sub(anchor.div(zoomToCellSize(nextZoom)))
+      .div(zoomToCellSize(zoom.prev))
+      .sub(anchor.div(zoomToCellSize(zoom.next)))
 
     position$.next(position.add(adjust))
-
-    zoom$.next(nextZoom)
+    zoom$.next(zoom.next)
   })
 
 export const worldToScreen$ = combineLatest([
