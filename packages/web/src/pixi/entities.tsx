@@ -1,4 +1,5 @@
 import { Container, Graphics, Text } from '@pixi/react'
+import * as PIXI from 'pixi.js'
 import { bind } from '@react-rxjs/core'
 import React from 'react'
 import { DisplayEntity, Entity, EntityType } from '../entity-types.js'
@@ -29,8 +30,19 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
   return (
     <>
       <Graphics draw={drawBackground} />
-      <Container x={entity.position.x} y={entity.position.y}>
-        <Text text={`${satisfaction.toFixed(2)}`} />
+      <Container
+        x={entity.position.x}
+        y={entity.position.y}
+        width={entity.size.x}
+        height={entity.size.y}
+        scale={0.01}
+      >
+        <Text
+          text={`s\n${satisfaction.toFixed(2)}`}
+          style={
+            new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 40 })
+          }
+        />
       </Container>
     </>
   )
