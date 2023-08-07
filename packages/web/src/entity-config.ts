@@ -27,17 +27,17 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
   },
   [EntityType.SolarPanel]: {
     init: (args) => newSolarPanel({ ...args }),
-    color: 'cyan',
+    color: '#CDC392',
     size: new Vec2(3, 3),
   },
   [EntityType.Battery]: {
     init: (args) => newBattery({ ...args }),
-    color: 'purple',
+    color: '#78D5D7',
     size: new Vec2(1, 1),
   },
   [EntityType.Display]: {
     init: (args) => newDisplay({ ...args }),
-    color: 'white',
+    color: '#F7F9F9',
     size: new Vec2(1, 1),
   },
   [EntityType.Smelter]: {
