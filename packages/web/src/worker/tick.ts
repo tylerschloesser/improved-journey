@@ -30,7 +30,16 @@ export function tickWorld(world: World) {
         consumption += MINER_CONSUMPTION.perTick()
         break
       case EntityType.Generator: {
-        const { burning } = entity
+        let { burning } = entity
+
+        if (!burning && entity.fuel) {
+          burning = entity.burning = { type: entity.fuel.type, progress: 0 }
+          entity.fuel.count -= 1
+          if (entity.fuel.count === 0) {
+            entity.fuel = null
+          }
+        }
+
         if (burning) {
           invariant(burning.type === ItemType.Coal)
 
