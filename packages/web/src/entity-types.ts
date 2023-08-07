@@ -9,6 +9,7 @@ export enum EntityType {
   Generator = 'generator',
   SolarPanel = 'solar-panel',
   Battery = 'battery',
+  Display = 'display',
 }
 
 export interface BaseEntity {
@@ -48,12 +49,18 @@ export interface BatteryEntity extends BaseEntity {
   charge: number
 }
 
+export interface DisplayEntity extends BaseEntity {
+  type: EntityType.Display
+  text: string
+}
+
 export type Entity =
   | MinerEntity
   | BeltEntity
   | GeneratorEntity
   | SolarPanelEntity
   | BatteryEntity
+  | DisplayEntity
 
 export type BuildEntity =
   | Omit<MinerEntity, 'id'>
@@ -64,3 +71,4 @@ export type BuildEntity =
   | Omit<GeneratorEntity, 'id'>
   | Omit<SolarPanelEntity, 'id'>
   | Omit<BatteryEntity, 'id'>
+  | Omit<DisplayEntity, 'id'>

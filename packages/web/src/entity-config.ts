@@ -1,4 +1,4 @@
-import { BuildEntity, EntityType } from './entity-types.js'
+import { BuildEntity, DisplayEntity, EntityType } from './entity-types.js'
 import { newBattery } from './entity/battery.js'
 import { newGenerator } from './entity/generator.js'
 import { newSolarPanel } from './entity/solar-panel.js'
@@ -6,7 +6,7 @@ import { newMiner } from './miner.js'
 import { Vec2 } from './vec2.js'
 
 export interface EntityConfig {
-  init(args: Omit<BuildEntity, 'id' | 'type' | 'nodes' | 'color'>): BuildEntity
+  init(args: Omit<BuildEntity, 'type' | 'color'>): BuildEntity
   size: Vec2
 }
 
@@ -25,6 +25,18 @@ export const ENTITY_CONFIG: Partial<Record<EntityType, EntityConfig>> = {
   },
   [EntityType.Battery]: {
     init: (args) => newBattery({ ...args, color: 'purple' }),
+    size: new Vec2(1, 1),
+  },
+  [EntityType.Display]: {
+    init: (args) => {
+      const entity: Omit<DisplayEntity, 'id'> = {
+        ...args,
+        type: EntityType.Display,
+        color: 'white',
+        text: 'tbd',
+      }
+      return entity
+    },
     size: new Vec2(1, 1),
   },
 }
