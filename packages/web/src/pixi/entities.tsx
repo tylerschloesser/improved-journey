@@ -38,7 +38,7 @@ function DisplayEntity({ entity }: { entity: DisplayEntity }) {
         scale={0.01}
       >
         <Text
-          text={`s\n${satisfaction.toFixed(2)}`}
+          text={`sat\n${satisfaction.toFixed(2)}`}
           style={
             new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 40 })
           }
