@@ -37,19 +37,25 @@ function MinerAddOutputButton() {
 }
 
 function MinerTestOutputCoalButton({ entityId }: { entityId: EntityId }) {
+  const entity = useEntity(entityId)
+  invariant(entity.type === EntityType.Miner)
+
+  const hidden = entity.target !== ItemType.Coal
+
+  const onPointerUp = useCallback(() => {
+    world$.pipe(first()).subscribe((world) => {
+      world = cloneDeep(world)
+      const miner = world.entities[entityId]
+      invariant(miner.type === EntityType.Miner)
+      miner.output = { type: ItemType.Coal, count: 1 }
+      world$.next(world)
+    })
+  }, [])
+
+  if (hidden) return null
+
   return (
-    <button
-      className={styles.button}
-      onPointerUp={() => {
-        world$.pipe(first()).subscribe((world) => {
-          world = cloneDeep(world)
-          const miner = world.entities[entityId]
-          invariant(miner.type === EntityType.Miner)
-          miner.output = { type: ItemType.Coal, count: 1 }
-          world$.next(world)
-        })
-      }}
-    >
+    <button className={styles.button} onPointerUp={onPointerUp}>
       Test Output Coal
     </button>
   )
