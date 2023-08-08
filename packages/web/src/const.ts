@@ -49,3 +49,18 @@ export const TARGET_OPTIONS = {
   [EntityType.Miner]: [ItemType.Coal, ItemType.IronOre],
   [EntityType.Smelter]: [ItemType.IronPlate],
 }
+
+interface Recipe {
+  input: {
+    type: ItemType
+    count: number
+  }[]
+  speed: Rate
+}
+
+export const RECIPES: Partial<Record<ItemType, Recipe>> = {
+  [ItemType.IronPlate]: {
+    input: [{ type: ItemType.IronOre, count: 1 }],
+    speed: new Rate(1, RateType.PerSecond),
+  },
+}
