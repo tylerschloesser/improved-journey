@@ -63,6 +63,7 @@ export interface DisplayEntity extends BaseEntity {
 export interface SmelterEntity extends BaseEntity {
   type: EntityType.Smelter
   target: ItemType | null
+  progress: number
   input: { type: ItemType; count: number } | null
   output: { type: ItemType; count: number } | null
 }

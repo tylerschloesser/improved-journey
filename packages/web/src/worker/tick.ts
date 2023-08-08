@@ -184,6 +184,16 @@ export function tickWorld(world: World): {
                 }
                 invariant(fuel.type === item.type)
                 fuel.count += 1
+                break
+              }
+              case EntityType.Smelter: {
+                let input = next.input
+                if (!input) {
+                  input = next.input = { type: item.type, count: 0 }
+                }
+                invariant(input.type === item.type)
+                input.count += 1
+                break
               }
             }
           }

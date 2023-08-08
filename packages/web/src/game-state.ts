@@ -170,7 +170,11 @@ export function addEntities(world: World, entities: BuildEntity[]): void {
       }
     }
 
-    if ([EntityType.Miner, EntityType.Generator].includes(entity.type)) {
+    if (
+      [EntityType.Miner, EntityType.Generator, EntityType.Smelter].includes(
+        entity.type,
+      )
+    ) {
       const nodes = getNodes(entity)
       setNodes({ nodes, entityId, chunks: world.chunks })
     }
