@@ -8,6 +8,7 @@ import { BeltEntity } from './belt-entity.js'
 import { DisplayEntity } from './display-entity.js'
 import { EntityProps } from './entity-props.js'
 import { MinerEntity } from './miner-entity.js'
+import { SmelterEntity } from './smelter-entity.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
@@ -50,6 +51,10 @@ export function Entities() {
           case EntityType.Miner:
             return (
               <MinerEntity key={entity.id} entity={entity} config={config} />
+            )
+          case EntityType.Smelter:
+            return (
+              <SmelterEntity key={entity.id} entity={entity} config={config} />
             )
         }
         return <Entity key={entity.id} entity={entity} config={config} />
