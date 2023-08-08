@@ -1,6 +1,8 @@
 import { Graphics } from '@pixi/react'
 import { BeltEntity } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
+import { Vec2 } from '../vec2.js'
+import { drawItem } from './draw-item.js'
 import { EntityProps } from './entity-props.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
@@ -24,24 +26,15 @@ export function BeltEntity({ entity, config }: EntityProps<BeltEntity>) {
     (g) => {
       g.clear()
 
-      g.lineStyle(0.05, 'gray')
       for (const item of entity.items) {
-        switch (item.type) {
-          case ItemType.Coal:
-            g.beginFill('black')
-            break
-          case ItemType.IronOre:
-            g.beginFill('silver')
-            break
-          default:
-            throw `TODO no color for ${item.type}`
-        }
-
-        g.drawCircle(
-          entity.position.x + item.progress,
-          entity.position.y + 0.5,
-          0.25,
-        )
+        drawItem({
+          itemType: item.type,
+          g,
+          position: new Vec2(
+            entity.position.x + item.progress,
+            entity.position.y + 0.5,
+          ),
+        })
       }
     },
     [entity],
