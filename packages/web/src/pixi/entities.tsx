@@ -3,7 +3,7 @@ import { bind } from '@react-rxjs/core'
 import * as PIXI from 'pixi.js'
 import { useMemo } from 'react'
 import invariant from 'tiny-invariant'
-import { EntityConfig, ENTITY_CONFIG } from '../entity-config.js'
+import { ENTITY_CONFIG } from '../entity-config.js'
 import {
   BeltEntity,
   DisplayEntity,
@@ -17,17 +17,13 @@ import {
   ZoomLevel,
   zoomLevel$,
 } from '../game-state.js'
+import { EntityProps } from './entity-props.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
 const [useEntities] = bind(entities$)
 const [useSatisfaction] = bind(satisfaction$)
 const [useZoomLevel] = bind(zoomLevel$)
-
-interface EntityProps<T> {
-  entity: T
-  config: EntityConfig
-}
 
 function MinerEntity({ entity, config }: EntityProps<MinerEntity>) {
   const drawBackground = useDraw(
