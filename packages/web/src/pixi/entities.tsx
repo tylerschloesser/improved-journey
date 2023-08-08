@@ -24,12 +24,12 @@ const [useEntities] = bind(entities$)
 const [useSatisfaction] = bind(satisfaction$)
 const [useZoomLevel] = bind(zoomLevel$)
 
-interface BaseEntityProps<T> {
+interface EntityProps<T> {
   entity: T
   config: EntityConfig
 }
 
-function MinerEntity({ entity, config }: BaseEntityProps<MinerEntity>) {
+function MinerEntity({ entity, config }: EntityProps<MinerEntity>) {
   const drawBackground = useDraw(
     (g) => {
       g.clear()
@@ -68,7 +68,7 @@ function MinerEntity({ entity, config }: BaseEntityProps<MinerEntity>) {
   )
 }
 
-function DisplayEntity({ entity, config }: BaseEntityProps<DisplayEntity>) {
+function DisplayEntity({ entity, config }: EntityProps<DisplayEntity>) {
   const satisfaction = useSatisfaction()
   const zoomLevel = useZoomLevel()
 
@@ -112,7 +112,7 @@ function DisplayEntity({ entity, config }: BaseEntityProps<DisplayEntity>) {
   )
 }
 
-function BeltEntity({ entity, config }: BaseEntityProps<BeltEntity>) {
+function BeltEntity({ entity, config }: EntityProps<BeltEntity>) {
   const drawBelt = useDraw(
     (g) => {
       g.clear()
@@ -151,7 +151,7 @@ function BeltEntity({ entity, config }: BaseEntityProps<BeltEntity>) {
   )
 }
 
-function Entity({ entity, config }: BaseEntityProps<Entity>) {
+function Entity({ entity, config }: EntityProps<Entity>) {
   const draw = useDraw(
     (g) => {
       g.clear()
