@@ -1,6 +1,5 @@
 import { Graphics } from '@pixi/react'
 import { BeltEntity } from '../entity-types.js'
-import { ItemType } from '../item-types.js'
 import { Vec2 } from '../vec2.js'
 import { drawItem } from './draw-item.js'
 import { EntityProps } from './entity-props.js'
