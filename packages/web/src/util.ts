@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { Direction, Entity, EntityId, EntityType } from './entity-types.js'
-import { CellId, Chunk, ChunkId, World } from './types.js'
+import { Cell, CellId, Chunk, ChunkId, World } from './types.js'
 import { Vec2 } from './vec2.js'
 
 // https://www.geeksforgeeks.org/find-two-rectangles-overlap/#
@@ -113,10 +113,37 @@ export function cellIndexToPosition(chunk: Chunk, index: number) {
     .add(new Vec2(index % CHUNK_SIZE, Math.floor(index / CHUNK_SIZE)))
 }
 
+export function getCell(position: Vec2, world: World): Cell | null {
+  const { chunkId, index } = getCellArgs(position)
+  const chunk = world.chunks[chunkId]
+  return chunk?.cells[index] ?? null
+}
+
+export function getEntity(position: Vec2, world: World): Entity | null {
+  const cell = getCell(position, world)
+  if (cell?.entityId) {
+    return world.entities[cell.entityId]
+  }
+  return null
+}
+
 export function vec2ToDirection({ x, y }: Vec2): Direction {
   if (x === 0 && y === -1) return 'up'
   if (x === 1 && y === 0) return 'right'
   if (x === 0 && y === 1) return 'down'
   if (x === -1 && y === 0) return 'left'
   throw `not a valid direction: (${x},${y})}`
+}
+
+export function directionToVec2(direction: Direction): Vec2 {
+  switch (direction) {
+    case 'up':
+      return new Vec2(0, -1)
+    case 'right':
+      return new Vec2(1, 0)
+    case 'down':
+      return new Vec2(0, 1)
+    case 'left':
+      return new Vec2(-1, 0)
+  }
 }

@@ -10,7 +10,7 @@ import {
   entities$,
   position$,
 } from './game-state.js'
-import { Cell, CellId } from './types.js'
+import { Cell, CellId, Chunk } from './types.js'
 import { cellIndexToPosition, toCellId, vec2ToDirection } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -35,7 +35,7 @@ export const nodes$ = combineLatest([entity$, chunks$]).pipe(
       source: [],
       target: [],
     }
-    for (const chunk of Object.values(chunks)) {
+    for (const chunk of Object.values(chunks) as Chunk[]) {
       for (let i = 0; i < chunk.cells.length; i++) {
         const cell = chunk.cells[i]
         if (!cell) continue

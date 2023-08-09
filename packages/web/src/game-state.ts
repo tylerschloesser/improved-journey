@@ -21,7 +21,7 @@ import { TARGET_OPTIONS } from './const.js'
 import { BuildEntity, EntityId, EntityType } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { saveClient, saveWorld } from './storage.js'
-import { Cell, CellId, Client, TickResponse, World } from './types.js'
+import { Cell, CellId, Chunk, Client, TickResponse, World } from './types.js'
 import {
   cellIndexToPosition,
   CHUNK_SIZE,
@@ -123,7 +123,7 @@ export const cells$ = chunks$.pipe(
   map((chunks) => {
     const cells = new Map<CellId, Cell>()
 
-    for (const chunk of Object.values(chunks)) {
+    for (const chunk of Object.values(chunks) as Chunk[]) {
       invariant(chunk.cells.length === CHUNK_SIZE ** 2)
 
       for (let i = 0; i < chunk.cells.length; i++) {
