@@ -1,6 +1,7 @@
-import { Graphics } from '@pixi/react'
+import { Container, Graphics } from '@pixi/react'
 import { reverse } from 'lodash-es'
 import { BeltEntity } from '../entity-types.js'
+import { directionToAngle } from '../util.js'
 import { Vec2 } from '../vec2.js'
 import { drawItem } from './draw-item.js'
 import { EntityProps } from './entity-props.js'
@@ -12,14 +13,9 @@ export function BeltEntity({ entity, config }: EntityProps<BeltEntity>) {
     (g) => {
       g.clear()
       g.beginFill(config.color)
-      g.drawRect(
-        entity.position.x,
-        entity.position.y,
-        entity.size.x,
-        entity.size.y,
-      )
+      g.drawRect(0, 0, 1, 1)
     },
-    [entity],
+    [config],
   )
 
   const drawItems = useDraw(
@@ -30,10 +26,7 @@ export function BeltEntity({ entity, config }: EntityProps<BeltEntity>) {
         drawItem({
           itemType: item.type,
           g,
-          position: new Vec2(
-            entity.position.x + item.progress,
-            entity.position.y + 0.5,
-          ),
+          position: new Vec2(item.progress, 0),
         })
       }
     },
@@ -42,8 +35,29 @@ export function BeltEntity({ entity, config }: EntityProps<BeltEntity>) {
 
   return (
     <>
-      <Graphics draw={drawBelt} zIndex={ZIndex.belt} />
-      <Graphics draw={drawItems} zIndex={ZIndex.beltItems} />
+      <Container
+        x={entity.position.x}
+        y={entity.position.y}
+        width={entity.size.x}
+        height={entity.size.y}
+        zIndex={ZIndex.belt}
+      >
+        <Graphics draw={drawBelt} />
+      </Container>
+      <Container
+        x={entity.position.x}
+        y={entity.position.y}
+        width={entity.size.x}
+        height={entity.size.y}
+        zIndex={ZIndex.beltItems}
+      >
+        <Container
+          angle={directionToAngle(entity.direction)}
+          position={[0.5, 0.5]}
+        >
+          <Graphics draw={drawItems} position={[-0.5, 0]} />
+        </Container>
+      </Container>
     </>
   )
 }

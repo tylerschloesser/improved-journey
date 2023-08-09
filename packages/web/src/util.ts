@@ -147,3 +147,16 @@ export function directionToVec2(direction: Direction): Vec2 {
       return new Vec2(-1, 0)
   }
 }
+
+export function directionToAngle(direction: Direction): number {
+  switch (direction) {
+    case 'up':
+      return -90
+    case 'right':
+      return 0
+    case 'down':
+      return 90
+    case 'left':
+      return 180
+  }
+}
