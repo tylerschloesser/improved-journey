@@ -152,18 +152,11 @@ combineLatest([
     cur = cur.add(step)
   } while (!cur.equals(end))
 
-  if (build.valid) {
-    const last = build.cells.at(-1)
-    invariant(last)
+  const last = build.cells.at(-1)
+  if (last) {
     const target = getEntityIdForNode(last.entity.position, cells)
-    build.valid &&= !!target
     if (target) {
-      // for now, only allow to connect to node for other entities
-      build.valid &&= target !== entity.id
-
-      if (build.valid) {
-        last.entity.next = target
-      }
+      last.entity.next = target
     }
   }
 

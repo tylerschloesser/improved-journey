@@ -204,8 +204,6 @@ export function tickWorld(world: World): {
             break
         }
 
-        const next = world.entities[entity.next]
-        invariant(next)
         const remove = new Set<(typeof entity.items)[0]>()
         for (const item of entity.items) {
           // check if the item was just moved onto this belt
@@ -213,31 +211,37 @@ export function tickWorld(world: World): {
 
           item.progress += BELT_SPEED.perTick() * satisfaction
           if (item.progress >= 1) {
-            remove.add(item)
-            switch (next.type) {
-              case EntityType.Belt: {
-                moved.add(item)
-                next.items.push(item)
-                item.progress -= 1
-                break
-              }
-              case EntityType.Generator: {
-                let fuel = next.fuel
-                if (!fuel) {
-                  fuel = next.fuel = { type: item.type, count: 0 }
+            const next = world.entities[entity.next]
+
+            if (!next) {
+              item.progress = 1
+            } else {
+              remove.add(item)
+              switch (next.type) {
+                case EntityType.Belt: {
+                  moved.add(item)
+                  next.items.push(item)
+                  item.progress -= 1
+                  break
                 }
-                invariant(fuel.type === item.type)
-                fuel.count += 1
-                break
-              }
-              case EntityType.Smelter: {
-                let input = next.input
-                if (!input) {
-                  input = next.input = { type: item.type, count: 0 }
+                case EntityType.Generator: {
+                  let fuel = next.fuel
+                  if (!fuel) {
+                    fuel = next.fuel = { type: item.type, count: 0 }
+                  }
+                  invariant(fuel.type === item.type)
+                  fuel.count += 1
+                  break
                 }
-                invariant(input.type === item.type)
-                input.count += 1
-                break
+                case EntityType.Smelter: {
+                  let input = next.input
+                  if (!input) {
+                    input = next.input = { type: item.type, count: 0 }
+                  }
+                  invariant(input.type === item.type)
+                  input.count += 1
+                  break
+                }
               }
             }
           }
