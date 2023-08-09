@@ -77,13 +77,17 @@ export const world$ = new ReplaySubject<World>(1)
 
 export const addEntities$ = new Subject<{
   entities: BuildEntity[]
+  after?(world: World, entities: Entity[]): void
 }>()
 
-addEntities$.pipe(withLatestFrom(world$)).subscribe(([{ entities }, world]) => {
-  world = cloneDeep(world)
-  addEntities(world, entities)
-  world$.next(world)
-})
+addEntities$
+  .pipe(withLatestFrom(world$))
+  .subscribe(([{ entities, after }, world]) => {
+    world = cloneDeep(world)
+    const result = addEntities(world, entities)
+    after?.(world, result)
+    world$.next(world)
+  })
 
 export const setTarget$ = new Subject<{
   entityId: EntityId
@@ -169,7 +173,7 @@ function removeReplace(
   }
 }
 
-export function addEntities(world: World, entities: BuildEntity[]): void {
+export function addEntities(world: World, entities: BuildEntity[]): Entity[] {
   const replace: ReplaceMap = new Map()
   let result: Entity[] = []
 
@@ -237,6 +241,8 @@ export function addEntities(world: World, entities: BuildEntity[]): void {
     })
   }
   invariant(replace.size === 0)
+
+  return result
 }
 
 export const entities$ = world$.pipe(map((world) => world.entities))

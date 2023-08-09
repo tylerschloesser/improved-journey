@@ -8,6 +8,8 @@ import { addEntities$, connection$ } from '../game-state.js'
 import { BackButton } from './back-button.js'
 import styles from './connection.module.scss'
 import { useEntityId } from './use-entity-id.js'
+import { EntityType } from '../entity-types.js'
+import { ItemType } from '../item-types.js'
 
 const [useValid] = bind(
   buildConnection$.pipe(
@@ -40,6 +42,17 @@ export function Connection() {
           invariant(build)
           addEntities$.next({
             entities: build.cells.map((cell) => cell.entity),
+            after(world, entities) {
+              const source = world.entities[build.source]
+              invariant(source)
+              invariant(source.type === EntityType.Miner)
+
+              const first = entities[0]
+              invariant(first)
+              invariant(first.type === EntityType.Belt)
+
+              source.output.node = { entityId: first.id }
+            },
           })
         }}
       >
