@@ -40,3 +40,12 @@ export interface Client {
   position: Vec2
   zoom: number
 }
+
+export interface TickRequest {
+  world: World
+}
+
+export interface TickResponse {
+  world: World
+  satisfaction: number
+}

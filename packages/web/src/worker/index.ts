@@ -1,5 +1,5 @@
-import { World } from '../types.js'
-import { fixVec2 } from '../util.js'
+import { parse, stringify } from '../json.js'
+import { TickRequest, TickResponse, World } from '../types.js'
 import { tickWorld } from './tick.js'
 
 interface MessageData {
@@ -7,8 +7,7 @@ interface MessageData {
 }
 
 self.onmessage = (message: MessageEvent<MessageData>) => {
-  let { world } = message.data
-  fixVec2(world)
-  const response = tickWorld(world)
-  self.postMessage(response)
+  let { world } = parse<TickRequest>(message.data as any)
+  const response: TickResponse = tickWorld(world)
+  self.postMessage(stringify(response))
 }

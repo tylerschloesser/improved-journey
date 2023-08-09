@@ -13,6 +13,7 @@ import {
   take,
   withLatestFrom,
 } from 'rxjs'
+import { parse } from 'superjson'
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
 import { TARGET_OPTIONS } from './const.js'
@@ -25,11 +26,10 @@ import {
 } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { saveClient, saveWorld } from './storage.js'
-import { Cell, CellId, Client, World } from './types.js'
+import { Cell, CellId, Client, TickResponse, World } from './types.js'
 import {
   cellIndexToPosition,
   CHUNK_SIZE,
-  fixVec2,
   intersects,
   setEntityId,
   setNodes,
@@ -119,12 +119,9 @@ fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
   worker,
   'message',
 ).subscribe((message) => {
-  const { world, satisfaction } = message.data
-
-  fixVec2(world)
+  const { world, satisfaction } = parse<TickResponse>(message.data as any)
   satisfaction$.next(satisfaction)
   world$.next(world)
-
   saveWorld(world)
 })
 

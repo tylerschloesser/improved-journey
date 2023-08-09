@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
@@ -10,6 +10,7 @@ import {
   zoom$,
 } from '../game-state.js'
 import { init } from '../init.js'
+import { stringify } from '../json.js'
 import { World as PixiWorld } from '../pixi/world.js'
 import { loadClient, loadWorld } from '../storage.js'
 import { Vec2 } from '../vec2.js'
@@ -67,7 +68,7 @@ function useTickWorld() {
     const sub = interval(1000 / TICK_RATE)
       .pipe(withLatestFrom(world$))
       .subscribe(([_, world]) => {
-        worker.postMessage({ world })
+        worker.postMessage(stringify({ world }))
       })
 
     return () => {

@@ -109,20 +109,3 @@ export function cellIndexToPosition(chunk: Chunk, index: number) {
     .mul(CHUNK_SIZE)
     .add(new Vec2(index % CHUNK_SIZE, Math.floor(index / CHUNK_SIZE)))
 }
-
-export function fixVec2(obj: any): any {
-  // Vec2s get converted to plain objects during structured clone
-  // Look for the __type key and turn them back into Vec2s
-
-  for (const entry of Object.entries(obj)) {
-    const [key, value] = entry
-    if (key === '__type' && value === 'Vec2') {
-      invariant(typeof obj.x === 'number')
-      invariant(typeof obj.y === 'number')
-      return new Vec2(obj.x, obj.y)
-    } else if (value && typeof value === 'object') {
-      obj[key] = fixVec2(value)
-    }
-  }
-  return obj
-}
