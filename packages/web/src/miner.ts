@@ -1,4 +1,4 @@
-import { Entity, EntityType, MinerEntity } from './entity-types.js'
+import { EntityType, MinerEntity } from './entity-types.js'
 
 export function newMiner(
   args: Omit<MinerEntity, 'id' | 'type' | 'progress' | 'output'>,
@@ -7,6 +7,9 @@ export function newMiner(
     ...args,
     type: EntityType.Miner,
     progress: 0,
-    output: null,
+    output: {
+      queue: null,
+      node: null,
+    },
   }
 }

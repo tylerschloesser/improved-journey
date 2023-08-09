@@ -177,33 +177,37 @@ export function tickWorld(world: World): {
       case EntityType.Miner: {
         if (entity.target === null) break
 
+        const { queue, node } = entity.output
+        if (queue && node) {
+          invariant(queue.count > 0)
+          const target = world.entities[node.entityId]
+          invariant(target)
+          invariant(target.type === EntityType.Belt)
+          const item = {
+            type: queue.type,
+            progress: 0,
+          }
+          target.items.push(item)
+          // make sure we don't also move the new item
+          // during the same tick
+          moved.add(item)
+        }
+
         entity.progress += MINE_RATE.perTick() * satisfaction
         if (entity.progress >= 1) {
           const count = Math.trunc(entity.progress)
           entity.progress = entity.progress - count
 
-          let output = entity.output
-          if (output === null) {
-            output = entity.output = { type: entity.target, count: 0 }
+          let queue = entity.output.queue
+          if (queue === null) {
+            queue = entity.output.queue = { type: entity.target, count: 0 }
           }
-          output.count += count
+          invariant(queue.type === entity.target)
+          queue.count += count
         }
         break
       }
       case EntityType.Belt: {
-        const prev = world.entities[entity.prev]
-        invariant(prev)
-        switch (prev.type) {
-          case EntityType.Miner:
-            if (prev.output) {
-              for (let i = 0; i < prev.output.count; i++) {
-                entity.items.push({ type: prev.output.type, progress: 0 })
-              }
-              prev.output = null
-            }
-            break
-        }
-
         const remove = new Set<(typeof entity.items)[0]>()
         for (const item of entity.items) {
           // check if the item was just moved onto this belt

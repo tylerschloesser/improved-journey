@@ -136,21 +136,15 @@ export function addEntities(world: World, entities: BuildEntity[]): void {
     invariant(world.entities[entityId] === undefined)
 
     if (entity.type === EntityType.Belt) {
-      let { prev, next } = entity
-      if (!prev) {
-        prev = `${world.nextEntityId - 2}`
-      }
+      let { next } = entity
       if (!next) {
         next = `${world.nextEntityId}`
       }
-
-      invariant(prev)
       invariant(next)
 
       world.entities[entityId] = {
         ...entity,
         id: entityId,
-        prev,
         next,
       }
     } else {

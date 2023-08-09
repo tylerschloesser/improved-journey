@@ -1,4 +1,5 @@
-import { ItemType } from './item-types.js'
+import { ItemStack, ItemType } from './item-types.js'
+import { Node } from './types.js'
 import { Vec2 } from './vec2.js'
 
 export type EntityId = string
@@ -23,12 +24,14 @@ export interface MinerEntity extends BaseEntity {
   type: EntityType.Miner
   target: ItemType | null
   progress: number
-  output: { type: ItemType; count: number } | null
+  output: {
+    queue: ItemStack | null
+    node: Node | null
+  }
 }
 
 export interface BeltEntity extends BaseEntity {
   type: EntityType.Belt
-  prev: EntityId
   next: EntityId
   items: { type: ItemType; progress: number }[]
 }

@@ -3,3 +3,8 @@ export enum ItemType {
   IronOre = 'iron-ore',
   IronPlate = 'iron-plate',
 }
+
+export interface ItemStack {
+  type: ItemType
+  count: number
+}
