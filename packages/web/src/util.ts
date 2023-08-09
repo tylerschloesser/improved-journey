@@ -1,7 +1,6 @@
-import { isObject, mapKeys, mapValues } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import { EntityId } from './entity-types.js'
-import { Cell, CellId, Chunk, ChunkId, World } from './types.js'
+import { CellId, Chunk, ChunkId, World } from './types.js'
 import { Vec2 } from './vec2.js'
 
 // https://www.geeksforgeeks.org/find-two-rectangles-overlap/#
@@ -43,16 +42,7 @@ export function generateChunk(id: ChunkId): Chunk {
   }
 }
 
-function updateCell(
-  {
-    position,
-    chunks,
-  }: {
-    position: Vec2
-    chunks: World['chunks']
-  },
-  callback: (cell: Cell | null) => Cell | null,
-): void {
+function getCellArgs(position: Vec2) {
   const scaled = position.div(CHUNK_SIZE).floor()
   const chunkId = toChunkId(scaled)
 
@@ -60,14 +50,7 @@ function updateCell(
   const index = modded.y * CHUNK_SIZE + modded.x
   invariant(index >= 0)
 
-  let chunk = chunks[chunkId]
-  if (!chunk) {
-    chunk = chunks[chunkId] = generateChunk(chunkId)
-  }
-
-  invariant(index < chunk.cells.length)
-
-  chunk.cells[index] = callback(chunk.cells[index])
+  return { chunkId, index }
 }
 
 export function setEntityId({
@@ -79,14 +62,13 @@ export function setEntityId({
   entityId: EntityId
   chunks: World['chunks']
 }) {
-  updateCell({ position, chunks }, (cell) => {
-    if (!cell) {
-      cell = { entityId: null, nodes: [] }
-    }
-    invariant(cell.entityId === null)
-    cell.entityId = entityId
-    return cell
-  })
+  const { chunkId, index } = getCellArgs(position)
+  const chunk = chunks[chunkId]
+  invariant(chunk)
+  let cell = chunk.cells[index] ?? { entityId: null, nodes: [] }
+  invariant(cell.entityId === null)
+  cell.entityId = entityId
+  chunk.cells[index] = cell
 }
 
 export function setNodes({
@@ -99,16 +81,14 @@ export function setNodes({
   chunks: World['chunks']
 }): void {
   for (const position of nodes) {
-    updateCell({ position, chunks }, (cell) => {
-      if (!cell) {
-        cell = { entityId: null, nodes: [] }
-      }
-      const entityIds = new Set(cell.nodes.map((node) => node.entityId))
-      entityIds.add(entityId)
-
-      cell.nodes = Array.from(entityIds).map((entityId) => ({ entityId }))
-      return cell
-    })
+    const { chunkId, index } = getCellArgs(position)
+    const chunk = chunks[chunkId]
+    invariant(chunk)
+    const cell = chunk.cells[index] ?? { entityId: null, nodes: [] }
+    if (!cell.nodes.find((node) => node.entityId === entityId)) {
+      cell.nodes.push({ entityId })
+    }
+    chunk.cells[index] = cell
   }
 }
 
