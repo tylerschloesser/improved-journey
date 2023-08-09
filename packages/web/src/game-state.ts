@@ -229,7 +229,7 @@ export function addEntities(world: World, entities: BuildEntity[]): Entity[] {
       )
     ) {
       const nodes = getNodes(entity)
-      setNodes({ nodes, entityId, chunks: world.chunks })
+      setNodes({ nodes, entityId, world })
     }
   }
 
