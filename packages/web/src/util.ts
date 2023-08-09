@@ -63,7 +63,10 @@ export function setEntityId({
   chunks: World['chunks']
 }) {
   const { chunkId, index } = getCellArgs(position)
-  const chunk = chunks[chunkId]
+  let chunk = chunks[chunkId]
+  if (!chunk) {
+    chunk = chunks[chunkId] = generateChunk(chunkId)
+  }
   invariant(chunk)
   let cell = chunk.cells[index] ?? { entityId: null, nodes: [] }
   invariant(cell.entityId === null)
