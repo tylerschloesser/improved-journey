@@ -1,4 +1,3 @@
-import { NineSlicePlane } from 'pixi.js'
 import invariant from 'tiny-invariant'
 import { BuildEntity, Entity, EntityType } from './entity-types.js'
 import { World } from './types.js'
@@ -11,7 +10,7 @@ import {
 } from './util.js'
 import { Vec2 } from './vec2.js'
 
-export function addEntities(world: World, builds: BuildEntity[]) {
+export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
   let result: Entity[] = []
 
   for (let i = 0; i < builds.length; i++) {
@@ -109,9 +108,11 @@ export function addEntities(world: World, builds: BuildEntity[]) {
   }
 
   invariant(result.length === builds.length)
+  return result
 }
 
-function getNodes(entity: Omit<Entity, 'id'>) {
+// TODO move this to util
+export function getNodes(entity: Omit<Entity, 'id'>) {
   const { size } = entity
   const nodes: Vec2[] = []
   for (let x = 0; x < size.x; x++) {

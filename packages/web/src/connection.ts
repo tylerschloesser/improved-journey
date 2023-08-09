@@ -1,22 +1,19 @@
 import { isEqual } from 'lodash-es'
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
+import { getNodes } from './add-entities.js'
 import { newBelt } from './belt.js'
 import { BeltEntity, Entity, EntityId } from './entity-types.js'
 import {
   cells$,
-  chunks$,
   connection$,
   entities$,
   position$,
+  world$,
 } from './game-state.js'
-import { Cell, CellId, Chunk } from './types.js'
-import { cellIndexToPosition, toCellId, vec2ToDirection } from './util.js'
+import { Cell, CellId } from './types.js'
+import { toCellId, vec2ToDirection } from './util.js'
 import { Vec2 } from './vec2.js'
-
-interface Selected {
-  node: Vec2
-}
 
 const entity$ = combineLatest([connection$, entities$]).pipe(
   map(([connection, entities]) =>
@@ -25,8 +22,8 @@ const entity$ = combineLatest([connection$, entities$]).pipe(
   distinctUntilChanged<Entity | null>(isEqual),
 )
 
-export const nodes$ = combineLatest([entity$, chunks$]).pipe(
-  map(([entity, chunks]) => {
+export const nodes$ = combineLatest([entity$, world$]).pipe(
+  map(([entity, world]) => {
     if (entity === null) return null
     const nodes: {
       source: Vec2[]
@@ -35,27 +32,23 @@ export const nodes$ = combineLatest([entity$, chunks$]).pipe(
       source: [],
       target: [],
     }
-    for (const chunk of Object.values(chunks) as Chunk[]) {
-      for (let i = 0; i < chunk.cells.length; i++) {
-        const cell = chunk.cells[i]
-        if (!cell) continue
-        if (cell.nodes.find((node) => node.entityId === entity.id)) {
-          nodes.source.push(cellIndexToPosition(chunk, i))
-        } else if (cell.nodes.length > 0) {
-          nodes.target.push(cellIndexToPosition(chunk, i))
-        }
-      }
+
+    for (const other of Object.values(world.entities)) {
+      const arr = other === entity ? nodes.source : nodes.target
+      arr.push(...getNodes(other))
     }
+
     return nodes
   }),
 )
 
-export const selected$ = combineLatest([nodes$, position$]).pipe(
-  map(([nodes, position]) => {
-    if (nodes === null) return null
+export const start$ = combineLatest([world$, position$, connection$]).pipe(
+  map(([world, position, connection]) => {
+    if (!connection) return null
+    const nodes = getNodes(world.entities[connection.entityId])
 
     let closest: { node: Vec2; dist: number } | null = null
-    for (const node of nodes.source) {
+    for (const node of nodes) {
       const dist = position.sub(node.add(new Vec2(0.5))).len()
 
       if (closest === null || dist < closest.dist) {
@@ -63,13 +56,12 @@ export const selected$ = combineLatest([nodes$, position$]).pipe(
       }
     }
     invariant(closest)
-    return { node: closest.node }
+
+    return closest.node
   }),
-  distinctUntilChanged<Selected | null>(isEqual),
 )
 
 interface BuildConnection {
-  source: EntityId
   cells: { entity: Omit<BeltEntity, 'id'> }[]
   valid: boolean
 }
@@ -97,19 +89,17 @@ function getEntityIdForNode(
 
 combineLatest([
   entity$,
-  selected$,
+  start$,
   position$.pipe(
     map((position) => position.floor()),
     distinctUntilChanged<Vec2>(isEqual),
   ),
   cells$,
-]).subscribe(([entity, selected, position, cells]) => {
-  if (entity === null || selected === null) {
+]).subscribe(([entity, start, position, cells]) => {
+  if (entity === null || start === null) {
     buildConnection$.next(null)
     return
   }
-
-  const start = selected.node
 
   let delta = position.sub(start)
   if (Math.abs(delta.x) >= Math.abs(delta.y)) {
@@ -124,11 +114,7 @@ combineLatest([
 
   const end = start.add(delta)
 
-  const source = getEntityIdForNode(start, cells)
-  invariant(source)
-
   const build: BuildConnection = {
-    source,
     cells: [],
     valid: true,
   }

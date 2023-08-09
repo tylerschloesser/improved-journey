@@ -18,7 +18,7 @@ import invariant from 'tiny-invariant'
 import { addEntities } from './add-entities.js'
 import { animateVec2 } from './animate.js'
 import { TARGET_OPTIONS } from './const.js'
-import { BuildEntity, EntityId, EntityType } from './entity-types.js'
+import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { saveClient, saveWorld } from './storage.js'
 import { Cell, CellId, Chunk, Client, TickResponse, World } from './types.js'
@@ -70,12 +70,15 @@ export const tap$ = new Subject<Vec2>()
 
 export const world$ = new ReplaySubject<World>(1)
 
+export const newEntities$ = new Subject<Entity[]>()
 export const addEntities$ = new Subject<BuildEntity[]>()
 
-addEntities$.pipe(withLatestFrom(world$)).subscribe(([entities, world]) => {
+addEntities$.pipe(withLatestFrom(world$)).subscribe(([builds, world]) => {
   world = cloneDeep(world)
-  addEntities(world, entities)
+  const entities = addEntities(world, builds)
   world$.next(world)
+
+  newEntities$.next(entities)
 })
 
 export const setTarget$ = new Subject<{

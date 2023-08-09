@@ -1,10 +1,9 @@
 import { Graphics } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
-import React from 'react'
-import { buildConnection$, nodes$, selected$ } from '../connection.js'
+import { buildConnection$, nodes$, start$ } from '../connection.js'
 import { useDraw } from './use-draw.js'
 
-const [useSelected] = bind(selected$)
+const [useStart] = bind(start$)
 const [useBuild] = bind(buildConnection$)
 const [useNodes] = bind(nodes$)
 
@@ -34,17 +33,17 @@ function Nodes() {
   return <Graphics draw={draw} />
 }
 
-function Selected() {
-  const selected = useSelected()
+function Start() {
+  const start = useStart()
   const draw = useDraw(
     (g) => {
       g.clear()
-      if (selected === null) return
+      if (start === null) return
       g.beginFill('green')
-      const { x, y } = selected.node
+      const { x, y } = start
       g.drawRect(x, y, 1, 1)
     },
-    [selected],
+    [start],
   )
   return <Graphics draw={draw} />
 }
@@ -73,7 +72,7 @@ export function Connection() {
   return (
     <>
       <Nodes />
-      <Selected />
+      <Start />
       <Build />
     </>
   )
