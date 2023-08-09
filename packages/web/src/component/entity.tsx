@@ -47,7 +47,7 @@ function MinerTestOutputCoalButton({ entityId }: { entityId: EntityId }) {
       world = cloneDeep(world)
       const miner = world.entities[entityId]
       invariant(miner.type === EntityType.Miner)
-      miner.output.queue = { type: ItemType.Coal, count: 1 }
+      miner.output = { type: ItemType.Coal, count: 1 }
       world$.next(world)
     })
   }, [])

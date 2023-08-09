@@ -78,7 +78,7 @@ export function BuildEntity() {
           if (!valid) return
           const entity = build$.value?.entity
           invariant(entity)
-          addEntities$.next({ entities: [entity] })
+          addEntities$.next([entity])
         }}
       >
         Build

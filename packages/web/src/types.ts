@@ -20,17 +20,11 @@ export interface Chunk {
   cells: (Cell | null)[]
 }
 
-export interface Connection {
-  input: Set<EntityId>
-  output: Set<EntityId>
-}
-
 export interface World {
   tick: number
 
   chunks: Record<ChunkId, Chunk>
   entities: Record<EntityId, Entity>
-  connections: Record<EntityId, Connection>
 
   nextEntityId: number
 }

@@ -12,7 +12,6 @@ export function generateWorld(): World {
     nextEntityId: 0,
     entities: {},
     chunks: {},
-    connections: {},
   }
 
   addEntities(world, [
@@ -20,16 +19,28 @@ export function generateWorld(): World {
       position: new Vec2(1, 2),
       size: new Vec2(2, 2),
       target: null,
+      connections: {
+        input: new Set(),
+        output: new Set(),
+      },
     }),
 
     newGenerator({
       position: new Vec2(6, 2),
       size: new Vec2(3, 2),
+      connections: {
+        input: new Set(),
+        output: new Set(),
+      },
     }),
 
     newDisplay({
       position: new Vec2(3, -1),
       size: new Vec2(1, 1),
+      connections: {
+        input: new Set(),
+        output: new Set(),
+      },
     }),
   ])
 

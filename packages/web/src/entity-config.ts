@@ -9,34 +9,70 @@ import { newMiner } from './miner.js'
 import { Vec2 } from './vec2.js'
 
 export interface EntityConfig {
-  init(args: Omit<BuildEntity, 'type'>): BuildEntity
+  init(args: Omit<BuildEntity, 'type' | 'connections'>): BuildEntity
   color: string
   size: Vec2
 }
 
 export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
   [EntityType.Miner]: {
-    init: (args) => newMiner({ ...args, target: null }),
+    init: (args) =>
+      newMiner({
+        ...args,
+        connections: {
+          input: new Set(),
+          output: new Set(),
+        },
+        target: null,
+      }),
     color: '#2176AE',
     size: new Vec2(2, 2),
   },
   [EntityType.Generator]: {
-    init: (args) => newGenerator({ ...args }),
+    init: (args) =>
+      newGenerator({
+        ...args,
+        connections: {
+          input: new Set(),
+          output: new Set(),
+        },
+      }),
     color: '#FBB13C',
     size: new Vec2(3, 2),
   },
   [EntityType.SolarPanel]: {
-    init: (args) => newSolarPanel({ ...args }),
+    init: (args) =>
+      newSolarPanel({
+        ...args,
+        connections: {
+          input: new Set(),
+          output: new Set(),
+        },
+      }),
     color: '#CDC392',
     size: new Vec2(3, 3),
   },
   [EntityType.Battery]: {
-    init: (args) => newBattery({ ...args }),
+    init: (args) =>
+      newBattery({
+        ...args,
+        connections: {
+          input: new Set(),
+          output: new Set(),
+        },
+      }),
     color: '#78D5D7',
     size: new Vec2(1, 1),
   },
   [EntityType.Display]: {
-    init: (args) => newDisplay({ ...args }),
+    init: (args) =>
+      newDisplay({
+        ...args,
+        connections: {
+          input: new Set(),
+          output: new Set(),
+        },
+      }),
     color: '#F7F9F9',
     size: new Vec2(1, 1),
   },
@@ -44,6 +80,10 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
     init: (args) =>
       newSmelter({
         ...args,
+        connections: {
+          input: new Set(),
+          output: new Set(),
+        },
         target: null,
         input: null,
         output: null,
@@ -52,7 +92,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
     size: new Vec2(2),
   },
   [EntityType.Belt]: {
-    init: (args) => newBelt({ ...args }),
+    init: (args) => newBelt(args),
     color: '#3D348B',
     size: new Vec2(1),
   },

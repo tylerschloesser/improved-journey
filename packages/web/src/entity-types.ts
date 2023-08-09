@@ -1,5 +1,4 @@
 import { ItemStack, ItemType } from './item-types.js'
-import { Node } from './types.js'
 import { Vec2 } from './vec2.js'
 
 export type EntityId = string
@@ -14,32 +13,33 @@ export enum EntityType {
   Smelter = 'smelter',
 }
 
+export interface EntityConnections {
+  input: Set<EntityId>
+  output: Set<EntityId>
+}
+
 export interface BaseEntity {
   id: EntityId
   position: Vec2
   size: Vec2
+  connections: EntityConnections
 }
 
 export interface MinerEntity extends BaseEntity {
   type: EntityType.Miner
   target: ItemType | null
   progress: number
-  output: {
-    queue: ItemStack | null
-    node: Node | null
-  }
+  output: ItemStack | null
 }
 
 export interface BeltEntity extends BaseEntity {
   type: EntityType.Belt
-  next: Node | null
   items: { type: ItemType; progress: number }[]
 }
 
 export interface GeneratorEntity extends BaseEntity {
   type: EntityType.Generator
-
-  fuel: { type: ItemType; count: number } | null
+  fuel: ItemStack | null
   burning: { type: ItemType; progress: number } | null
 }
 
@@ -65,10 +65,10 @@ export interface DisplayEntity extends BaseEntity {
 
 export interface SmelterEntity extends BaseEntity {
   type: EntityType.Smelter
-  target: ItemType | null
   progress: number | null
-  input: { type: ItemType; count: number } | null
-  output: { type: ItemType; count: number } | null
+  target: ItemType | null
+  input: ItemStack | null
+  output: ItemStack | null
 }
 
 export type Entity =
@@ -80,28 +80,9 @@ export type Entity =
   | DisplayEntity
   | SmelterEntity
 
-export enum EntityIdRefType {
-  Actual = 'actual',
-  Replace = 'replace',
-}
-
-export type EntityIdRef =
-  | {
-      type: EntityIdRefType.Actual
-      actual: EntityId
-    }
-  | {
-      type: EntityIdRefType.Replace
-      replace: number
-    }
-
-export type BuildBeltEntity = Omit<BeltEntity, 'id' | 'next'> & {
-  next?: { entityId: EntityIdRef }
-}
-
 export type BuildEntity =
   | Omit<MinerEntity, 'id'>
-  | BuildBeltEntity
+  | Omit<BeltEntity, 'id'>
   | Omit<GeneratorEntity, 'id'>
   | Omit<SolarPanelEntity, 'id'>
   | Omit<BatteryEntity, 'id'>

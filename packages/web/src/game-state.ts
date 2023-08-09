@@ -17,13 +17,7 @@ import { parse } from 'superjson'
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
 import { TARGET_OPTIONS } from './const.js'
-import {
-  BuildEntity,
-  Entity,
-  EntityId,
-  EntityIdRefType,
-  EntityType,
-} from './entity-types.js'
+import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { saveClient, saveWorld } from './storage.js'
 import { Cell, CellId, Client, TickResponse, World } from './types.js'
@@ -77,19 +71,13 @@ export const tap$ = new Subject<Vec2>()
 
 export const world$ = new ReplaySubject<World>(1)
 
-export const addEntities$ = new Subject<{
-  entities: BuildEntity[]
-  after?(world: World, entities: Entity[]): void
-}>()
+export const addEntities$ = new Subject<BuildEntity[]>()
 
-addEntities$
-  .pipe(withLatestFrom(world$))
-  .subscribe(([{ entities, after }, world]) => {
-    world = cloneDeep(world)
-    const result = addEntities(world, entities)
-    after?.(world, result)
-    world$.next(world)
-  })
+addEntities$.pipe(withLatestFrom(world$)).subscribe(([entities, world]) => {
+  world = cloneDeep(world)
+  addEntities(world, entities)
+  world$.next(world)
+})
 
 export const setTarget$ = new Subject<{
   entityId: EntityId
@@ -182,29 +170,9 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
     const entityId = `${world.nextEntityId++}`
     invariant(world.entities[entityId] === undefined)
 
-    let entity: Entity
-
-    if (build.type === EntityType.Belt) {
-      entity = {
-        ...build,
-        next: null,
-        id: entityId,
-      }
-      if (build.next) {
-        if (build.next.entityId.type === EntityIdRefType.Actual) {
-          entity.next = { entityId: build.next.entityId.actual }
-        } else {
-          addReplace(replace, build.next.entityId.replace, (id) => {
-            invariant(entity.type === EntityType.Belt)
-            entity.next = { entityId: id }
-          })
-        }
-      }
-    } else {
-      entity = {
-        ...build,
-        id: entityId,
-      }
+    let entity: Entity = {
+      ...build,
+      id: entityId,
     }
 
     world.entities[entityId] = entity

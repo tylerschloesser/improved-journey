@@ -7,9 +7,6 @@ export function newMiner(
     ...args,
     type: EntityType.Miner,
     progress: 0,
-    output: {
-      queue: null,
-      node: null,
-    },
+    output: null,
   }
 }
