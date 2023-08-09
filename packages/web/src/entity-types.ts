@@ -32,7 +32,7 @@ export interface MinerEntity extends BaseEntity {
 
 export interface BeltEntity extends BaseEntity {
   type: EntityType.Belt
-  next: EntityId
+  next: Node | null
   items: { type: ItemType; progress: number }[]
 }
 
@@ -80,12 +80,28 @@ export type Entity =
   | DisplayEntity
   | SmelterEntity
 
+export enum EntityIdRefType {
+  Actual = 'actual',
+  Replace = 'replace',
+}
+
+export type EntityIdRef =
+  | {
+      type: EntityIdRefType.Actual
+      actual: EntityId
+    }
+  | {
+      type: EntityIdRefType.Replace
+      replace: number
+    }
+
+export type BuildBeltEntity = Omit<BeltEntity, 'id' | 'next'> & {
+  next?: { entityId: EntityIdRef }
+}
+
 export type BuildEntity =
   | Omit<MinerEntity, 'id'>
-  | (Omit<BeltEntity, 'id' | 'prev' | 'next'> & {
-      prev?: EntityId
-      next?: EntityId
-    })
+  | BuildBeltEntity
   | Omit<GeneratorEntity, 'id'>
   | Omit<SolarPanelEntity, 'id'>
   | Omit<BatteryEntity, 'id'>

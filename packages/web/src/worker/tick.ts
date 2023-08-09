@@ -215,9 +215,9 @@ export function tickWorld(world: World): {
 
           item.progress += BELT_SPEED.perTick() * satisfaction
           if (item.progress >= 1) {
-            const next = world.entities[entity.next]
+            const next = entity.next && world.entities[entity.next.entityId]
 
-            if (!next) {
+            if (next === null) {
               item.progress = 1
             } else {
               remove.add(item)

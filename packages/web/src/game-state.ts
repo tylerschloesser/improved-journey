@@ -16,7 +16,13 @@ import {
 import invariant from 'tiny-invariant'
 import { animateVec2 } from './animate.js'
 import { TARGET_OPTIONS } from './const.js'
-import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
+import {
+  BuildEntity,
+  Entity,
+  EntityId,
+  EntityIdRefType,
+  EntityType,
+} from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { saveClient, saveWorld } from './storage.js'
 import { Cell, CellId, Client, World } from './types.js'
@@ -128,31 +134,76 @@ function getNodes(entity: Omit<Entity, 'id'>) {
   return nodes.map((v) => entity.position.add(v))
 }
 
+type ReplaceEntityIdFn = (entityId: EntityId) => void
+type ReplaceMap = Map<number, Set<ReplaceEntityIdFn>>
+
+function addReplace(
+  map: ReplaceMap,
+  index: number,
+  fn: ReplaceEntityIdFn,
+): void {
+  let value = map.get(index)
+  if (!value) {
+    value = new Set()
+    map.set(index, value)
+  } else {
+    invariant(value.size > 0)
+  }
+  invariant(value.has(fn) === false)
+  value.add(fn)
+}
+
+function removeReplace(
+  map: ReplaceMap,
+  index: number,
+  fn: ReplaceEntityIdFn,
+): void {
+  const value = map.get(index)
+  invariant(value)
+  invariant(value.has(fn))
+  value.delete(fn)
+  if (value.size === 0) {
+    map.delete(index)
+  }
+}
+
 export function addEntities(world: World, entities: BuildEntity[]): void {
+  const replace: ReplaceMap = new Map()
+  let result: Entity[] = []
+
   for (let i = 0; i < entities.length; i++) {
-    const entity = entities[i]
+    const build = entities[i]
 
     const entityId = `${world.nextEntityId++}`
     invariant(world.entities[entityId] === undefined)
 
-    if (entity.type === EntityType.Belt) {
-      let { next } = entity
-      if (!next) {
-        next = `${world.nextEntityId}`
-      }
-      invariant(next)
+    let entity: Entity
 
-      world.entities[entityId] = {
-        ...entity,
+    if (build.type === EntityType.Belt) {
+      entity = {
+        ...build,
+        next: null,
         id: entityId,
-        next,
+      }
+      if (build.next) {
+        if (build.next.entityId.type === EntityIdRefType.Actual) {
+          entity.next = { entityId: build.next.entityId.actual }
+        } else {
+          addReplace(replace, build.next.entityId.replace, (id) => {
+            invariant(entity.type === EntityType.Belt)
+            entity.next = { entityId: id }
+          })
+        }
       }
     } else {
-      world.entities[entityId] = {
+      entity = {
+        ...build,
         id: entityId,
-        ...entity,
       }
     }
+
+    world.entities[entityId] = entity
+    result.push(entity)
 
     for (let x = 0; x < entity.size.x; x++) {
       for (let y = 0; y < entity.size.y; y++) {
@@ -173,6 +224,17 @@ export function addEntities(world: World, entities: BuildEntity[]): void {
       setNodes({ nodes, entityId, chunks: world.chunks })
     }
   }
+
+  invariant(result.length === entities.length)
+
+  for (const entry of replace.entries()) {
+    const [index, fns] = entry
+    fns.forEach((replaceFn) => {
+      replaceFn(result[index].id)
+      removeReplace(replace, index, replaceFn)
+    })
+  }
+  invariant(replace.size === 0)
 }
 
 export const entities$ = world$.pipe(map((world) => world.entities))

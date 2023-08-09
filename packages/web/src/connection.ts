@@ -2,7 +2,13 @@ import { isEqual } from 'lodash-es'
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { newBelt } from './belt.js'
-import { BeltEntity, BuildEntity, Entity, EntityId } from './entity-types.js'
+import {
+  BuildBeltEntity,
+  BuildEntity,
+  Entity,
+  EntityId,
+  EntityIdRefType,
+} from './entity-types.js'
 import {
   cells$,
   chunks$,
@@ -117,12 +123,7 @@ combineLatest([
   const end = start.add(delta)
 
   const build: {
-    cells: {
-      entity: Omit<BeltEntity, 'id' | 'prev' | 'next'> & {
-        prev?: EntityId
-        next?: EntityId
-      }
-    }[]
+    cells: { entity: BuildBeltEntity }[]
     valid: boolean
   } = {
     cells: [],
@@ -131,18 +132,15 @@ combineLatest([
 
   let cur = start
   do {
-    let prev
     if (cur === start) {
       const source = getEntityIdForNode(start, cells)
       invariant(source)
-      prev = source
     }
 
     build.cells.push({
       entity: newBelt({
         position: cur,
         size: new Vec2(1),
-        prev,
       }),
     })
 
@@ -152,11 +150,26 @@ combineLatest([
     cur = cur.add(step)
   } while (!cur.equals(end))
 
-  const last = build.cells.at(-1)
-  if (last) {
-    const target = getEntityIdForNode(last.entity.position, cells)
-    if (target) {
-      last.entity.next = target
+  for (let i = 0; i < build.cells.length; i++) {
+    const cell = build.cells[i]
+    const last = i === build.cells.length - 1
+    if (last) {
+      const target = getEntityIdForNode(cell.entity.position, cells)
+      if (target) {
+        cell.entity.next = {
+          entityId: {
+            type: EntityIdRefType.Actual,
+            actual: target,
+          },
+        }
+      }
+    } else {
+      cell.entity.next = {
+        entityId: {
+          type: EntityIdRefType.Replace,
+          replace: i + 1,
+        },
+      }
     }
   }
 
