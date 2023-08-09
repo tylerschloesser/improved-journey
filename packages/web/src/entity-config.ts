@@ -1,5 +1,5 @@
 import { newBelt } from './belt.js'
-import { BuildEntity, EntityType } from './entity-types.js'
+import { BeltEntity, BuildEntity, EntityType } from './entity-types.js'
 import { newBattery } from './entity/battery.js'
 import { newDisplay } from './entity/display.js'
 import { newGenerator } from './entity/generator.js'
@@ -8,8 +8,8 @@ import { newSolarPanel } from './entity/solar-panel.js'
 import { newMiner } from './miner.js'
 import { Vec2 } from './vec2.js'
 
-export interface EntityConfig {
-  init(args: Omit<BuildEntity, 'type' | 'connections'>): BuildEntity
+export interface EntityConfig<T = BuildEntity> {
+  init(args: Omit<T, 'type' | 'connections'>): T
   color: string
   size: Vec2
 }
@@ -95,5 +95,5 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
     init: (args) => newBelt(args),
     color: '#3D348B',
     size: new Vec2(1),
-  },
+  } as EntityConfig<BeltEntity>,
 }

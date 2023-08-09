@@ -11,7 +11,7 @@ import {
   position$,
 } from './game-state.js'
 import { Cell, CellId } from './types.js'
-import { cellIndexToPosition, toCellId } from './util.js'
+import { cellIndexToPosition, toCellId, vec2ToDirection } from './util.js'
 import { Vec2 } from './vec2.js'
 
 interface Selected {
@@ -119,6 +119,9 @@ combineLatest([
   }
 
   const step = delta.norm()
+
+  const direction = step.len() === 0 ? 'right' : vec2ToDirection(step)
+
   const end = start.add(delta)
 
   const source = getEntityIdForNode(start, cells)
@@ -137,6 +140,7 @@ combineLatest([
       entity: newBelt({
         position: cur,
         size: new Vec2(1),
+        direction,
       }),
     })
 

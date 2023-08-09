@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { Entity, EntityId, EntityType } from './entity-types.js'
+import { Direction, Entity, EntityId, EntityType } from './entity-types.js'
 import { CellId, Chunk, ChunkId, World } from './types.js'
 import { Vec2 } from './vec2.js'
 
@@ -111,4 +111,12 @@ export function cellIndexToPosition(chunk: Chunk, index: number) {
   return chunkIdToPosition(chunk.id)
     .mul(CHUNK_SIZE)
     .add(new Vec2(index % CHUNK_SIZE, Math.floor(index / CHUNK_SIZE)))
+}
+
+export function vec2ToDirection({ x, y }: Vec2): Direction {
+  if (x === 0 && y === -1) return 'up'
+  if (x === 1 && y === 0) return 'right'
+  if (x === 0 && y === 1) return 'down'
+  if (x === -1 && y === 0) return 'left'
+  throw `not a valid direction: (${x},${y})}`
 }

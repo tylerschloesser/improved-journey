@@ -13,6 +13,8 @@ export enum EntityType {
   Smelter = 'smelter',
 }
 
+export type Direction = 'up' | 'right' | 'down' | 'left'
+
 export interface EntityConnections {
   input: Set<EntityId>
   output: Set<EntityId>
@@ -35,6 +37,7 @@ export interface MinerEntity extends BaseEntity {
 export interface BeltEntity extends BaseEntity {
   type: EntityType.Belt
   items: { type: ItemType; progress: number }[]
+  direction: Direction
 }
 
 export interface GeneratorEntity extends BaseEntity {
