@@ -188,6 +188,10 @@ export function tickWorld(world: World): {
             progress: 0,
           }
           target.items.push(item)
+          queue.count -= 1
+          if (queue.count === 0) {
+            entity.output.queue = null
+          }
           // make sure we don't also move the new item
           // during the same tick
           moved.add(item)

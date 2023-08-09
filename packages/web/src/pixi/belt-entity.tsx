@@ -1,4 +1,5 @@
 import { Graphics } from '@pixi/react'
+import { reverse } from 'lodash-es'
 import { BeltEntity } from '../entity-types.js'
 import { Vec2 } from '../vec2.js'
 import { drawItem } from './draw-item.js'
@@ -25,7 +26,7 @@ export function BeltEntity({ entity, config }: EntityProps<BeltEntity>) {
     (g) => {
       g.clear()
 
-      for (const item of entity.items) {
+      for (const item of reverse(entity.items)) {
         drawItem({
           itemType: item.type,
           g,
