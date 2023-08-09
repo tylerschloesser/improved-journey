@@ -14,17 +14,14 @@ export function DisplayEntity({ entity, config }: EntityProps<DisplayEntity>) {
   const satisfaction = useSatisfaction()
   const zoomLevel = useZoomLevel()
 
+  const [x, y] = entity.position
+  const [width, height] = entity.size
+
   const drawBackground = useDraw(
     (g) => {
       g.clear()
-
       g.beginFill(config.color)
-      g.drawRect(
-        entity.position.x,
-        entity.position.y,
-        entity.size.x,
-        entity.size.y,
-      )
+      g.drawRect(x, y, width, height)
     },
     [entity],
   )
@@ -38,10 +35,10 @@ export function DisplayEntity({ entity, config }: EntityProps<DisplayEntity>) {
     <>
       <Graphics draw={drawBackground} />
       <Container
-        x={entity.position.x}
-        y={entity.position.y}
-        width={entity.size.x}
-        height={entity.size.y}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
         scale={0.01}
         visible={zoomLevel !== ZoomLevel.Low}
       >

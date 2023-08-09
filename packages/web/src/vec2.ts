@@ -4,17 +4,23 @@ function mod(n: number, m: number) {
   return ((n % m) + m) % m
 }
 
+export type SimpleVec2 = [number, number]
+
 export class Vec2 {
   readonly __type = 'Vec2'
   readonly x: number
   readonly y: number
 
-  constructor(x: number = 0, y?: number) {
-    invariant(!Number.isNaN(x))
-    invariant(!Number.isNaN(y))
-
-    this.x = x
-    this.y = y ?? x
+  constructor(x: number | SimpleVec2 = 0, y?: number) {
+    if (typeof x === 'number') {
+      this.x = x
+      this.y = y ?? x
+    } else {
+      this.x = x[0]
+      this.y = x[1]
+    }
+    invariant(!Number.isNaN(this.x))
+    invariant(!Number.isNaN(this.y))
   }
 
   sub(v: Vec2 | number): Vec2 {
@@ -72,5 +78,9 @@ export class Vec2 {
 
   floor(): Vec2 {
     return new Vec2(Math.floor(this.x), Math.floor(this.y))
+  }
+
+  toSimple(): SimpleVec2 {
+    return [this.x, this.y]
   }
 }

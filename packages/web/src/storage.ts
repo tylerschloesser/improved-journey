@@ -33,7 +33,7 @@ export async function loadClient(): Promise<Client> {
     return parse(saved)
   }
   return {
-    position: new Vec2(0),
+    position: new Vec2(0).toSimple(),
     zoom: 0.5,
   }
 }

@@ -33,22 +33,19 @@ export function BeltEntity({ entity, config }: EntityProps<BeltEntity>) {
     [entity],
   )
 
+  const [x, y] = entity.position
+  const [width, height] = entity.size
+
   return (
     <>
-      <Container
-        x={entity.position.x}
-        y={entity.position.y}
-        width={entity.size.x}
-        height={entity.size.y}
-        zIndex={ZIndex.belt}
-      >
+      <Container x={x} y={y} width={width} height={height} zIndex={ZIndex.belt}>
         <Graphics draw={drawBelt} />
       </Container>
       <Container
-        x={entity.position.x}
-        y={entity.position.y}
-        width={entity.size.x}
-        height={entity.size.y}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
         zIndex={ZIndex.beltItems}
       >
         <Container

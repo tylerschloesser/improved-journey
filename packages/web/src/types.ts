@@ -1,5 +1,5 @@
 import { Entity, EntityId } from './entity-types.js'
-import { Vec2 } from './vec2.js'
+import { SimpleVec2, Vec2 } from './vec2.js'
 
 export type ChunkId = string
 export type NodeId = string
@@ -31,7 +31,7 @@ export interface World {
 }
 
 export interface Client {
-  position: Vec2
+  position: SimpleVec2
   zoom: number
 }
 

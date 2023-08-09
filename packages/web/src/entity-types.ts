@@ -1,5 +1,5 @@
 import { ItemStack, ItemType } from './item-types.js'
-import { Vec2 } from './vec2.js'
+import { SimpleVec2, Vec2 } from './vec2.js'
 
 export type EntityId = string
 
@@ -22,8 +22,8 @@ export interface EntityConnections {
 
 export interface BaseEntity {
   id: EntityId
-  position: Vec2
-  size: Vec2
+  position: SimpleVec2
+  size: SimpleVec2
   connections: EntityConnections
 }
 

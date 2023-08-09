@@ -20,12 +20,9 @@ function Entity({ entity, config }: EntityProps<Entity>) {
       g.clear()
 
       g.beginFill(config.color)
-      g.drawRect(
-        entity.position.x,
-        entity.position.y,
-        entity.size.x,
-        entity.size.y,
-      )
+      const [x, y] = entity.position
+      const [width, height] = entity.size
+      g.drawRect(x, y, width, height)
     },
     [entity],
   )

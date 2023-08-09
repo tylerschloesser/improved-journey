@@ -80,7 +80,7 @@ function useTickWorld() {
 function useInitWorld() {
   useEffect(() => {
     loadClient().then((client) => {
-      position$.next(client.position)
+      position$.next(new Vec2(client.position))
       zoom$.next(client.zoom)
     })
     loadWorld().then((world) => {

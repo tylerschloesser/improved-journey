@@ -255,8 +255,8 @@ tap$
     const b1 = world.add(new Vec2(1, 1))
 
     for (const entity of Object.values(entities)) {
-      const a2 = entity.position
-      const b2 = entity.position.add(entity.size)
+      const a2 = new Vec2(entity.position)
+      const b2 = new Vec2(entity.position).add(new Vec2(entity.size))
 
       if (intersects(a1, a2, b1, b2)) {
         navigate$.next({ to: `entity/${entity.id}` })
@@ -299,7 +299,7 @@ merge(
 ).subscribe(([{ entityId, mode }, entities, position, viewport, cellSize]) => {
   const entity = entities[entityId]
 
-  let center = entity.position.add(entity.size.div(2))
+  let center = new Vec2(entity.position).add(new Vec2(entity.size).div(2))
 
   if (mode === FocusMode.Entity) {
     // entity UI takes up half the bottom of the screen
@@ -343,6 +343,6 @@ dampen$
   })
 
 combineLatest([zoom$, position$]).subscribe(([zoom, position]) => {
-  const client: Client = { zoom, position }
+  const client: Client = { zoom, position: position.toSimple() }
   saveClient(client)
 })

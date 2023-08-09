@@ -106,8 +106,8 @@ combineLatest([
   do {
     build.cells.push({
       entity: newBelt({
-        position: cur,
-        size: new Vec2(1),
+        position: cur.toSimple(),
+        size: new Vec2(1).toSimple(),
         direction,
       }),
     })

@@ -27,10 +27,10 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
     world.entities[entityId] = entity
     result.push(entity)
 
-    for (let x = 0; x < entity.size.x; x++) {
-      for (let y = 0; y < entity.size.y; y++) {
+    for (let x = 0; x < new Vec2(entity.size).x; x++) {
+      for (let y = 0; y < new Vec2(entity.size).y; y++) {
         setEntityId({
-          position: entity.position.add(new Vec2(x, y)),
+          position: new Vec2(entity.position).add(new Vec2(x, y)),
           entityId,
           chunks: world.chunks,
         })
@@ -72,11 +72,11 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
       }
       case EntityType.Belt: {
         const prev = getEntity(
-          entity.position.sub(directionToVec2(entity.direction)),
+          new Vec2(entity.position).sub(directionToVec2(entity.direction)),
           world,
         )
         const next = getEntity(
-          entity.position.add(directionToVec2(entity.direction)),
+          new Vec2(entity.position).add(directionToVec2(entity.direction)),
           world,
         )
 
@@ -113,7 +113,7 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
 
 // TODO move this to util
 export function getNodes(entity: Omit<Entity, 'id'>) {
-  const { size } = entity
+  const size = new Vec2(entity.size)
   const nodes: Vec2[] = []
   for (let x = 0; x < size.x; x++) {
     nodes.push(new Vec2(x, -1))
@@ -123,5 +123,5 @@ export function getNodes(entity: Omit<Entity, 'id'>) {
     nodes.push(new Vec2(-1, y))
     nodes.push(new Vec2(size.x, y))
   }
-  return nodes.map((v) => entity.position.add(v))
+  return nodes.map((v) => new Vec2(entity.position).add(v))
 }

@@ -18,8 +18,8 @@ export function generateWorld(): World {
 
   addEntities(world, [
     newMiner({
-      position: new Vec2(1, 2),
-      size: new Vec2(2, 2),
+      position: new Vec2(1, 2).toSimple(),
+      size: new Vec2(2, 2).toSimple(),
       target: null,
       connections: {
         input: new Set(),
@@ -28,8 +28,8 @@ export function generateWorld(): World {
     }),
 
     newGenerator({
-      position: new Vec2(6, 2),
-      size: new Vec2(3, 2),
+      position: new Vec2(6, 2).toSimple(),
+      size: new Vec2(3, 2).toSimple(),
       connections: {
         input: new Set(),
         output: new Set(),
@@ -37,8 +37,8 @@ export function generateWorld(): World {
     }),
 
     newDisplay({
-      position: new Vec2(3, -1),
-      size: new Vec2(1, 1),
+      position: new Vec2(3, -1).toSimple(),
+      size: new Vec2(1, 1).toSimple(),
       connections: {
         input: new Set(),
         output: new Set(),

@@ -48,12 +48,9 @@ export function Build() {
       if (!build) return
       const config = ENTITY_CONFIG[build.entity.type]
       g.beginFill(config.color)
-      g.drawRect(
-        build.entity.position.x,
-        build.entity.position.y,
-        build.entity.size.x,
-        build.entity.size.y,
-      )
+      const [x, y] = build.entity.position
+      const [width, height] = build.entity.size
+      g.drawRect(x, y, width, height)
 
       filters.valid.enabled = build.valid
       filters.invalid.enabled = !build.valid

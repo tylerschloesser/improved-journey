@@ -14,12 +14,12 @@ function isValid(
   entity: Pick<Entity, 'position' | 'size'>,
   entities: Entity[],
 ) {
-  const a1 = entity.position
-  const b1 = entity.position.add(entity.size)
+  const a1 = new Vec2(entity.position)
+  const b1 = new Vec2(entity.position).add(new Vec2(entity.size))
 
   for (const check of entities) {
-    const a2 = check.position
-    const b2 = check.position.add(check.size)
+    const a2 = new Vec2(check.position)
+    const b2 = new Vec2(check.position).add(new Vec2(check.size))
     if (intersects(a1, a2, b1, b2)) return false
   }
 
@@ -45,8 +45,11 @@ export function BuildEntity() {
     const sub = combineLatest([position$, entities$]).subscribe(
       ([position, entities]) => {
         const entity: BuildEntity = config.init({
-          position: position.sub(size.sub(new Vec2(1, 1)).div(2)).floor(),
-          size,
+          position: position
+            .sub(size.sub(new Vec2(1, 1)).div(2))
+            .floor()
+            .toSimple(),
+          size: size.toSimple(),
         })
 
         let valid = isValid(entity, Object.values(entities))

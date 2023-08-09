@@ -14,12 +14,11 @@ export function MinerEntity({ entity, config }: EntityProps<MinerEntity>) {
       g.clear()
 
       g.beginFill(config.color)
-      g.drawRect(
-        entity.position.x,
-        entity.position.y,
-        entity.size.x,
-        entity.size.y,
-      )
+
+      const [x, y] = entity.position
+      const [width, height] = entity.size
+
+      g.drawRect(x, y, width, height)
     },
     [entity],
   )
@@ -31,7 +30,7 @@ export function MinerEntity({ entity, config }: EntityProps<MinerEntity>) {
       drawItem({
         itemType: entity.target,
         g,
-        position: entity.position.add(new Vec2(1.5, 0.5)),
+        position: new Vec2(entity.position).add(new Vec2(1.5, 0.5)),
       })
     },
     [entity],
@@ -44,16 +43,13 @@ export function MinerEntity({ entity, config }: EntityProps<MinerEntity>) {
     [],
   )
 
+  const [x, y] = entity.position
+  const [width, height] = entity.size
+
   return (
     <Container zIndex={ZIndex.entity}>
       <Graphics draw={drawBackground} />
-      <Container
-        x={entity.position.x}
-        y={entity.position.y}
-        width={entity.size.x}
-        height={entity.size.y}
-        scale={0.01}
-      >
+      <Container x={x} y={y} width={width} height={height} scale={0.01}>
         <Text text={`${progress}%`} style={textStyle} />
       </Container>
       <Graphics draw={drawTarget} />

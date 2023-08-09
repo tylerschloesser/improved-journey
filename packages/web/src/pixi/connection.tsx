@@ -59,7 +59,7 @@ function Build() {
       for (const cell of build.cells) {
         const color = `hsla(${build.valid ? 100 : 0}, 50%, 50%, .5)`
         g.beginFill(color)
-        const { x, y } = cell.entity.position
+        const [x, y] = cell.entity.position
         g.drawRect(x, y, 1, 1)
       }
     },

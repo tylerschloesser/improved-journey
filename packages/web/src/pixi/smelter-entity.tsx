@@ -7,17 +7,14 @@ import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
 export function SmelterEntity({ entity, config }: EntityProps<SmelterEntity>) {
+  const [x, y] = entity.position
+  const [width, height] = entity.size
   const drawBackground = useDraw(
     (g) => {
       g.clear()
 
       g.beginFill(config.color)
-      g.drawRect(
-        entity.position.x,
-        entity.position.y,
-        entity.size.x,
-        entity.size.y,
-      )
+      g.drawRect(x, y, width, height)
     },
     [entity],
   )
@@ -29,7 +26,7 @@ export function SmelterEntity({ entity, config }: EntityProps<SmelterEntity>) {
       drawItem({
         itemType: entity.target,
         g,
-        position: entity.position.add(new Vec2(1.5, 0.5)),
+        position: new Vec2(entity.position).add(new Vec2(1.5, 0.5)),
       })
     },
     [entity],
