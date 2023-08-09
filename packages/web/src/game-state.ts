@@ -43,6 +43,8 @@ export const build$ = new BehaviorSubject<null | {
   valid: boolean
 }>(null)
 
+export const worldSize$ = new BehaviorSubject<number>(-1)
+
 export const satisfaction$ = new BehaviorSubject<number>(0)
 export const viewport$ = new Subject<Vec2>()
 

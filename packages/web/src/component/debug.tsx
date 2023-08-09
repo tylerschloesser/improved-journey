@@ -1,5 +1,11 @@
 import { bind } from '@react-rxjs/core'
-import { position$, satisfaction$, tick$, zoom$ } from '../game-state.js'
+import {
+  position$,
+  satisfaction$,
+  tick$,
+  worldSize$,
+  zoom$,
+} from '../game-state.js'
 import { BackButton } from './back-button.js'
 import styles from './debug.module.scss'
 
@@ -7,18 +13,26 @@ const [useTick] = bind(tick$)
 const [usePosition] = bind(position$)
 const [useZoom] = bind(zoom$)
 const [useSatisfaction] = bind(satisfaction$)
+const [useWorldSize] = bind(worldSize$)
 
 export function Debug() {
   const tick = useTick()
   const position = usePosition()
   const zoom = useZoom()
   const satisfaction = useSatisfaction()
+  const worldSize = useWorldSize()
 
   const rows = [
     { key: 'tick', value: `${tick}` },
     { key: 'position', value: position.toString() },
     { key: 'zoom', value: zoom.toFixed(2) },
     { key: 'satisfaction', value: satisfaction.toFixed(2) },
+    {
+      key: 'world size',
+      value: `${Math.round(
+        worldSize / 1024,
+      )}KiB (${worldSize.toLocaleString()})`,
+    },
   ]
 
   return (

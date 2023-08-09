@@ -1,10 +1,13 @@
+import { worldSize$ } from './game-state.js'
 import { generateWorld } from './generate-world.js'
 import { Client, World } from './types.js'
 import { fixVec2 } from './util.js'
 import { Vec2 } from './vec2.js'
 
 export async function saveWorld(world: World): Promise<void> {
-  localStorage.setItem('world', JSON.stringify(world))
+  const json = JSON.stringify(world)
+  worldSize$.next(json.length)
+  localStorage.setItem('world', json)
 }
 
 export async function loadWorld(): Promise<World> {
