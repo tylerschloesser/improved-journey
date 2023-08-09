@@ -23,7 +23,7 @@ const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),
 )
 
-function MinerAddOutputButton() {
+function AddOutputButton() {
   const navigate = useNavigate()
   return (
     <button
@@ -140,10 +140,13 @@ export function Entity() {
     const buttons: JSX.Element[] = []
     buttons.push(<BackButton className={styles.button} />)
 
+    if ([EntityType.Miner, EntityType.Belt].includes(entity.type)) {
+      buttons.push(<AddOutputButton />)
+    }
+
     if ([EntityType.Miner].includes(entity.type)) {
       buttons.push(
         <>
-          <MinerAddOutputButton />
           <MinerTestOutputCoalButton entityId={entityId} />
         </>,
       )
