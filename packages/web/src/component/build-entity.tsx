@@ -1,18 +1,10 @@
-import { cloneDeep } from 'lodash-es'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { EntityConfig, ENTITY_CONFIG } from '../entity-config.js'
 import { BuildEntity, Entity, EntityType } from '../entity-types.js'
-import {
-  addEntities,
-  addEntities$,
-  build$,
-  entities$,
-  position$,
-  world$,
-} from '../game-state.js'
+import { addEntities$, build$, entities$, position$ } from '../game-state.js'
 import { intersects } from '../util.js'
 import { Vec2 } from '../vec2.js'
 
@@ -86,7 +78,7 @@ export function BuildEntity() {
           if (!valid) return
           const entity = build$.value?.entity
           invariant(entity)
-          addEntities$.next([entity])
+          addEntities$.next({ entities: [entity] })
         }}
       >
         Build

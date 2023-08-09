@@ -74,10 +74,15 @@ export const selected$ = combineLatest([nodes$, position$]).pipe(
   distinctUntilChanged<Selected | null>(isEqual),
 )
 
-export const buildConnection$ = new BehaviorSubject<{
-  cells: { entity: BuildEntity }[]
+interface BuildConnection<T = BuildEntity> {
+  source: EntityId
+  cells: { entity: T }[]
   valid: boolean
-} | null>(null)
+}
+
+export const buildConnection$ = new BehaviorSubject<BuildConnection | null>(
+  null,
+)
 
 function getEntityIdForNode(
   node: Vec2,
@@ -122,21 +127,18 @@ combineLatest([
   const step = delta.norm()
   const end = start.add(delta)
 
-  const build: {
-    cells: { entity: BuildBeltEntity }[]
-    valid: boolean
-  } = {
+  const source = getEntityIdForNode(start, cells)
+  invariant(source)
+
+  const build: BuildConnection<BuildBeltEntity> = {
+    source,
     cells: [],
     valid: true,
   }
 
   let cur = start
-  do {
-    if (cur === start) {
-      const source = getEntityIdForNode(start, cells)
-      invariant(source)
-    }
 
+  do {
     build.cells.push({
       entity: newBelt({
         position: cur,

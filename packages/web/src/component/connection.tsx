@@ -1,19 +1,13 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { bind } from '@react-rxjs/core'
+import { distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
-import {
-  addEntities,
-  addEntities$,
-  connection$,
-  world$,
-} from '../game-state.js'
+import { buildConnection$ } from '../connection.js'
+import { addEntities$, connection$ } from '../game-state.js'
+import { BackButton } from './back-button.js'
 import styles from './connection.module.scss'
 import { useEntityId } from './use-entity-id.js'
-import { cloneDeep } from 'lodash-es'
-import { buildConnection$ } from '../connection.js'
-import { BackButton } from './back-button.js'
-import { distinctUntilChanged, map } from 'rxjs'
 
 const [useValid] = bind(
   buildConnection$.pipe(
@@ -44,7 +38,9 @@ export function Connection() {
           if (!valid) return
           const build = buildConnection$.value
           invariant(build)
-          addEntities$.next(build.cells.map((cell) => cell.entity))
+          addEntities$.next({
+            entities: build.cells.map((cell) => cell.entity),
+          })
         }}
       >
         Build

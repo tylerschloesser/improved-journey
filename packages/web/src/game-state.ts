@@ -75,9 +75,11 @@ export const tap$ = new Subject<Vec2>()
 
 export const world$ = new ReplaySubject<World>(1)
 
-export const addEntities$ = new Subject<BuildEntity[]>()
+export const addEntities$ = new Subject<{
+  entities: BuildEntity[]
+}>()
 
-addEntities$.pipe(withLatestFrom(world$)).subscribe(([entities, world]) => {
+addEntities$.pipe(withLatestFrom(world$)).subscribe(([{ entities }, world]) => {
   world = cloneDeep(world)
   addEntities(world, entities)
   world$.next(world)
