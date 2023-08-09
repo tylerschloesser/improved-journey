@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { EntityId, EntityType } from './entity-types.js'
+import { Entity, EntityId, EntityType } from './entity-types.js'
 import { CellId, Chunk, ChunkId, World } from './types.js'
 import { Vec2 } from './vec2.js'
 
@@ -75,12 +75,12 @@ export function setEntityId({
 }
 
 export function setNodes({
+  entity,
   nodes,
-  entityId,
   world,
 }: {
+  entity: Entity
   nodes: Vec2[]
-  entityId: EntityId
   world: World
 }): void {
   for (const position of nodes) {
@@ -88,16 +88,19 @@ export function setNodes({
     const chunk = world.chunks[chunkId]
     invariant(chunk)
     const cell = chunk.cells[index] ?? { entityId: null, nodes: [] }
-    if (!cell.nodes.find((node) => node.entityId === entityId)) {
-      cell.nodes.push({ entityId })
-    }
+    invariant(!cell.nodes.find((node) => node.entityId === entity.id))
+
+    cell.nodes.push({ entityId: entity.id })
     chunk.cells[index] = cell
 
     if (cell.entityId) {
       const neighbor = world.entities[cell.entityId]
       invariant(neighbor)
-      if (neighbor.type === EntityType.Belt && neighbor.next === null) {
-        neighbor.next = { entityId }
+      if (neighbor.type === EntityType.Belt) {
+        invariant(neighbor.connections.output.size === 0)
+
+        neighbor.connections.output.add(entity.id)
+        entity.connections.input.add(neighbor.id)
       }
     }
   }

@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash-es'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { first, map } from 'rxjs'
+import { serialize } from 'superjson'
 import invariant from 'tiny-invariant'
 import { TARGET_OPTIONS } from '../const.js'
 import { EntityId, EntityType } from '../entity-types.js'
@@ -83,7 +84,11 @@ function GeneratorTestBurnCoalButton({ entityId }: { entityId: EntityId }) {
 
 function DumpJson({ entityId }: { entityId: EntityId }) {
   const entity = useEntity(entityId)
-  return <pre className={styles.json}>{JSON.stringify(entity, null, 2)}</pre>
+  return (
+    <pre className={styles.json}>
+      {JSON.stringify(serialize(entity).json, null, 2)}
+    </pre>
+  )
 }
 
 function TargetSelect({ entityId }: { entityId: EntityId }) {

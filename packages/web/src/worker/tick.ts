@@ -18,6 +18,7 @@ import {
 import {
   BatteryEntity,
   BeltEntity,
+  Entity,
   EntityType,
   SmelterEntity,
 } from '../entity-types.js'
@@ -177,20 +178,24 @@ export function tickWorld(world: World): {
       case EntityType.Miner: {
         if (entity.target === null) break
 
-        const { queue, node } = entity.output
-        if (queue && node) {
-          invariant(queue.count > 0)
-          const target = world.entities[node.entityId]
+        if (entity.output && entity.connections.output.size > 0) {
+          invariant(entity.output.count > 0)
+
+          invariant(entity.connections.output.size === 1)
+          const targetEntityId = Array.from(entity.connections.output)[0]
+          const target = world.entities[targetEntityId]
+
           invariant(target)
           invariant(target.type === EntityType.Belt)
+
           const item = {
-            type: queue.type,
+            type: entity.output.type,
             progress: 0,
           }
           target.items.push(item)
-          queue.count -= 1
-          if (queue.count === 0) {
-            entity.output.queue = null
+          entity.output.count -= 1
+          if (entity.output.count === 0) {
+            entity.output = null
           }
           // make sure we don't also move the new item
           // during the same tick
@@ -202,12 +207,12 @@ export function tickWorld(world: World): {
           const count = Math.trunc(entity.progress)
           entity.progress = entity.progress - count
 
-          let queue = entity.output.queue
-          if (queue === null) {
-            queue = entity.output.queue = { type: entity.target, count: 0 }
+          let output = entity.output
+          if (output === null) {
+            output = entity.output = { type: entity.target, count: 0 }
           }
-          invariant(queue.type === entity.target)
-          queue.count += count
+          invariant(output.type === entity.target)
+          output.count += count
         }
         break
       }
@@ -219,7 +224,12 @@ export function tickWorld(world: World): {
 
           item.progress += BELT_SPEED.perTick() * satisfaction
           if (item.progress >= 1) {
-            const next = entity.next && world.entities[entity.next.entityId]
+            let next: Entity | null = null
+            if (entity.connections.output.size > 0) {
+              invariant(entity.connections.output.size === 1)
+              next = world.entities[Array.from(entity.connections.output)[0]]
+              invariant(next)
+            }
 
             if (next === null) {
               item.progress = 1

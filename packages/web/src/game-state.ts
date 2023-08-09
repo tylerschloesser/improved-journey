@@ -127,41 +127,7 @@ function getNodes(entity: Omit<Entity, 'id'>) {
   return nodes.map((v) => entity.position.add(v))
 }
 
-type ReplaceEntityIdFn = (entityId: EntityId) => void
-type ReplaceMap = Map<number, Set<ReplaceEntityIdFn>>
-
-function addReplace(
-  map: ReplaceMap,
-  index: number,
-  fn: ReplaceEntityIdFn,
-): void {
-  let value = map.get(index)
-  if (!value) {
-    value = new Set()
-    map.set(index, value)
-  } else {
-    invariant(value.size > 0)
-  }
-  invariant(value.has(fn) === false)
-  value.add(fn)
-}
-
-function removeReplace(
-  map: ReplaceMap,
-  index: number,
-  fn: ReplaceEntityIdFn,
-): void {
-  const value = map.get(index)
-  invariant(value)
-  invariant(value.has(fn))
-  value.delete(fn)
-  if (value.size === 0) {
-    map.delete(index)
-  }
-}
-
-export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
-  const replace: ReplaceMap = new Map()
+export function addEntities(world: World, builds: BuildEntity[]) {
   let result: Entity[] = []
 
   for (let i = 0; i < builds.length; i++) {
@@ -194,22 +160,11 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
       )
     ) {
       const nodes = getNodes(entity)
-      setNodes({ nodes, entityId, world })
+      setNodes({ entity, nodes, world })
     }
   }
 
   invariant(result.length === builds.length)
-
-  for (const entry of replace.entries()) {
-    const [index, fns] = entry
-    fns.forEach((replaceFn) => {
-      replaceFn(result[index].id)
-      removeReplace(replace, index, replaceFn)
-    })
-  }
-  invariant(replace.size === 0)
-
-  return result
 }
 
 export const entities$ = world$.pipe(map((world) => world.entities))
