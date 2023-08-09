@@ -10,11 +10,49 @@ import {
   COAL_ENERGY,
   MINER_CONSUMPTION,
   MINE_RATE,
+  Recipe,
+  RECIPES,
+  SMELTER_CONSUMPTION,
   SOLAR_PANEL_RATE,
 } from '../const.js'
-import { BatteryEntity, BeltEntity, EntityType } from '../entity-types.js'
+import {
+  BatteryEntity,
+  BeltEntity,
+  EntityType,
+  SmelterEntity,
+} from '../entity-types.js'
 import { ItemType } from '../item-types.js'
 import { World } from '../types.js'
+
+interface SmelterState {
+  consumption: number
+  recipe: Recipe | null
+  ready: number
+}
+
+function getSmelterState(smelter: SmelterEntity): SmelterState {
+  let state: SmelterState = {
+    consumption: 0,
+    recipe: null,
+    ready: 0,
+  }
+  if (smelter.target === null) return state
+
+  state.recipe = RECIPES[smelter.target] ?? null
+
+  invariant(state.recipe !== null)
+  invariant(state.recipe.input.length === 1)
+
+  if (smelter.input && smelter.input.type === state.recipe.input[0].type) {
+    state.ready = Math.floor(smelter.input.count / state.recipe.input[0].count)
+  }
+
+  if (state.ready || smelter.progress) {
+    state.consumption = SMELTER_CONSUMPTION.perTick()
+  }
+
+  return state
+}
 
 export function tickWorld(world: World): {
   world: World
@@ -26,14 +64,20 @@ export function tickWorld(world: World): {
 
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
-      case EntityType.Belt:
+      case EntityType.Belt: {
         consumption += BELT_CONSUMPTION.perTick()
         break
-      case EntityType.Miner:
+      }
+      case EntityType.Miner: {
         if (entity.target !== null) {
           consumption += MINER_CONSUMPTION.perTick()
         }
         break
+      }
+      case EntityType.Smelter: {
+        consumption += getSmelterState(entity).consumption
+        break
+      }
       case EntityType.Generator: {
         let { burning } = entity
 
@@ -201,6 +245,45 @@ export function tickWorld(world: World): {
         if (remove.size) {
           entity.items = entity.items.filter((item) => !remove.has(item))
         }
+        break
+      }
+      case EntityType.Smelter: {
+        if (entity.target === null) break
+        const state = getSmelterState(entity)
+        if (state.recipe === null) {
+          invariant(state.consumption === 0)
+          invariant(state.ready === 0)
+          break
+        }
+
+        let progress = state.recipe.speed.perTick() * satisfaction
+
+        if (entity.progress !== null) {
+          entity.progress += progress
+          if (entity.progress >= 1) {
+            let output = entity.output
+            if (output === null) {
+              output = entity.output = { type: entity.target, count: 0 }
+            }
+            invariant(entity.output && entity.output.type === entity.target)
+            output.count += 1
+            progress = entity.progress - 1
+            invariant(progress < 1)
+            entity.progress = null
+          }
+        }
+
+        if (entity.progress === null && state.ready && progress > 0) {
+          invariant(entity.input)
+          invariant(entity.input.type === state.recipe.input[0].type)
+          invariant(entity.input.count >= state.recipe.input[0].count)
+          entity.input.count -= state.recipe.input[0].count
+          if (entity.input.count === 0) {
+            entity.input = null
+          }
+          entity.progress = progress
+        }
+
         break
       }
     }
