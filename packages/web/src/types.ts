@@ -31,7 +31,7 @@ export interface World {
 
   chunks: Record<ChunkId, Chunk>
   entities: Record<EntityId, Entity>
-  connections: Record<ConnectionId, Connection>
+  connections: Map<EntityId, { input: Set<EntityId>; output: Set<EntityId> }>
 
   nextEntityId: number
 }
