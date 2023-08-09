@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { getNodes } from './add-entities.js'
 import { newBelt } from './belt.js'
-import { BeltEntity, Entity, EntityId } from './entity-types.js'
+import { BeltEntity, Entity } from './entity-types.js'
 import {
   cells$,
   connection$,
@@ -11,7 +11,6 @@ import {
   position$,
   world$,
 } from './game-state.js'
-import { Cell, CellId } from './types.js'
 import { toCellId, vec2ToDirection } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -69,23 +68,6 @@ interface BuildConnection {
 export const buildConnection$ = new BehaviorSubject<BuildConnection | null>(
   null,
 )
-
-function getEntityIdForNode(
-  node: Vec2,
-  cells: Map<CellId, Cell>,
-): EntityId | null {
-  const cell = cells.get(toCellId(node))
-  if (!cell) return null
-
-  // TODO don't currently support > 1 entities per node
-  invariant(cell.nodes.length < 2)
-
-  if (cell.nodes.length === 0) {
-    return null
-  }
-
-  return cell.nodes[0].entityId
-}
 
 combineLatest([
   entity$,
