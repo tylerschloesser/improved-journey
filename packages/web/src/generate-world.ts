@@ -1,6 +1,6 @@
+import { addEntities } from './add-entities.js'
 import { newDisplay } from './entity/display.js'
 import { newGenerator } from './entity/generator.js'
-import { addEntities } from './game-state.js'
 import { newMiner } from './miner.js'
 import { World } from './types.js'
 import { Vec2 } from './vec2.js'
