@@ -172,12 +172,12 @@ function removeReplace(
   }
 }
 
-export function addEntities(world: World, entities: BuildEntity[]): Entity[] {
+export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
   const replace: ReplaceMap = new Map()
   let result: Entity[] = []
 
-  for (let i = 0; i < entities.length; i++) {
-    const build = entities[i]
+  for (let i = 0; i < builds.length; i++) {
+    const build = builds[i]
 
     const entityId = `${world.nextEntityId++}`
     invariant(world.entities[entityId] === undefined)
@@ -230,7 +230,7 @@ export function addEntities(world: World, entities: BuildEntity[]): Entity[] {
     }
   }
 
-  invariant(result.length === entities.length)
+  invariant(result.length === builds.length)
 
   for (const entry of replace.entries()) {
     const [index, fns] = entry

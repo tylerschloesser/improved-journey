@@ -12,7 +12,7 @@ export function generateWorld(): World {
     nextEntityId: 0,
     entities: {},
     chunks: {},
-    connections: new Map(),
+    connections: {},
   }
 
   addEntities(world, [
