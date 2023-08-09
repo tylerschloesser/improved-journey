@@ -1,6 +1,8 @@
 import { EntityType } from './entity-types.js'
 import { ItemType } from './item-types.js'
 
+export const WORLD_VERSION = 1
+
 enum RateType {
   PerSecond,
   PerTick,
@@ -44,7 +46,7 @@ export const MINER_CONSUMPTION = new Rate(1, RateType.PerTick)
 export const SMELTER_CONSUMPTION = new Rate(1, RateType.PerTick)
 
 // how long does it take for an item to move across a belt
-export const BELT_SPEED = new Rate(0.5, RateType.PerSecond)
+export const BELT_SPEED = new Rate(1, RateType.PerSecond)
 
 export const TARGET_OPTIONS = {
   [EntityType.Miner]: [ItemType.Coal, ItemType.IronOre],

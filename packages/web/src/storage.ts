@@ -1,3 +1,4 @@
+import { WORLD_VERSION } from './const.js'
 import { worldSize$ } from './game-state.js'
 import { generateWorld } from './generate-world.js'
 import { parse, stringify } from './json.js'
@@ -13,7 +14,11 @@ export async function saveWorld(world: World): Promise<void> {
 export async function loadWorld(): Promise<World> {
   const saved = localStorage.getItem('world')
   if (saved) {
-    return parse(saved)
+    const world = parse<World>(saved)
+    if (world.version === WORLD_VERSION) {
+      return world
+    }
+    console.warn('world version mismatch, re-generating...')
   }
   return generateWorld()
 }

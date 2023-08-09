@@ -1,4 +1,5 @@
 import { addEntities } from './add-entities.js'
+import { WORLD_VERSION } from './const.js'
 import { newDisplay } from './entity/display.js'
 import { newGenerator } from './entity/generator.js'
 import { newMiner } from './miner.js'
@@ -8,6 +9,7 @@ import { Vec2 } from './vec2.js'
 export function generateWorld(): World {
   console.log('generating world...')
   const world: World = {
+    version: WORLD_VERSION,
     tick: 0,
     nextEntityId: 0,
     entities: {},

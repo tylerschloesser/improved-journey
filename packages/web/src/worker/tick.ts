@@ -306,6 +306,30 @@ export function tickWorld(world: World): {
           entity.progress = progress
         }
 
+        if (entity.output && entity.connections.output.size > 0) {
+          invariant(entity.output.count > 0)
+          invariant(entity.connections.output.size === 1)
+
+          const targetEntityId = Array.from(entity.connections.output)[0]
+          const target = world.entities[targetEntityId]
+
+          invariant(target)
+          invariant(target.type === EntityType.Belt)
+
+          const item = {
+            type: entity.output.type,
+            progress: 0,
+          }
+          target.items.push(item)
+          entity.output.count -= 1
+          if (entity.output.count === 0) {
+            entity.output = null
+          }
+          // make sure we don't also move the new item
+          // during the same tick
+          moved.add(item)
+        }
+
         break
       }
     }

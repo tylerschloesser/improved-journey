@@ -21,6 +21,7 @@ export interface Chunk {
 }
 
 export interface World {
+  version: number
   tick: number
 
   chunks: Partial<Record<ChunkId, Chunk>>

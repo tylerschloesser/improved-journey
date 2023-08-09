@@ -140,7 +140,11 @@ export function Entity() {
     const buttons: JSX.Element[] = []
     buttons.push(<BackButton className={styles.button} />)
 
-    if ([EntityType.Miner, EntityType.Belt].includes(entity.type)) {
+    if (
+      [EntityType.Miner, EntityType.Belt, EntityType.Smelter].includes(
+        entity.type,
+      )
+    ) {
       buttons.push(<AddOutputButton />)
     }
 
