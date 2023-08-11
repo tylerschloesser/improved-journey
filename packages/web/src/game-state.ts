@@ -13,14 +13,13 @@ import {
   take,
   withLatestFrom,
 } from 'rxjs'
-import { parse } from 'superjson'
 import invariant from 'tiny-invariant'
 import { addEntities } from './add-entities.js'
 import { animateVec2 } from './animate.js'
 import { TARGET_OPTIONS } from './const.js'
 import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
 import { ItemType } from './item-types.js'
-import { saveClient, saveWorld } from './storage.js'
+import { saveClient } from './storage.js'
 import { Cell, CellId, Chunk, Client, TickResponse, World } from './types.js'
 import {
   cellIndexToPosition,
