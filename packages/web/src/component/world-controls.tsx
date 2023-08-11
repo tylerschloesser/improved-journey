@@ -1,4 +1,3 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import styles from './world-controls.module.scss'
@@ -23,6 +22,14 @@ export function WorldControls() {
         }}
       >
         Build
+      </button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          navigate('select')
+        }}
+      >
+        Select
       </button>
     </div>
   )

@@ -1,10 +1,10 @@
-import React from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { BuildEntity } from './component/build-entity.js'
 import { Build } from './component/build.js'
 import { Connection } from './component/connection.js'
 import { Debug } from './component/debug.js'
 import { Entity } from './component/entity.js'
+import { Select } from './component/select.js'
 import { WorldControls } from './component/world-controls.js'
 import { World } from './component/world.js'
 import './index.scss'
@@ -41,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: 'entity/:id/connection',
         element: <Connection />,
+      },
+      {
+        path: 'select',
+        element: <Select />,
       },
     ],
   },

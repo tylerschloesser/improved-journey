@@ -273,15 +273,6 @@ export const connection$ = new BehaviorSubject<null | {
   entityId: EntityId
 }>(null)
 
-connection$.subscribe((connection) => {
-  if (connection) {
-    focus$.next({
-      entityId: connection.entityId,
-      mode: FocusMode.Connection,
-    })
-  }
-})
-
 merge(
   // use combineLatest once so that we handle a focus that may happen
   // before other observables have emitted. e.g. on page load

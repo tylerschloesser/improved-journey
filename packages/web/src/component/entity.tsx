@@ -23,12 +23,16 @@ const [useEntity] = bind((id: EntityId) =>
   entities$.pipe(map((entities) => entities[id])),
 )
 
-function AddOutputButton() {
+function AddOutputButton({ entityId }: { entityId: EntityId }) {
   const navigate = useNavigate()
   return (
     <button
       className={styles.button}
       onPointerUp={() => {
+        focus$.next({
+          entityId: entityId,
+          mode: FocusMode.Connection,
+        })
         navigate('connection')
       }}
     >
@@ -145,7 +149,7 @@ export function Entity() {
         entity.type,
       )
     ) {
-      buttons.push(<AddOutputButton />)
+      buttons.push(<AddOutputButton entityId={entityId} />)
     }
 
     if ([EntityType.Miner].includes(entity.type)) {
