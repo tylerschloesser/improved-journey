@@ -1,6 +1,6 @@
 import { bind } from '@react-rxjs/core'
 import { useEffect } from 'react'
-import { select$ } from '../game-state.js'
+import { select$, setSelectStart$ } from '../game-state.js'
 import { BackButton } from './back-button.js'
 import styles from './select.module.scss'
 
@@ -21,8 +21,24 @@ export function Select() {
   return (
     <div className={styles.container}>
       <BackButton className={styles.button} />
-      {select.start === null && (
-        <button className={styles.button}>Start</button>
+      {select.start === null ? (
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            setSelectStart$.next()
+          }}
+        >
+          Start
+        </button>
+      ) : (
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            console.log('todo')
+          }}
+        >
+          End
+        </button>
       )}
     </div>
   )

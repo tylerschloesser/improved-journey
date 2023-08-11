@@ -335,9 +335,28 @@ combineLatest([zoom$, position$]).subscribe(([zoom, position]) => {
   saveClient(client)
 })
 
-export interface Select {
-  start: Vec2 | null
-  end: Vec2 | null
-}
+export type Select =
+  | {
+      start: null
+      end: null
+    }
+  | {
+      start: Vec2
+      end: Vec2 | null
+    }
 
 export const select$ = new BehaviorSubject<Select | null>(null)
+
+export const setSelectStart$ = new Subject<void>()
+
+setSelectStart$
+  .pipe(withLatestFrom(position$, select$))
+  .subscribe(([_, position, select]) => {
+    invariant(select !== null)
+    invariant(select.start === null)
+    invariant(select.end === null)
+
+    select$.next({ start: position.floor(), end: null })
+  })
+
+const setSelectEnd$ = new Subject<void>()
