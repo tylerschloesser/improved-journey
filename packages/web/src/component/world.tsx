@@ -1,14 +1,6 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import {
-  BehaviorSubject,
-  interval,
-  map,
-  merge,
-  Subject,
-  takeUntil,
-  withLatestFrom,
-} from 'rxjs'
+import { interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
 import {
   navigate$,
@@ -18,7 +10,6 @@ import {
   zoom$,
 } from '../game-state.js'
 import { init } from '../init.js'
-import { stringify } from '../json.js'
 import { World as PixiWorld } from '../pixi/world.js'
 import { loadClient, loadWorld, saveWorld } from '../storage.js'
 import { Vec2 } from '../vec2.js'

@@ -17,18 +17,18 @@ function useFilters() {
 
     // prettier-ignore
     filters.valid.matrix = [
-      0, 0, 0, 0, 0, 
-      1, 1, 1, 0, 0, 
-      0, 0, 0, 0, 0, 
+      0, 0, 0, 0, 0,
+      1, 1, 1, 0, 0,
+      0, 0, 0, 0, 0,
       0, 0, 0, 1, 0,
     ]
     filters.valid.enabled = false
 
     // prettier-ignore
     filters.invalid.matrix = [
-      1, 1, 1, 0, 0, 
-      0, 0, 0, 0, 0, 
-      0, 0, 0, 0, 0, 
+      1, 1, 1, 0, 0,
+      0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0,
       0, 0, 0, 1, 0,
     ]
     filters.invalid.enabled = false

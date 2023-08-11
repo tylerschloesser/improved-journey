@@ -7,6 +7,7 @@ import { Connection } from './connection.js'
 import { Grid } from './grid.js'
 import { Entities } from './entities.js'
 import * as PIXI from 'pixi.js'
+import { Select } from './select.js'
 
 const [usePosition] = bind(position$)
 const [useCellSize] = bind(cellSize$)
@@ -65,6 +66,7 @@ export function World({ canvas }: WorldProps) {
             <Entities />
             <Build />
             <Connection />
+            <Select />
           </Transform>
         </Suspense>
       </Subscribe>
