@@ -105,15 +105,13 @@ setTarget$
 
 export const tick$ = world$.pipe(map((world) => world.tick))
 
-fromEvent<MessageEvent<{ world: World; satisfaction: number }>>(
-  worker,
-  'message',
-).subscribe((message) => {
-  const { world, satisfaction } = parse<TickResponse>(message.data as any)
-  satisfaction$.next(satisfaction)
-  world$.next(world)
-  saveWorld(world)
-})
+fromEvent<MessageEvent<TickResponse>>(worker, 'message').subscribe(
+  (message) => {
+    const { world, satisfaction } = message.data
+    satisfaction$.next(satisfaction)
+    world$.next(world)
+  },
+)
 
 export const entities$ = world$.pipe(map((world) => world.entities))
 

@@ -1,6 +1,14 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { interval, withLatestFrom } from 'rxjs'
+import {
+  BehaviorSubject,
+  interval,
+  map,
+  merge,
+  Subject,
+  takeUntil,
+  withLatestFrom,
+} from 'rxjs'
 import { TICK_RATE } from '../const.js'
 import {
   navigate$,
@@ -12,7 +20,7 @@ import {
 import { init } from '../init.js'
 import { stringify } from '../json.js'
 import { World as PixiWorld } from '../pixi/world.js'
-import { loadClient, loadWorld } from '../storage.js'
+import { loadClient, loadWorld, saveWorld } from '../storage.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
 import styles from './world.module.scss'
@@ -68,7 +76,7 @@ function useTickWorld() {
     const sub = interval(1000 / TICK_RATE)
       .pipe(withLatestFrom(world$))
       .subscribe(([_, world]) => {
-        worker.postMessage(stringify({ world }))
+        worker.postMessage({ world })
       })
 
     return () => {
@@ -89,6 +97,20 @@ function useInitWorld() {
   }, [])
 }
 
+function useAutoSaveWorld() {
+  useEffect(() => {
+    const sub = interval(10_000)
+      .pipe(withLatestFrom(world$))
+      .subscribe(([_, world]) => {
+        saveWorld(world)
+      })
+    return () => {
+      sub.unsubscribe()
+      console.log('todo save on unmount')
+    }
+  }, [])
+}
+
 export function World() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useResizeObserver(canvas)
@@ -96,6 +118,7 @@ export function World() {
   useNavigateListener()
   useTickWorld()
   useInitWorld()
+  useAutoSaveWorld()
 
   return (
     <div className={styles.container}>
