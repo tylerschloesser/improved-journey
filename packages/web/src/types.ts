@@ -1,5 +1,5 @@
 import { Entity, EntityId } from './entity-types.js'
-import { SimpleVec2, Vec2 } from './vec2.js'
+import { SimpleVec2 } from './vec2.js'
 
 export type ChunkId = string
 export type NodeId = string
@@ -12,7 +12,6 @@ export interface Node {
 
 export interface Cell {
   entityId: EntityId | null
-  nodes: Node[]
 }
 
 export interface Chunk {

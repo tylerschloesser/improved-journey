@@ -1,13 +1,7 @@
 import invariant from 'tiny-invariant'
 import { BuildEntity, Entity, EntityType } from './entity-types.js'
 import { World } from './types.js'
-import {
-  directionToVec2,
-  getCell,
-  getEntity,
-  setEntityId,
-  setNodes,
-} from './util.js'
+import { directionToVec2, getCell, getEntity, setEntityId } from './util.js'
 import { Vec2 } from './vec2.js'
 
 export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
@@ -42,8 +36,6 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
         entity.type,
       )
     ) {
-      const nodes = getNodes(entity)
-      setNodes({ entity, nodes, world })
     }
   }
 
