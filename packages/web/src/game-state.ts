@@ -334,3 +334,10 @@ combineLatest([zoom$, position$]).subscribe(([zoom, position]) => {
   const client: Client = { zoom, position: position.toSimple() }
   saveClient(client)
 })
+
+export interface Select {
+  start: Vec2 | null
+  end: Vec2 | null
+}
+
+export const select$ = new BehaviorSubject<Select | null>(null)
