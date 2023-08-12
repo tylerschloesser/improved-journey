@@ -119,8 +119,8 @@ export const tick$ = world$.pipe(map((world) => world.tick))
 
 fromEvent<MessageEvent<TickResponse>>(worker, 'message').subscribe(
   (message) => {
-    const { world, satisfaction } = message.data
-    satisfaction$.next(satisfaction)
+    const { world, stats } = message.data
+    satisfaction$.next(stats.satisfaction)
     world$.next(world)
   },
 )

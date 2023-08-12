@@ -23,7 +23,7 @@ import {
   SmelterEntity,
 } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
-import { TickResponse, World } from '../types.js'
+import { TickResponse, TickStats, World } from '../types.js'
 
 interface SmelterState {
   consumption: number
@@ -161,10 +161,13 @@ export function tickWorld(world: World): TickResponse {
     }
   }
 
-  const satisfaction = Math.min(
-    consumption === 0 ? 1 : production / consumption,
-    1,
-  )
+  let satisfaction = consumption === 0 ? 1 : production / consumption
+
+  const stats: TickStats = { satisfaction }
+
+  // clamp satisfaction to 1, because it's used to scale
+  // entity work below.
+  satisfaction = Math.min(satisfaction, 1)
 
   // not super elegent, but a simple way to ensure
   // we don't move items twice in one tick
@@ -338,8 +341,5 @@ export function tickWorld(world: World): TickResponse {
 
   world.tick += 1
 
-  return {
-    world,
-    satisfaction,
-  }
+  return { world, stats }
 }

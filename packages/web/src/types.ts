@@ -38,7 +38,11 @@ export interface TickRequest {
   world: World
 }
 
+export interface TickStats {
+  satisfaction: number
+}
+
 export interface TickResponse {
   world: World
-  satisfaction: number
+  stats: TickStats
 }
