@@ -1,6 +1,7 @@
 import { clamp, cloneDeep, isEqual } from 'lodash-es'
 import { Container } from 'pixi.js'
 import {
+  animationFrames,
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
@@ -8,14 +9,17 @@ import {
   map,
   merge,
   ReplaySubject,
+  scan,
   skip,
   Subject,
   take,
+  takeUntil,
+  takeWhile,
   withLatestFrom,
 } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { addEntities } from './add-entities.js'
-import { animateVec2 } from './animate.js'
+import { animateVec2, easeOutCirc } from './animate.js'
 import { TARGET_OPTIONS } from './const.js'
 import { deleteEntities } from './delete-entities.js'
 import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
@@ -25,7 +29,6 @@ import { Cell, CellId, Chunk, Client, TickResponse, World } from './types.js'
 import {
   cellIndexToPosition,
   CHUNK_SIZE,
-  getCell,
   intersects,
   toCellId,
 } from './util.js'
@@ -315,29 +318,48 @@ merge(
   })
 })
 
+export const cancelDampen$ = new Subject<void>()
+
 export const dampen$ = new Subject<{ v: Vec2 }>()
 
 dampen$
   .pipe(withLatestFrom(cellSize$, position$))
-  .subscribe(([{ v }, cellSize, position]) => {
+  .subscribe(([{ v: start }, cellSize, position]) => {
     const duration = 500
 
-    const from = v.mul(-1).div(cellSize)
+    start = start.div(cellSize).mul(-1)
 
     // TODO not sure if it makes a noticable difference, but we could
     // animate here, between the last pointer move and the upcoming
     // "dampen" movement
 
-    animateVec2({
-      from,
-      to: new Vec2(0),
-      duration,
-      callback(next, elapsed) {
+    animationFrames()
+      .pipe(
+        takeUntil(cancelDampen$),
+        scan<
+          { timestamp: number; elapsed: number },
+          { elapsed: { total: number; frame: number } }
+        >(
+          (acc, { elapsed }) => ({
+            elapsed: {
+              total: elapsed,
+              frame: elapsed - acc.elapsed.total,
+            },
+          }),
+          {
+            elapsed: { total: 0, frame: 0 },
+          },
+        ),
+        takeWhile(({ elapsed }) => elapsed.total < duration),
+      )
+      .subscribe(({ elapsed }) => {
+        const k = elapsed.total / duration
+        const v = start.mul(1 - easeOutCirc(k))
+
         // FIXME hacky way to store position...
-        position = position.add(next.mul(elapsed))
+        position = position.add(v.mul(elapsed.frame))
         position$.next(position)
-      },
-    })
+      })
   })
 
 combineLatest([zoom$, position$]).subscribe(([zoom, position]) => {

@@ -1,6 +1,13 @@
 import { curry, flow } from 'lodash-es'
 import invariant from 'tiny-invariant'
-import { dampen$, move$, pinch$, tap$, wheel$ } from './game-state.js'
+import {
+  cancelDampen$,
+  dampen$,
+  move$,
+  pinch$,
+  tap$,
+  wheel$,
+} from './game-state.js'
 import { Vec2 } from './vec2.js'
 
 function toVec2(ev: PointerEvent): Vec2 {
@@ -98,6 +105,8 @@ function isTap(cache: PointerEvent[], ev: PointerEvent) {
 }
 
 const onPointerDown = curry((state: PointerState, ev: PointerEvent) => {
+  cancelDampen$.next()
+
   state.pointerEventCache.set(ev.pointerId, [ev])
 })
 
