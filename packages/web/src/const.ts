@@ -49,8 +49,8 @@ export const SMELTER_CONSUMPTION = new Rate(1, RateType.PerTick)
 export const BELT_SPEED = new Rate(1, RateType.PerSecond)
 
 export const TARGET_OPTIONS = {
-  [EntityType.Miner]: [ItemType.Coal, ItemType.IronOre],
-  [EntityType.Smelter]: [ItemType.IronPlate],
+  [EntityType.Miner]: [ItemType.Coal, ItemType.IronOre, ItemType.CopperOre],
+  [EntityType.Smelter]: [ItemType.IronPlate, ItemType.CopperPlate],
 }
 
 export interface Recipe {
@@ -64,6 +64,10 @@ export interface Recipe {
 export const RECIPES: Partial<Record<ItemType, Recipe>> = {
   [ItemType.IronPlate]: {
     input: [{ type: ItemType.IronOre, count: 1 }],
+    speed: new Rate(1, RateType.PerSecond),
+  },
+  [ItemType.CopperPlate]: {
+    input: [{ type: ItemType.CopperOre, count: 1 }],
     speed: new Rate(1, RateType.PerSecond),
   },
 }
