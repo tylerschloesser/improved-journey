@@ -1,12 +1,17 @@
 import { Graphics } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
-import { map } from 'rxjs'
+import { distinctUntilChanged, map } from 'rxjs'
 import { position$, select$ } from '../game-state.js'
 import { Vec2 } from '../vec2.js'
 import { useDraw } from './use-draw.js'
 
 const [useSelect] = bind(select$)
-const [usePosition] = bind(position$.pipe(map((position) => position.floor())))
+const [usePosition] = bind(
+  position$.pipe(
+    map((position) => position.floor()),
+    distinctUntilChanged((a, b) => a.equals(b)),
+  ),
+)
 
 export function Select() {
   const select = useSelect()
@@ -27,8 +32,8 @@ export function Select() {
             Math.min(position.y, select.start.y),
           ),
           end: new Vec2(
-            Math.max(position.x, select.start.x),
-            Math.max(position.y, select.start.y),
+            Math.max(position.x, select.start.x + 1),
+            Math.max(position.y, select.start.y + 1),
           ),
         }
       }
@@ -38,7 +43,7 @@ export function Select() {
 
       if (area) {
         const size = area.end.sub(area.start)
-        const { x, y } = position
+        const { x, y } = area.start
         g.drawRect(
           x + lineWidth / 2,
           y + lineWidth / 2,
