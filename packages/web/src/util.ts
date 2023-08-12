@@ -128,3 +128,15 @@ export function directionToAngle(direction: Direction): number {
       return 180
   }
 }
+
+export interface SelectArea {
+  start: Vec2
+  end: Vec2
+}
+
+export function getSelectArea(start: Vec2, end: Vec2) {
+  return {
+    start: new Vec2(Math.min(end.x, start.x), Math.min(end.y, start.y)),
+    end: new Vec2(Math.max(end.x, start.x + 1), Math.max(end.y, start.y + 1)),
+  }
+}

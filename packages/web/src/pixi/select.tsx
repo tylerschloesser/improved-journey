@@ -2,6 +2,7 @@ import { Graphics } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
 import { distinctUntilChanged, map } from 'rxjs'
 import { position$, select$ } from '../game-state.js'
+import { getSelectArea } from '../util.js'
 import { Vec2 } from '../vec2.js'
 import { useDraw } from './use-draw.js'
 
@@ -26,17 +27,7 @@ export function Select() {
       let area: { start: Vec2; end: Vec2 } | null = null
 
       if (select.start) {
-        const end = select.end ?? position
-        area = {
-          start: new Vec2(
-            Math.min(end.x, select.start.x),
-            Math.min(end.y, select.start.y),
-          ),
-          end: new Vec2(
-            Math.max(end.x, select.start.x + 1),
-            Math.max(end.y, select.start.y + 1),
-          ),
-        }
+        area = getSelectArea(select.start, select.end ?? position)
       }
 
       const lineWidth = 0.1

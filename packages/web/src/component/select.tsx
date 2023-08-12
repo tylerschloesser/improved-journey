@@ -2,12 +2,13 @@ import { bind } from '@react-rxjs/core'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { take } from 'rxjs'
-import { position$, select$ } from '../game-state.js'
+import { chunks$, position$, select$ } from '../game-state.js'
 import { SimpleVec2, Vec2 } from '../vec2.js'
 import { BackButton } from './back-button.js'
 import styles from './select.module.scss'
 
 const [useSelect] = bind(select$)
+const [useChunks] = bind(chunks$)
 
 export function Select() {
   const select = useSelect()
@@ -62,6 +63,13 @@ export function Select() {
           End
         </button>
       )}
+      {select.start && select.end && <DeleteButton select={select as any} />}
     </div>
   )
+}
+
+function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
+  const chunks = useChunks()
+
+  return <button className={styles.button}>Delete</button>
 }
