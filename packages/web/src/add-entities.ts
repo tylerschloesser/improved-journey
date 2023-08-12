@@ -47,7 +47,7 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
         const nodes = getNodes(entity)
         const neighbors = nodes
           .map((node) => {
-            const cell = getCell(node, world)
+            const cell = getCell(node, world.chunks)
             if (!cell?.entityId) return null
             return world.entities[cell.entityId]
           })

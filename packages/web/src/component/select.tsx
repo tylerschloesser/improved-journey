@@ -1,8 +1,10 @@
 import { bind } from '@react-rxjs/core'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { take } from 'rxjs'
+import { EntityId } from '../entity-types.js'
 import { chunks$, position$, select$ } from '../game-state.js'
+import { getCell, getSelectArea } from '../util.js'
 import { SimpleVec2, Vec2 } from '../vec2.js'
 import { BackButton } from './back-button.js'
 import styles from './select.module.scss'
@@ -70,6 +72,22 @@ export function Select() {
 
 function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
   const chunks = useChunks()
+  const area = getSelectArea(select.start, select.end)
+  const entityIds = new Set<EntityId>()
 
-  return <button className={styles.button}>Delete</button>
+  for (let x = area.start.x; x <= area.end.x; x++) {
+    for (let y = area.start.y; y < area.end.y; y++) {
+      const cell = getCell(new Vec2(x, y), chunks)
+      if (cell?.entityId) {
+        entityIds.add(cell.entityId)
+      }
+    }
+  }
+
+  return (
+    <button className={styles.button} disabled={entityIds.size === 0}>
+      Delete
+      {entityIds.size > 0 && ` (${entityIds.size})`}
+    </button>
+  )
 }

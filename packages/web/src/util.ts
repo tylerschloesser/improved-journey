@@ -81,14 +81,14 @@ export function cellIndexToPosition(chunk: Chunk, index: number) {
     .add(new Vec2(index % CHUNK_SIZE, Math.floor(index / CHUNK_SIZE)))
 }
 
-export function getCell(position: Vec2, world: World): Cell | null {
+export function getCell(position: Vec2, chunks: World['chunks']): Cell | null {
   const { chunkId, index } = getCellArgs(position)
-  const chunk = world.chunks[chunkId]
+  const chunk = chunks[chunkId]
   return chunk?.cells[index] ?? null
 }
 
 export function getEntity(position: Vec2, world: World): Entity | null {
-  const cell = getCell(position, world)
+  const cell = getCell(position, world.chunks)
   if (cell?.entityId) {
     return world.entities[cell.entityId]
   }
