@@ -25,7 +25,7 @@ export default (env: WebpackEnv) => {
       filename: '[name].[contenthash].js',
       chunkFilename: '[name].[contenthash].chunk.js',
       clean: true,
-      publicPath: '/',
+      publicPath: '/improved-journey',
     },
     module: {
       rules: [
@@ -79,7 +79,7 @@ export default (env: WebpackEnv) => {
       hot: false,
       watchFiles: ['./src/index.html'],
       historyApiFallback: {
-        disableDotRule: true,
+        index: '/improved-journey/index.html',
       },
       allowedHosts: ['.amazonaws.com'],
     },

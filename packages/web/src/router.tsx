@@ -9,43 +9,48 @@ import { WorldControls } from './component/world-controls.js'
 import { World } from './component/world.js'
 import './index.scss'
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <div>TODO add root/home</div>,
+    },
+    {
+      path: '/world/:id',
+      element: <World />,
+      children: [
+        {
+          path: '',
+          element: <WorldControls />,
+        },
+        {
+          path: 'debug',
+          element: <Debug />,
+        },
+        {
+          path: 'build',
+          element: <Build />,
+        },
+        {
+          path: 'build/:type',
+          element: <BuildEntity />,
+        },
+        {
+          path: 'entity/:id',
+          element: <Entity />,
+        },
+        {
+          path: 'entity/:id/connection',
+          element: <Connection />,
+        },
+        {
+          path: 'select',
+          element: <Select />,
+        },
+      ],
+    },
+  ],
   {
-    path: '/',
-    element: <div>TODO add root/home</div>,
+    basename: '/improved-journey',
   },
-  {
-    path: '/world/:id',
-    element: <World />,
-    children: [
-      {
-        path: '',
-        element: <WorldControls />,
-      },
-      {
-        path: 'debug',
-        element: <Debug />,
-      },
-      {
-        path: 'build',
-        element: <Build />,
-      },
-      {
-        path: 'build/:type',
-        element: <BuildEntity />,
-      },
-      {
-        path: 'entity/:id',
-        element: <Entity />,
-      },
-      {
-        path: 'entity/:id/connection',
-        element: <Connection />,
-      },
-      {
-        path: 'select',
-        element: <Select />,
-      },
-    ],
-  },
-])
+)
