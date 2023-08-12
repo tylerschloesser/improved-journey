@@ -26,14 +26,15 @@ export function Select() {
       let area: { start: Vec2; end: Vec2 } | null = null
 
       if (select.start) {
+        const end = select.end ?? position
         area = {
           start: new Vec2(
-            Math.min(position.x, select.start.x),
-            Math.min(position.y, select.start.y),
+            Math.min(end.x, select.start.x),
+            Math.min(end.y, select.start.y),
           ),
           end: new Vec2(
-            Math.max(position.x, select.start.x + 1),
-            Math.max(position.y, select.start.y + 1),
+            Math.max(end.x, select.start.x + 1),
+            Math.max(end.y, select.start.y + 1),
           ),
         }
       }

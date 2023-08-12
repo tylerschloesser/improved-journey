@@ -15,10 +15,14 @@ export function Select() {
 
   useEffect(() => {
     let start: Vec2 | null = null
+    let end: Vec2 | null = null
     if (searchParams.get('start')) {
       start = new Vec2(JSON.parse(searchParams.get('start')!) as SimpleVec2)
     }
-    select$.next({ start, end: null })
+    if (searchParams.get('end')) {
+      end = new Vec2(JSON.parse(searchParams.get('end')!) as SimpleVec2)
+    }
+    select$.next({ start: start!, end })
     return () => {
       select$.next(null)
     }
@@ -29,7 +33,7 @@ export function Select() {
   return (
     <div className={styles.container}>
       <BackButton className={styles.button} />
-      {select.start === null ? (
+      {select.start === null && (
         <button
           className={styles.button}
           onPointerUp={() => {
@@ -42,11 +46,17 @@ export function Select() {
         >
           Start
         </button>
-      ) : (
+      )}
+      {select.start !== null && select.end === null && (
         <button
           className={styles.button}
           onPointerUp={() => {
-            console.log('todo')
+            position$.pipe(take(1)).subscribe((position) => {
+              setSearchParams((prev) => {
+                prev.append('end', JSON.stringify(position.floor().toSimple()))
+                return prev
+              })
+            })
           }}
         >
           End
