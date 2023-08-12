@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { take } from 'rxjs'
 import { EntityId } from '../entity-types.js'
-import { chunks$, position$, select$ } from '../game-state.js'
+import { chunks$, deleteEntities$, position$, select$ } from '../game-state.js'
 import { getCell, getSelectArea } from '../util.js'
 import { SimpleVec2, Vec2 } from '../vec2.js'
 import { BackButton } from './back-button.js'
@@ -84,8 +84,17 @@ function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
     }
   }
 
+  const disabled = entityIds.size === 0
+
   return (
-    <button className={styles.button} disabled={entityIds.size === 0}>
+    <button
+      className={styles.button}
+      disabled={disabled}
+      onPointerUp={() => {
+        if (disabled) return
+        deleteEntities$.next(entityIds)
+      }}
+    >
       Delete
       {entityIds.size > 0 && ` (${entityIds.size})`}
     </button>

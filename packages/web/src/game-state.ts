@@ -17,6 +17,7 @@ import invariant from 'tiny-invariant'
 import { addEntities } from './add-entities.js'
 import { animateVec2 } from './animate.js'
 import { TARGET_OPTIONS } from './const.js'
+import { deleteEntities } from './delete-entities.js'
 import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { saveClient } from './storage.js'
@@ -24,6 +25,7 @@ import { Cell, CellId, Chunk, Client, TickResponse, World } from './types.js'
 import {
   cellIndexToPosition,
   CHUNK_SIZE,
+  getCell,
   intersects,
   toCellId,
 } from './util.js'
@@ -72,12 +74,20 @@ export const world$ = new ReplaySubject<World>(1)
 export const newEntities$ = new Subject<Entity[]>()
 export const addEntities$ = new Subject<BuildEntity[]>()
 
+export const deleteEntities$ = new Subject<Set<EntityId>>()
+
 addEntities$.pipe(withLatestFrom(world$)).subscribe(([builds, world]) => {
   world = cloneDeep(world)
   const entities = addEntities(world, builds)
   world$.next(world)
 
   newEntities$.next(entities)
+})
+
+deleteEntities$.pipe(withLatestFrom(world$)).subscribe(([entityIds, world]) => {
+  world = cloneDeep(world)
+  deleteEntities(world, entityIds)
+  world$.next(world)
 })
 
 export const setTarget$ = new Subject<{
