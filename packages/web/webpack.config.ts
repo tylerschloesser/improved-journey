@@ -25,7 +25,7 @@ export default (env: WebpackEnv) => {
       filename: '[name].[contenthash].js',
       chunkFilename: '[name].[contenthash].chunk.js',
       clean: true,
-      publicPath: '/improved-journey',
+      publicPath: '/improved-journey/',
     },
     module: {
       rules: [
