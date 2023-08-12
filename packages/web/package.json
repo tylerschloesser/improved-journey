@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve",
-    "build-github-pages": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack --env target=github-pages"
+    "build-github-pages": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack --env target=github-pages && cp dist/index.html dist/404.html"
   },
   "keywords": [],
   "author": "",
