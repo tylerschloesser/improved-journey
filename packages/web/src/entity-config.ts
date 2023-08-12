@@ -79,7 +79,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
         },
       }),
     color: '#F7F9F9',
-    size: new Vec2(1, 1),
+    size: new Vec2(2, 2),
   },
   [EntityType.Smelter]: {
     init: (args) =>

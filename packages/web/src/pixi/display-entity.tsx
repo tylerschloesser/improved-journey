@@ -3,7 +3,7 @@ import { bind } from '@react-rxjs/core'
 import * as PIXI from 'pixi.js'
 import { useMemo } from 'react'
 import { DisplayEntity } from '../entity-types.js'
-import { satisfaction$, ZoomLevel, zoomLevel$ } from '../game-state.js'
+import { satisfaction$, zoomLevel$ } from '../game-state.js'
 import { EntityProps } from './entity-props.js'
 import { useDraw } from './use-draw.js'
 
@@ -20,14 +20,14 @@ export function DisplayEntity({ entity, config }: EntityProps<DisplayEntity>) {
   const drawBackground = useDraw(
     (g) => {
       g.clear()
-      g.beginFill(config.color)
+      g.beginFill('#7EBC89')
       g.drawRect(x, y, width, height)
     },
     [entity],
   )
 
   const textStyle = useMemo(
-    () => new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 40 }),
+    () => new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 80 }),
     [],
   )
 
@@ -40,7 +40,7 @@ export function DisplayEntity({ entity, config }: EntityProps<DisplayEntity>) {
         width={width}
         height={height}
         scale={0.01}
-        visible={zoomLevel !== ZoomLevel.Low}
+        // visible={zoomLevel !== ZoomLevel.Low}
       >
         <Text
           text={`sat\n${Math.trunc(satisfaction * 100)}%`}
