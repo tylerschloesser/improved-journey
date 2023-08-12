@@ -111,7 +111,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
       },
       items: {},
     }),
-    color: 'yellow',
+    color: '#DCF763',
     size: new Vec2(1),
   } as EntityConfig<StorageEntity>,
 }
