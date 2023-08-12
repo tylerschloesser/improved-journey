@@ -260,6 +260,10 @@ export function tickWorld(world: World): {
                   input.count += 1
                   break
                 }
+                case EntityType.Storage: {
+                  next.items[item.type] = (next.items[item.type] ?? 0) + 1
+                  break
+                }
               }
             }
           }
