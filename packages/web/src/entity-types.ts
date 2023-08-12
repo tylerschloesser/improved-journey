@@ -1,5 +1,5 @@
 import { ItemStack, ItemType } from './item-types.js'
-import { SimpleVec2, Vec2 } from './vec2.js'
+import { SimpleVec2 } from './vec2.js'
 
 export type EntityId = string
 
@@ -11,6 +11,7 @@ export enum EntityType {
   Battery = 'battery',
   Display = 'display',
   Smelter = 'smelter',
+  Storage = 'storage',
 }
 
 export type Direction = 'up' | 'right' | 'down' | 'left'
@@ -74,6 +75,11 @@ export interface SmelterEntity extends BaseEntity {
   output: ItemStack | null
 }
 
+export interface StorageEntity extends BaseEntity {
+  type: EntityType.Storage
+  items: Record<ItemType, number>
+}
+
 export type Entity =
   | MinerEntity
   | BeltEntity
@@ -82,6 +88,7 @@ export type Entity =
   | BatteryEntity
   | DisplayEntity
   | SmelterEntity
+  | StorageEntity
 
 export type BuildEntity =
   | Omit<MinerEntity, 'id'>
@@ -91,3 +98,4 @@ export type BuildEntity =
   | Omit<BatteryEntity, 'id'>
   | Omit<DisplayEntity, 'id'>
   | Omit<SmelterEntity, 'id'>
+  | Omit<StorageEntity, 'id'>

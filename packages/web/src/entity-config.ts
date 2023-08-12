@@ -1,5 +1,10 @@
 import { newBelt } from './belt.js'
-import { BeltEntity, BuildEntity, EntityType } from './entity-types.js'
+import {
+  BeltEntity,
+  BuildEntity,
+  EntityType,
+  StorageEntity,
+} from './entity-types.js'
 import { newBattery } from './entity/battery.js'
 import { newDisplay } from './entity/display.js'
 import { newGenerator } from './entity/generator.js'
@@ -96,4 +101,17 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
     color: '#3D348B',
     size: new Vec2(1),
   } as EntityConfig<BeltEntity>,
+  [EntityType.Storage]: {
+    init: (args) => ({
+      ...args,
+      type: EntityType.Storage,
+      connections: {
+        input: new Set(),
+        output: new Set(),
+      },
+      items: {},
+    }),
+    color: 'yellow',
+    size: new Vec2(1),
+  } as EntityConfig<StorageEntity>,
 }
