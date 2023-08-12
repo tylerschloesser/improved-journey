@@ -10,20 +10,25 @@ import { useDraw } from './use-draw.js'
 const [useSatisfaction] = bind(satisfaction$)
 const [useZoomLevel] = bind(zoomLevel$)
 
-export function DisplayEntity({ entity, config }: EntityProps<DisplayEntity>) {
+export function DisplayEntity({ entity }: EntityProps<DisplayEntity>) {
   const satisfaction = useSatisfaction()
   const zoomLevel = useZoomLevel()
 
   const [x, y] = entity.position
   const [width, height] = entity.size
 
+  let backgroundColor = '#7EBC89' // green
+  if (satisfaction < 0.9) {
+    backgroundColor = '#FE5D26' // orange
+  }
+
   const drawBackground = useDraw(
     (g) => {
       g.clear()
-      g.beginFill('#7EBC89')
+      g.beginFill(backgroundColor)
       g.drawRect(x, y, width, height)
     },
-    [entity],
+    [entity, backgroundColor],
   )
 
   const textStyle = useMemo(
