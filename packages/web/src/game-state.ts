@@ -378,17 +378,3 @@ export type Select =
     }
 
 export const select$ = new BehaviorSubject<Select | null>(null)
-
-export const setSelectStart$ = new Subject<void>()
-
-setSelectStart$
-  .pipe(withLatestFrom(position$, select$))
-  .subscribe(([_, position, select]) => {
-    invariant(select !== null)
-    invariant(select.start === null)
-    invariant(select.end === null)
-
-    select$.next({ start: position.floor(), end: null })
-  })
-
-const setSelectEnd$ = new Subject<void>()
