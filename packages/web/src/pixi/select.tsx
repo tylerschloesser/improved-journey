@@ -17,19 +17,36 @@ export function Select() {
 
       if (select === null) return
 
-      const { x, y } = position
       const lineWidth = 0.1
 
-      g.lineStyle(lineWidth, 'white')
-      g.drawRect(
-        x + lineWidth / 2,
-        y + lineWidth / 2,
-        1 - lineWidth,
-        1 - lineWidth,
-      )
+      {
+        const { x, y } = position
+        g.lineStyle(lineWidth, 'white')
+        g.drawRect(
+          x + lineWidth / 2,
+          y + lineWidth / 2,
+          1 - lineWidth,
+          1 - lineWidth,
+        )
+      }
+
+      if (select.start) {
+        const { x, y } = select.start
+        g.lineStyle(lineWidth, 'white')
+        g.drawRect(
+          x + lineWidth / 2,
+          y + lineWidth / 2,
+          1 - lineWidth,
+          1 - lineWidth,
+        )
+      }
     },
     [select, position],
   )
 
-  return <Graphics draw={draw} />
+  return (
+    <>
+      <Graphics draw={draw} />
+    </>
+  )
 }
