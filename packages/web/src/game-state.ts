@@ -1,5 +1,6 @@
 import { clamp, cloneDeep, isEqual } from 'lodash-es'
 import { Container } from 'pixi.js'
+import { NavigationType } from 'react-router-dom'
 import {
   animationFrames,
   BehaviorSubject,
@@ -326,6 +327,8 @@ merge(
 
   let center = new Vec2(entity.position).add(new Vec2(entity.size).div(2))
 
+  positionBeforeFocus$.next(position)
+
   if (mode === FocusMode.Entity) {
     // entity UI takes up half the bottom of the screen
     // adjust accordingly
@@ -403,8 +406,18 @@ export type Select =
 
 export const select$ = new BehaviorSubject<Select | null>(null)
 
-export const back$ = new Subject<void>()
+export const navigationType$ = new Subject<NavigationType>()
 
-back$.subscribe(() => {
-  console.log('handle back')
-})
+export const positionBeforeFocus$ = new Subject<Vec2 | null>()
+
+navigationType$
+  .pipe(withLatestFrom(positionBeforeFocus$))
+  .subscribe(([navigationType, positionBeforeFocus]) => {
+    console.log(navigationType, positionBeforeFocus?.toString())
+    if (navigationType === 'POP' && positionBeforeFocus) {
+      position$.next(positionBeforeFocus)
+    }
+    if (positionBeforeFocus !== null) {
+      positionBeforeFocus$.next(null)
+    }
+  })

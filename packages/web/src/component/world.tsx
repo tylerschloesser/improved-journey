@@ -3,8 +3,8 @@ import { Outlet, useNavigate, useNavigationType } from 'react-router-dom'
 import { interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
 import {
-  back$,
   navigate$,
+  navigationType$,
   position$,
   viewport$,
   world$,
@@ -64,9 +64,7 @@ function useNavigateListener() {
 
   const navigationType = useNavigationType()
   useEffect(() => {
-    if (navigationType === 'POP') {
-      back$.next()
-    }
+    navigationType$.next(navigationType)
   }, [navigationType])
 }
 
