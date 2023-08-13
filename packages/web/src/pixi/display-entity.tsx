@@ -10,6 +10,31 @@ import { useDraw } from './use-draw.js'
 
 const [useSatisfaction] = bind(satisfaction$)
 
+function Placeholder({ entity, config }: EntityProps<DisplayEntity>) {
+  const [x, y] = entity.position
+  const [width, height] = entity.size
+  const drawBackground = useDraw(
+    (g) => {
+      g.clear()
+      g.beginFill(config.color)
+      g.drawRect(x, y, width, height)
+    },
+    [entity, config],
+  )
+  const textStyle = useMemo(
+    () => new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 80 }),
+    [],
+  )
+  return (
+    <>
+      <Graphics draw={drawBackground} />
+      <Container x={x} y={y} width={width} height={height} scale={0.01}>
+        <Text text={`Click\nMe...`} style={textStyle} />
+      </Container>
+    </>
+  )
+}
+
 function Satisfaction({ entity }: EntityProps<DisplayEntity>) {
   invariant(entity.content?.type === DisplayContentType.Satisfaction)
 
@@ -59,7 +84,7 @@ function Satisfaction({ entity }: EntityProps<DisplayEntity>) {
 
 export function DisplayEntity(props: EntityProps<DisplayEntity>) {
   if (!props.entity.content?.type) {
-    return null
+    return <Placeholder {...props} />
   }
   switch (props.entity.content.type) {
     case DisplayContentType.Satisfaction:
