@@ -95,6 +95,55 @@ function DumpJson({ entityId }: { entityId: EntityId }) {
   )
 }
 
+interface SelectProps<T extends string> {
+  placeholder: string
+  options: { value: T; label: string }[]
+  value: T | null
+  onChange(value: T): void
+  disabled: boolean
+}
+
+function Select<T extends string = string>({
+  placeholder,
+  options,
+  value,
+  onChange,
+  disabled,
+}: SelectProps<T>) {
+  // would conflict with placeholder
+  invariant(value !== '')
+
+  invariant(options.length > 0)
+  if (value !== null) {
+    const unique = new Set<T>()
+    options.forEach((option) => {
+      unique.add(option.value)
+    })
+    invariant(unique.size === options.length)
+    invariant(unique.has(value))
+  }
+
+  return (
+    <select
+      className={styles.select}
+      value={value ?? ''}
+      onChange={(ev) => {
+        onChange(ev.target.value as T)
+      }}
+      disabled={disabled}
+    >
+      <option value="" disabled>
+        {placeholder}
+      </option>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  )
+}
+
 function TargetSelect({ entityId }: { entityId: EntityId }) {
   const entity = useEntity(entityId)
   invariant(
@@ -103,32 +152,21 @@ function TargetSelect({ entityId }: { entityId: EntityId }) {
 
   const options = TARGET_OPTIONS[entity.type]
 
-  invariant(entity.target === null || options.includes(entity.target))
-
-  const onChange: React.ChangeEventHandler<HTMLSelectElement> = useCallback(
-    (ev) => {
-      const target = ev.target.value as ItemType
-      setTarget$.next({ entityId, target })
+  const onChange = useCallback(
+    (next: ItemType) => {
+      setTarget$.next({ entityId, target: next })
     },
     [entityId],
   )
 
   return (
-    <select
-      className={styles.select}
-      value={entity.target ?? ''}
-      onChange={onChange}
+    <Select
+      options={options.map((value) => ({ value, label: value }))}
       disabled={entity.target !== null}
-    >
-      <option value="" disabled>
-        Select Target
-      </option>
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
+      value={entity.target}
+      onChange={onChange}
+      placeholder="Select Target"
+    />
   )
 }
 
