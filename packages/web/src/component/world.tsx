@@ -1,7 +1,9 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Outlet, useNavigate, useNavigationType } from 'react-router-dom'
 import { fromEvent, interval, withLatestFrom } from 'rxjs'
+import invariant from 'tiny-invariant'
 import { TICK_RATE } from '../const.js'
+import { fastForwardWorld } from '../fast-forward.js'
 import {
   navigate$,
   navigationType$,
@@ -113,9 +115,11 @@ function useInitWorld() {
       zoom$.next(client.zoom)
     })
 
-    loadWorld().then((world) => {
-      world$.next(world)
-    })
+    loadWorld()
+      .then(fastForwardWorld)
+      .then((world) => {
+        world$.next(world)
+      })
   }, [])
 }
 
