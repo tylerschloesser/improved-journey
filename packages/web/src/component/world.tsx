@@ -1,11 +1,12 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Outlet, useNavigate, useNavigationType } from 'react-router-dom'
-import { interval, withLatestFrom } from 'rxjs'
+import { fromEvent, interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
 import {
   navigate$,
   navigationType$,
   position$,
+  satisfaction$,
   viewport$,
   world$,
   zoom$,
@@ -13,6 +14,7 @@ import {
 import { init } from '../init.js'
 import { World as PixiWorld } from '../pixi/world.js'
 import { loadClient, loadWorld, saveWorld } from '../storage.js'
+import { TickResponse } from '../types.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
 import styles from './world.module.scss'
@@ -70,14 +72,24 @@ function useNavigateListener() {
 
 function useTickWorld() {
   useEffect(() => {
-    const sub = interval(1000 / TICK_RATE)
-      .pipe(withLatestFrom(world$))
-      .subscribe(([_, world]) => {
-        worker.postMessage({ world })
-      })
+    const subs = [
+      interval(1000 / TICK_RATE)
+        .pipe(withLatestFrom(world$))
+        .subscribe(([_, world]) => {
+          worker.postMessage({ world })
+        }),
+
+      fromEvent<MessageEvent<TickResponse>>(worker, 'message').subscribe(
+        (message) => {
+          const { world, stats } = message.data
+          satisfaction$.next(stats.satisfaction)
+          world$.next(world)
+        },
+      ),
+    ]
 
     return () => {
-      sub.unsubscribe()
+      subs.forEach((sub) => sub.unsubscribe())
     }
   }, [])
 }
@@ -88,6 +100,7 @@ function useInitWorld() {
       position$.next(new Vec2(client.position))
       zoom$.next(client.zoom)
     })
+
     loadWorld().then((world) => {
       world$.next(world)
     })

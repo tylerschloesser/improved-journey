@@ -20,6 +20,8 @@ export interface Chunk {
 }
 
 export interface World {
+  start: number
+
   version: number
   tick: number
 
