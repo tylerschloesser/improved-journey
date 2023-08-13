@@ -1,30 +1,8 @@
 import { EntityType } from './entity-types.js'
 import { ItemType } from './item-types.js'
+import { Rate, RateType } from './rate.js'
 
 export const WORLD_VERSION = 1
-
-enum RateType {
-  PerSecond,
-  PerTick,
-}
-
-class Rate {
-  value: number
-  constructor(value: number, type: RateType) {
-    this.value = (() => {
-      switch (type) {
-        case RateType.PerSecond:
-          return value / TICK_RATE
-        case RateType.PerTick:
-          return value
-      }
-    })()
-  }
-
-  perTick(): number {
-    return this.value
-  }
-}
 
 export const MAX_CELL_SIZE = 100
 export const MIN_CELL_SIZE = 10
