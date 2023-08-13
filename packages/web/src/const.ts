@@ -26,6 +26,9 @@ class Rate {
   }
 }
 
+export const MAX_CELL_SIZE = 100
+export const MIN_CELL_SIZE = 10
+
 export const TICK_RATE = 10 // ticks/second
 
 export const MINE_RATE = new Rate(1 / 5, RateType.PerSecond) // items/second

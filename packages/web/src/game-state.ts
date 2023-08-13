@@ -21,7 +21,7 @@ import {
 import invariant from 'tiny-invariant'
 import { addEntities } from './add-entities.js'
 import { animateVec2, easeOutCirc } from './animate.js'
-import { TARGET_OPTIONS } from './const.js'
+import { MAX_CELL_SIZE, MIN_CELL_SIZE, TARGET_OPTIONS } from './const.js'
 import { deleteEntities } from './delete-entities.js'
 import {
   BuildEntity,
@@ -178,9 +178,6 @@ export const cells$ = chunks$.pipe(
 )
 
 export const navigate$ = new Subject<{ to: string }>()
-
-const MAX_CELL_SIZE = 100
-const MIN_CELL_SIZE = 10
 
 function zoomToCellSize(zoom: number) {
   return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
