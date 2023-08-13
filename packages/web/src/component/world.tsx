@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useNavigationType } from 'react-router-dom'
 import { interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
 import {
+  back$,
   navigate$,
   position$,
   viewport$,
@@ -52,10 +53,6 @@ function useInitCanvas(canvas: HTMLCanvasElement | null) {
 
 function useNavigateListener() {
   const navigate = useNavigate()
-  const navigationType = useNavigationType()
-  useEffect(() => {
-    console.log(navigationType)
-  }, [navigationType])
   useEffect(() => {
     const sub = navigate$.subscribe(({ to }) => {
       navigate(to)
@@ -64,6 +61,13 @@ function useNavigateListener() {
       sub.unsubscribe()
     }
   }, [navigate])
+
+  const navigationType = useNavigationType()
+  useEffect(() => {
+    if (navigationType === 'POP') {
+      back$.next()
+    }
+  }, [navigationType])
 }
 
 function useTickWorld() {

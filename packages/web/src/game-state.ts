@@ -402,3 +402,9 @@ export type Select =
     }
 
 export const select$ = new BehaviorSubject<Select | null>(null)
+
+export const back$ = new Subject<void>()
+
+back$.subscribe(() => {
+  console.log('handle back')
+})
