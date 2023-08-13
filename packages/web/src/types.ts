@@ -39,6 +39,9 @@ export interface Client {
 export enum WorkerMessageType {
   TickRequest = 'tick-request',
   TickResponse = 'tick-response',
+
+  FastForwardRequest = 'fast-forward-request',
+  FastForwardResponse = 'fast-forward-response',
 }
 
 export interface TickRequest {
@@ -56,4 +59,21 @@ export interface TickResponse {
   stats: TickStats
 }
 
-export type WorkerMessage = TickRequest | TickResponse
+export interface FastForwardRequest {
+  type: WorkerMessageType.FastForwardRequest
+  ticks: number
+  timeout: number
+  world: World
+}
+
+export interface FastForwardResponse {
+  type: WorkerMessageType.FastForwardResponse
+  world: World
+  ticks: number
+}
+
+export type WorkerMessage =
+  | TickRequest
+  | TickResponse
+  | FastForwardRequest
+  | FastForwardResponse
