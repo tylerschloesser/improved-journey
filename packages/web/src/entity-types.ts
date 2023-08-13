@@ -64,7 +64,7 @@ export interface DisplayEntity extends BaseEntity {
   type: EntityType.Display
   content: {
     type: DisplayContentType
-  }
+  } | null
 }
 
 export interface SmelterEntity extends BaseEntity {

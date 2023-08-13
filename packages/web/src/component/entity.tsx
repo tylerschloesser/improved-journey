@@ -6,11 +6,12 @@ import { first, map } from 'rxjs'
 import { serialize } from 'superjson'
 import invariant from 'tiny-invariant'
 import { TARGET_OPTIONS } from '../const.js'
-import { EntityId, EntityType } from '../entity-types.js'
+import { DisplayContentType, EntityId, EntityType } from '../entity-types.js'
 import {
   entities$,
   focus$,
   FocusMode,
+  setDisplayContentType$,
   setTarget$,
   world$,
 } from '../game-state.js'
@@ -170,6 +171,29 @@ function TargetSelect({ entityId }: { entityId: EntityId }) {
   )
 }
 
+function DisplayContentTypeSelect({ entityId }: { entityId: EntityId }) {
+  const entity = useEntity(entityId)
+  invariant(entity.type === EntityType.Display)
+  const options = Object.values(DisplayContentType)
+
+  const onChange = useCallback(
+    (next: DisplayContentType) => {
+      setDisplayContentType$.next({ entityId, type: next })
+    },
+    [entityId],
+  )
+
+  return (
+    <Select
+      options={options.map((value) => ({ value, label: value }))}
+      disabled={entity.content !== null}
+      value={entity.content?.type ?? null}
+      onChange={onChange}
+      placeholder="Select Content"
+    />
+  )
+}
+
 export function Entity() {
   const entityId = useEntityId()
   const entity = useEntity(entityId)
@@ -204,6 +228,10 @@ export function Entity() {
 
     if ([EntityType.Miner, EntityType.Smelter].includes(entity.type)) {
       buttons.push(<TargetSelect entityId={entityId} />)
+    }
+
+    if (entity.type === EntityType.Display) {
+      buttons.push(<DisplayContentTypeSelect entityId={entityId} />)
     }
 
     const content = <DumpJson entityId={entityId} />

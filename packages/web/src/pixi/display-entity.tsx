@@ -2,17 +2,18 @@ import { Container, Graphics, Text } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
 import * as PIXI from 'pixi.js'
 import { useMemo } from 'react'
-import { DisplayEntity } from '../entity-types.js'
-import { satisfaction$, zoomLevel$ } from '../game-state.js'
+import invariant from 'tiny-invariant'
+import { DisplayContentType, DisplayEntity } from '../entity-types.js'
+import { satisfaction$ } from '../game-state.js'
 import { EntityProps } from './entity-props.js'
 import { useDraw } from './use-draw.js'
 
 const [useSatisfaction] = bind(satisfaction$)
-const [useZoomLevel] = bind(zoomLevel$)
 
-export function DisplayEntity({ entity }: EntityProps<DisplayEntity>) {
+function Satisfaction({ entity }: EntityProps<DisplayEntity>) {
+  invariant(entity.content?.type === DisplayContentType.Satisfaction)
+
   const satisfaction = useSatisfaction()
-  const zoomLevel = useZoomLevel()
 
   const [x, y] = entity.position
   const [width, height] = entity.size
@@ -54,4 +55,16 @@ export function DisplayEntity({ entity }: EntityProps<DisplayEntity>) {
       </Container>
     </>
   )
+}
+
+export function DisplayEntity(props: EntityProps<DisplayEntity>) {
+  if (!props.entity.content?.type) {
+    return null
+  }
+  switch (props.entity.content.type) {
+    case DisplayContentType.Satisfaction:
+      return <Satisfaction {...props} />
+    default:
+      throw 'invalid display content type'
+  }
 }

@@ -22,7 +22,13 @@ import { addEntities } from './add-entities.js'
 import { animateVec2, easeOutCirc } from './animate.js'
 import { TARGET_OPTIONS } from './const.js'
 import { deleteEntities } from './delete-entities.js'
-import { BuildEntity, Entity, EntityId, EntityType } from './entity-types.js'
+import {
+  BuildEntity,
+  DisplayContentType,
+  Entity,
+  EntityId,
+  EntityType,
+} from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { saveClient } from './storage.js'
 import { Cell, CellId, Chunk, Client, TickResponse, World } from './types.js'
@@ -92,6 +98,24 @@ deleteEntities$.pipe(withLatestFrom(world$)).subscribe(([entityIds, world]) => {
   deleteEntities(world, entityIds)
   world$.next(world)
 })
+
+export const setDisplayContentType$ = new Subject<{
+  entityId: EntityId
+  type: DisplayContentType
+}>()
+
+setDisplayContentType$
+  .pipe(withLatestFrom(world$))
+  .subscribe(([{ entityId, type }, world]) => {
+    world = cloneDeep(world)
+
+    const entity = world.entities[entityId]
+    invariant(entity.type === EntityType.Display)
+
+    entity.content = { type }
+
+    world$.next(world)
+  })
 
 export const setTarget$ = new Subject<{
   entityId: EntityId

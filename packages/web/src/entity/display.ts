@@ -1,8 +1,4 @@
-import {
-  DisplayContentType,
-  DisplayEntity,
-  EntityType,
-} from '../entity-types.js'
+import { DisplayEntity, EntityType } from '../entity-types.js'
 
 export function newDisplay(
   args: Omit<DisplayEntity, 'id' | 'type' | 'content'>,
@@ -10,8 +6,6 @@ export function newDisplay(
   return {
     ...args,
     type: EntityType.Display,
-    content: {
-      type: DisplayContentType.Satisfaction,
-    },
+    content: null,
   }
 }
