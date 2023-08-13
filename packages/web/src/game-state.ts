@@ -6,7 +6,6 @@ import {
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
-  fromEvent,
   map,
   merge,
   ReplaySubject,
@@ -32,7 +31,7 @@ import {
 } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { saveClient } from './storage.js'
-import { Cell, CellId, Chunk, Client, TickResponse, World } from './types.js'
+import { Cell, CellId, Chunk, Client, World } from './types.js'
 import {
   cellIndexToPosition,
   CHUNK_SIZE,
@@ -40,7 +39,6 @@ import {
   toCellId,
 } from './util.js'
 import { Vec2 } from './vec2.js'
-import { worker } from './worker.js'
 
 export const build$ = new BehaviorSubject<null | {
   entity: BuildEntity
@@ -141,14 +139,6 @@ setTarget$
   })
 
 export const tick$ = world$.pipe(map((world) => world.tick))
-
-fromEvent<MessageEvent<TickResponse>>(worker, 'message').subscribe(
-  (message) => {
-    const { world, stats } = message.data
-    satisfaction$.next(stats.satisfaction)
-    world$.next(world)
-  },
-)
 
 export const entities$ = world$.pipe(map((world) => world.entities))
 
