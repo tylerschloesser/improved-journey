@@ -7,7 +7,7 @@ export function BackButton({ className }: { className: string }) {
     <button
       className={className}
       onPointerUp={() => {
-        navigate('..')
+        navigate(-1)
       }}
     >
       Back
