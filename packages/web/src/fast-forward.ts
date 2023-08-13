@@ -12,6 +12,7 @@ export async function fastForwardWorld(world: World): Promise<World> {
       switch (ev.data.type) {
         case WorkerMessageType.FastForwardResponse:
           worker.removeEventListener('message', listener)
+          console.log('fast forwarded', ev.data.ticks, 'ticks')
           resolve(ev.data.world)
           return
       }

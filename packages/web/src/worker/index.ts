@@ -11,7 +11,12 @@ self.onmessage = (message: MessageEvent<WorkerMessage>) => {
   switch (message.data.type) {
     case WorkerMessageType.TickRequest: {
       let { world } = message.data
-      const response: TickResponse = tickWorld(world)
+      const stats = tickWorld(world)
+      const response: TickResponse = {
+        type: WorkerMessageType.TickResponse,
+        world,
+        stats,
+      }
       self.postMessage(response)
       return
     }

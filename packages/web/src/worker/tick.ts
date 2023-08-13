@@ -23,7 +23,7 @@ import {
   SmelterEntity,
 } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
-import { TickResponse, TickStats, WorkerMessageType, World } from '../types.js'
+import { TickStats, World } from '../types.js'
 
 interface SmelterState {
   consumption: number
@@ -55,7 +55,7 @@ function getSmelterState(smelter: SmelterEntity): SmelterState {
   return state
 }
 
-export function tickWorld(world: World): TickResponse {
+export function tickWorld(world: World): TickStats {
   let consumption = 0
   let production = 0
   let batteries: BatteryEntity[] = []
@@ -341,9 +341,5 @@ export function tickWorld(world: World): TickResponse {
 
   world.tick += 1
 
-  return {
-    type: WorkerMessageType.TickResponse,
-    world,
-    stats,
-  }
+  return stats
 }
