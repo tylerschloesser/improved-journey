@@ -36,7 +36,13 @@ export interface Client {
   zoom: number
 }
 
+export enum WorkerMessageType {
+  TickRequest = 'tick-request',
+  TickResponse = 'tick-response',
+}
+
 export interface TickRequest {
+  type: WorkerMessageType.TickRequest
   world: World
 }
 
@@ -45,6 +51,7 @@ export interface TickStats {
 }
 
 export interface TickResponse {
+  type: WorkerMessageType.TickResponse
   world: World
   stats: TickStats
 }

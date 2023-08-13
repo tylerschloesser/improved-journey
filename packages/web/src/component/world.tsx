@@ -14,7 +14,7 @@ import {
 import { init } from '../init.js'
 import { World as PixiWorld } from '../pixi/world.js'
 import { loadClient, loadWorld, saveWorld } from '../storage.js'
-import { TickResponse } from '../types.js'
+import { TickRequest, TickResponse, WorkerMessageType } from '../types.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
 import styles from './world.module.scss'
@@ -76,7 +76,11 @@ function useTickWorld() {
       interval(1000 / TICK_RATE)
         .pipe(withLatestFrom(world$))
         .subscribe(([_, world]) => {
-          worker.postMessage({ world })
+          const message: TickRequest = {
+            type: WorkerMessageType.TickRequest,
+            world,
+          }
+          worker.postMessage(message)
         }),
 
       fromEvent<MessageEvent<TickResponse>>(worker, 'message').subscribe(
