@@ -61,8 +61,6 @@ export interface TickResponse {
 
 export interface FastForwardRequest {
   type: WorkerMessageType.FastForwardRequest
-  ticks: number
-  timeout: number
   world: World
 }
 
