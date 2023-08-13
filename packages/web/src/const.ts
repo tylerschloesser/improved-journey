@@ -4,8 +4,8 @@ import { Rate, RateType } from './rate.js'
 
 export const WORLD_VERSION = 1
 
-export const MAX_CELL_SIZE = 100
-export const MIN_CELL_SIZE = 10
+export const MAX_CELL_SIZE = 32
+export const MIN_CELL_SIZE = 4
 
 export const TICK_RATE = 10 // ticks/second
 
