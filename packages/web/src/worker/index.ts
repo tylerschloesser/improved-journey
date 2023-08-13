@@ -4,6 +4,7 @@ import {
   WorkerMessage,
   WorkerMessageType,
 } from '../types.js'
+import { fastForwardWorld } from './fast-forward.js'
 import { tickWorld } from './tick.js'
 
 self.onmessage = (message: MessageEvent<WorkerMessage>) => {
@@ -15,10 +16,10 @@ self.onmessage = (message: MessageEvent<WorkerMessage>) => {
       return
     }
     case WorkerMessageType.FastForwardRequest: {
-      const { world } = message.data
+      const { world, ticks } = fastForwardWorld(message.data.world)
       const response: FastForwardResponse = {
         type: WorkerMessageType.FastForwardResponse,
-        ticks: 0,
+        ticks,
         world,
       }
       self.postMessage(response)
