@@ -55,3 +55,5 @@ export interface TickResponse {
   world: World
   stats: TickStats
 }
+
+export type WorkerMessage = TickRequest | TickResponse

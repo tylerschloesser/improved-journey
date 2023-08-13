@@ -14,7 +14,12 @@ import {
 import { init } from '../init.js'
 import { World as PixiWorld } from '../pixi/world.js'
 import { loadClient, loadWorld, saveWorld } from '../storage.js'
-import { TickRequest, TickResponse, WorkerMessageType } from '../types.js'
+import {
+  TickRequest,
+  TickResponse,
+  WorkerMessage,
+  WorkerMessageType,
+} from '../types.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
 import styles from './world.module.scss'
@@ -83,8 +88,11 @@ function useTickWorld() {
           worker.postMessage(message)
         }),
 
-      fromEvent<MessageEvent<TickResponse>>(worker, 'message').subscribe(
+      fromEvent<MessageEvent<WorkerMessage>>(worker, 'message').subscribe(
         (message) => {
+          // TODO log an error?
+          if (message.data.type !== WorkerMessageType.TickResponse) return
+
           const { world, stats } = message.data
           satisfaction$.next(stats.satisfaction)
           world$.next(world)
