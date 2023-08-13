@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate, useNavigationType } from 'react-router-dom'
 import { interval, withLatestFrom } from 'rxjs'
 import { TICK_RATE } from '../const.js'
 import {
@@ -52,6 +52,10 @@ function useInitCanvas(canvas: HTMLCanvasElement | null) {
 
 function useNavigateListener() {
   const navigate = useNavigate()
+  const navigationType = useNavigationType()
+  useEffect(() => {
+    console.log(navigationType)
+  }, [navigationType])
   useEffect(() => {
     const sub = navigate$.subscribe(({ to }) => {
       navigate(to)
@@ -59,7 +63,7 @@ function useNavigateListener() {
     return () => {
       sub.unsubscribe()
     }
-  }, [])
+  }, [navigate])
 }
 
 function useTickWorld() {
