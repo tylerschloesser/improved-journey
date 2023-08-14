@@ -1,9 +1,64 @@
 import invariant from 'tiny-invariant'
 import { BELT_SPEED, MINE_RATE } from '../const.js'
-import { BeltEntity, Entity, EntityType } from '../entity-types.js'
+import { BeltEntity, Entity, EntityType, MinerEntity } from '../entity-types.js'
 import { TickStats, World } from '../types.js'
 import { getSmelterState } from './smelter-state.js'
 import { tickEnergy } from './tick-energy.js'
+
+interface TickEntityArgs<T extends Entity> {
+  entity: T
+  world: World
+  satisfaction: number
+  moved: Set<BeltEntity['items'][0]>
+}
+
+type TickEntityFn<T extends Entity> = (args: TickEntityArgs<T>) => void
+
+const tickMiner: TickEntityFn<MinerEntity> = ({
+  entity,
+  world,
+  satisfaction,
+  moved,
+}) => {
+  if (entity.target === null) return
+
+  if (entity.output && entity.connections.output.size > 0) {
+    invariant(entity.output.count > 0)
+
+    invariant(entity.connections.output.size === 1)
+    const targetEntityId = Array.from(entity.connections.output)[0]
+    const target = world.entities[targetEntityId]
+
+    invariant(target)
+    invariant(target.type === EntityType.Belt)
+
+    const item = {
+      type: entity.output.type,
+      progress: 0,
+    }
+    target.items.push(item)
+    entity.output.count -= 1
+    if (entity.output.count === 0) {
+      entity.output = null
+    }
+    // make sure we don't also move the new item
+    // during the same tick
+    moved.add(item)
+  }
+
+  entity.progress += MINE_RATE.perTick() * satisfaction
+  if (entity.progress >= 1) {
+    const count = Math.trunc(entity.progress)
+    entity.progress = entity.progress - count
+
+    let output = entity.output
+    if (output === null) {
+      output = entity.output = { type: entity.target, count: 0 }
+    }
+    invariant(output.type === entity.target)
+    output.count += count
+  }
+}
 
 export function tickWorld(world: World): TickStats {
   let { satisfaction } = tickEnergy(world)
@@ -21,44 +76,7 @@ export function tickWorld(world: World): TickStats {
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.Miner: {
-        if (entity.target === null) break
-
-        if (entity.output && entity.connections.output.size > 0) {
-          invariant(entity.output.count > 0)
-
-          invariant(entity.connections.output.size === 1)
-          const targetEntityId = Array.from(entity.connections.output)[0]
-          const target = world.entities[targetEntityId]
-
-          invariant(target)
-          invariant(target.type === EntityType.Belt)
-
-          const item = {
-            type: entity.output.type,
-            progress: 0,
-          }
-          target.items.push(item)
-          entity.output.count -= 1
-          if (entity.output.count === 0) {
-            entity.output = null
-          }
-          // make sure we don't also move the new item
-          // during the same tick
-          moved.add(item)
-        }
-
-        entity.progress += MINE_RATE.perTick() * satisfaction
-        if (entity.progress >= 1) {
-          const count = Math.trunc(entity.progress)
-          entity.progress = entity.progress - count
-
-          let output = entity.output
-          if (output === null) {
-            output = entity.output = { type: entity.target, count: 0 }
-          }
-          invariant(output.type === entity.target)
-          output.count += count
-        }
+        tickMiner({ entity, world, satisfaction, moved })
         break
       }
       case EntityType.Belt: {
