@@ -10,9 +10,6 @@ import {
   COAL_ENERGY,
   MINER_CONSUMPTION,
   MINE_RATE,
-  Recipe,
-  RECIPES,
-  SMELTER_CONSUMPTION,
   SOLAR_PANEL_RATE,
 } from '../const.js'
 import {
@@ -20,40 +17,10 @@ import {
   BeltEntity,
   Entity,
   EntityType,
-  SmelterEntity,
 } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
 import { TickStats, World } from '../types.js'
-
-interface SmelterState {
-  consumption: number
-  recipe: Recipe | null
-  ready: number
-}
-
-function getSmelterState(smelter: SmelterEntity): SmelterState {
-  let state: SmelterState = {
-    consumption: 0,
-    recipe: null,
-    ready: 0,
-  }
-  if (smelter.target === null) return state
-
-  state.recipe = RECIPES[smelter.target] ?? null
-
-  invariant(state.recipe !== null)
-  invariant(state.recipe.input.length === 1)
-
-  if (smelter.input && smelter.input.type === state.recipe.input[0].type) {
-    state.ready = Math.floor(smelter.input.count / state.recipe.input[0].count)
-  }
-
-  if (state.ready || smelter.progress) {
-    state.consumption = SMELTER_CONSUMPTION.perTick()
-  }
-
-  return state
-}
+import { getSmelterState } from './smelter-state.js'
 
 export function tickWorld(world: World): TickStats {
   let consumption = 0
