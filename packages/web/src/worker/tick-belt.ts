@@ -56,6 +56,15 @@ export const tickBelt: TickEntityFn<BeltEntity> = ({
             next.items[item.type] = (next.items[item.type] ?? 0) + 1
             break
           }
+          case EntityType.Lab: {
+            let input = next.input
+            if (!input) {
+              input = next.input = { type: item.type, count: 0 }
+            }
+            invariant(input.type === item.type)
+            input.count += 1
+            break
+          }
         }
       }
     }
