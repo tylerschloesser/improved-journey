@@ -400,7 +400,6 @@ export const positionBeforeFocus$ = new Subject<Vec2 | null>()
 navigationType$
   .pipe(withLatestFrom(positionBeforeFocus$))
   .subscribe(([navigationType, positionBeforeFocus]) => {
-    console.log(navigationType, positionBeforeFocus?.toString())
     if (navigationType === 'POP' && positionBeforeFocus) {
       position$.next(positionBeforeFocus)
     }
