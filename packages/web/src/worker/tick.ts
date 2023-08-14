@@ -1,9 +1,7 @@
-import { LabelHTMLAttributes } from 'react'
 import invariant from 'tiny-invariant'
-import { BELT_SPEED, MINE_RATE } from '../const.js'
+import { MINE_RATE } from '../const.js'
 import {
   BeltEntity,
-  Entity,
   EntityType,
   LabEntity,
   MinerEntity,
@@ -11,16 +9,9 @@ import {
 } from '../entity-types.js'
 import { TickStats, World } from '../types.js'
 import { getSmelterState } from './smelter-state.js'
+import { tickBelt } from './tick-belt.js'
 import { tickEnergy } from './tick-energy.js'
-
-interface TickEntityArgs<T extends Entity> {
-  entity: T
-  world: World
-  satisfaction: number
-  moved: Set<BeltEntity['items'][0]>
-}
-
-type TickEntityFn<T extends Entity> = (args: TickEntityArgs<T>) => void
+import { TickEntityFn } from './tick-types.js'
 
 const tickMiner: TickEntityFn<MinerEntity> = ({
   entity,
@@ -65,68 +56,6 @@ const tickMiner: TickEntityFn<MinerEntity> = ({
     }
     invariant(output.type === entity.target)
     output.count += count
-  }
-}
-
-export const tickBelt: TickEntityFn<BeltEntity> = ({
-  entity,
-  world,
-  satisfaction,
-  moved,
-}) => {
-  const remove = new Set<(typeof entity.items)[0]>()
-  for (const item of entity.items) {
-    // check if the item was just moved onto this belt
-    if (moved.has(item)) continue
-
-    item.progress += BELT_SPEED.perTick() * satisfaction
-    if (item.progress >= 1) {
-      let next: Entity | null = null
-      if (entity.connections.output.size > 0) {
-        invariant(entity.connections.output.size === 1)
-        next = world.entities[Array.from(entity.connections.output)[0]]
-        invariant(next)
-      }
-
-      if (next === null) {
-        item.progress = 1
-      } else {
-        remove.add(item)
-        switch (next.type) {
-          case EntityType.Belt: {
-            moved.add(item)
-            next.items.push(item)
-            item.progress -= 1
-            break
-          }
-          case EntityType.Generator: {
-            let fuel = next.fuel
-            if (!fuel) {
-              fuel = next.fuel = { type: item.type, count: 0 }
-            }
-            invariant(fuel.type === item.type)
-            fuel.count += 1
-            break
-          }
-          case EntityType.Smelter: {
-            let input = next.input
-            if (!input) {
-              input = next.input = { type: item.type, count: 0 }
-            }
-            invariant(input.type === item.type)
-            input.count += 1
-            break
-          }
-          case EntityType.Storage: {
-            next.items[item.type] = (next.items[item.type] ?? 0) + 1
-            break
-          }
-        }
-      }
-    }
-  }
-  if (remove.size) {
-    entity.items = entity.items.filter((item) => !remove.has(item))
   }
 }
 
