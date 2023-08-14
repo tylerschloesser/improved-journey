@@ -114,4 +114,17 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
     color: '#DCF763',
     size: new Vec2(1),
   } as EntityConfig<StorageEntity>,
+  [EntityType.Lab]: {
+    init: (args) => ({
+      ...args,
+      type: EntityType.Lab,
+      connections: {
+        input: new Set(),
+        output: new Set(),
+      },
+      input: null,
+    }),
+    color: 'gold',
+    size: new Vec2(3),
+  },
 }

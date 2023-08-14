@@ -12,6 +12,7 @@ export enum EntityType {
   Display = 'display',
   Smelter = 'smelter',
   Storage = 'storage',
+  Lab = 'lab',
 }
 
 export type Direction = 'up' | 'right' | 'down' | 'left'
@@ -80,6 +81,11 @@ export interface StorageEntity extends BaseEntity {
   items: Record<ItemType, number>
 }
 
+export interface LabEntity extends BaseEntity {
+  type: EntityType.Lab
+  input: ItemStack | null
+}
+
 export type Entity =
   | MinerEntity
   | BeltEntity
@@ -89,6 +95,7 @@ export type Entity =
   | DisplayEntity
   | SmelterEntity
   | StorageEntity
+  | LabEntity
 
 export type BuildEntity =
   | Omit<MinerEntity, 'id'>
@@ -99,3 +106,4 @@ export type BuildEntity =
   | Omit<DisplayEntity, 'id'>
   | Omit<SmelterEntity, 'id'>
   | Omit<StorageEntity, 'id'>
+  | Omit<LabEntity, 'id'>
