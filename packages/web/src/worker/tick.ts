@@ -1,17 +1,10 @@
-import { BeltEntity, EntityType, LabEntity } from '../entity-types.js'
+import { BeltEntity, EntityType } from '../entity-types.js'
 import { TickStats, World } from '../types.js'
 import { tickBelt } from './tick-belt.js'
 import { tickEnergy } from './tick-energy.js'
+import { tickLab } from './tick-lab.js'
 import { tickMiner } from './tick-miner.js'
 import { tickSmelter } from './tick-smelter.js'
-import { TickEntityFn } from './tick-types.js'
-
-export const tickLab: TickEntityFn<LabEntity> = ({
-  entity,
-  world,
-  satisfaction,
-  moved,
-}) => {}
 
 export function tickWorld(world: World): TickStats {
   let { satisfaction } = tickEnergy(world)
