@@ -1,9 +1,11 @@
+import { LabelHTMLAttributes } from 'react'
 import invariant from 'tiny-invariant'
 import { BELT_SPEED, MINE_RATE } from '../const.js'
 import {
   BeltEntity,
   Entity,
   EntityType,
+  LabEntity,
   MinerEntity,
   SmelterEntity,
 } from '../entity-types.js'
@@ -195,6 +197,13 @@ export const tickSmelter: TickEntityFn<SmelterEntity> = ({
   }
 }
 
+export const tickLab: TickEntityFn<LabEntity> = ({
+  entity,
+  world,
+  satisfaction,
+  moved,
+}) => {}
+
 export function tickWorld(world: World): TickStats {
   let { satisfaction } = tickEnergy(world)
 
@@ -220,6 +229,10 @@ export function tickWorld(world: World): TickStats {
       }
       case EntityType.Smelter: {
         tickSmelter({ entity, world, satisfaction, moved })
+        break
+      }
+      case EntityType.Lab: {
+        tickLab({ entity, world, satisfaction, moved })
         break
       }
     }
