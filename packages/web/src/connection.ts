@@ -15,9 +15,12 @@ import { toCellId, vec2ToDirection } from './util.js'
 import { Vec2 } from './vec2.js'
 
 const entity$ = combineLatest([connection$, entities$]).pipe(
-  map(([connection, entities]) =>
-    connection ? entities[connection.entityId] : null,
-  ),
+  map(([connection, entities]) => {
+    if (connection === null) return null
+    const entity = entities[connection.entityId]
+    invariant(entity)
+    return entity
+  }),
   distinctUntilChanged<Entity | null>(isEqual),
 )
 
@@ -32,7 +35,7 @@ export const nodes$ = combineLatest([entity$, world$]).pipe(
       target: [],
     }
 
-    for (const other of Object.values(world.entities)) {
+    for (const other of Object.values(world.entities) as Entity[]) {
       const arr = other === entity ? nodes.source : nodes.target
       arr.push(...getNodes(other))
     }
@@ -44,7 +47,9 @@ export const nodes$ = combineLatest([entity$, world$]).pipe(
 export const start$ = combineLatest([world$, position$, connection$]).pipe(
   map(([world, position, connection]) => {
     if (!connection) return null
-    const nodes = getNodes(world.entities[connection.entityId])
+    const entity = world.entities[connection.entityId]
+    invariant(entity)
+    const nodes = getNodes(entity)
 
     let closest: { node: Vec2; dist: number } | null = null
     for (const node of nodes) {

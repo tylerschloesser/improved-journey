@@ -109,6 +109,7 @@ setDisplayContentType$
     world = cloneDeep(world)
 
     const entity = world.entities[entityId]
+    invariant(entity)
     invariant(entity.type === EntityType.Display)
 
     entity.content = { type }
@@ -127,6 +128,7 @@ setTarget$
     world = cloneDeep(world)
 
     const entity = world.entities[entityId]
+    invariant(entity)
     invariant(
       entity.type === EntityType.Miner || entity.type === EntityType.Smelter,
     )
@@ -276,7 +278,7 @@ tap$
     const a1 = world
     const b1 = world.add(new Vec2(1, 1))
 
-    for (const entity of Object.values(entities)) {
+    for (const entity of Object.values(entities) as Entity[]) {
       const a2 = new Vec2(entity.position)
       const b2 = new Vec2(entity.position).add(new Vec2(entity.size))
 
@@ -311,6 +313,7 @@ merge(
   ),
 ).subscribe(([{ entityId, mode }, entities, position, viewport, cellSize]) => {
   const entity = entities[entityId]
+  invariant(entity)
 
   let center = new Vec2(entity.position).add(new Vec2(entity.size).div(2))
 

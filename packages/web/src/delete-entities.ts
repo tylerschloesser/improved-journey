@@ -30,6 +30,7 @@ export function deleteEntities(world: World, entityIds: Set<EntityId>): void {
 
     for (const peerEntityId of entity.connections.output) {
       const peer = world.entities[peerEntityId]
+      invariant(peer)
       invariant(peer.connections.input.has(entityId))
       peer.connections.input.delete(entityId)
     }

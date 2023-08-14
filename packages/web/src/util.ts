@@ -90,7 +90,9 @@ export function getCell(position: Vec2, chunks: World['chunks']): Cell | null {
 export function getEntity(position: Vec2, world: World): Entity | null {
   const cell = getCell(position, world.chunks)
   if (cell?.entityId) {
-    return world.entities[cell.entityId]
+    const entity = world.entities[cell.entityId]
+    invariant(entity)
+    return entity
   }
   return null
 }

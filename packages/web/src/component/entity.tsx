@@ -21,7 +21,13 @@ import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
 
 const [useEntity] = bind((id: EntityId) =>
-  entities$.pipe(map((entities) => entities[id])),
+  entities$.pipe(
+    map((entities) => {
+      const entity = entities[id]
+      invariant(entity)
+      return entity
+    }),
+  ),
 )
 
 function AddOutputButton({ entityId }: { entityId: EntityId }) {
@@ -52,6 +58,7 @@ function MinerTestOutputCoalButton({ entityId }: { entityId: EntityId }) {
     world$.pipe(first()).subscribe((world) => {
       world = cloneDeep(world)
       const miner = world.entities[entityId]
+      invariant(miner)
       invariant(miner.type === EntityType.Miner)
       miner.output = { type: ItemType.Coal, count: 1 }
       world$.next(world)
@@ -75,6 +82,7 @@ function GeneratorTestBurnCoalButton({ entityId }: { entityId: EntityId }) {
         world$.pipe(first()).subscribe((world) => {
           world = cloneDeep(world)
           const generator = world.entities[entityId]
+          invariant(generator)
           invariant(generator.type === EntityType.Generator)
 
           generator.burning = { type: ItemType.Coal, progress: 0 }

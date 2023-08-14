@@ -26,7 +26,7 @@ export interface World {
   tick: number
 
   chunks: Partial<Record<ChunkId, Chunk>>
-  entities: Record<EntityId, Entity>
+  entities: Partial<Record<EntityId, Entity>>
 
   nextEntityId: number
 }
