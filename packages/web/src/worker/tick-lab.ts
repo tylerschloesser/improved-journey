@@ -1,15 +1,34 @@
 import invariant from 'tiny-invariant'
-import { RESEARCH_SPEED } from '../const.js'
+import { LAB_CONSUMPTION, RESEARCH_SPEED } from '../const.js'
 import { LabEntity } from '../entity-types.js'
 import { TickEntityFn } from './tick-types.js'
+
+export interface LabState {
+  consumption: number
+}
+
+export function getLabState(entity: LabEntity): LabState {
+  let consumption = 0
+
+  if (entity.progress !== null) {
+    consumption = LAB_CONSUMPTION.perTick()
+  } else if (entity.input !== null) {
+    invariant(entity.input.count > 0)
+    consumption = LAB_CONSUMPTION.perTick()
+  }
+
+  return { consumption }
+}
 
 export const tickLab: TickEntityFn<LabEntity> = ({
   entity,
   world,
   satisfaction,
 }) => {
-  if (entity.input === null) return
-  invariant(entity.input.count > 0)
+  const state = getLabState(entity)
+
+  // TODO this is kind of hacky to check for zero
+  if (state.consumption === 0) return
 
   let progress = RESEARCH_SPEED.perTick() * satisfaction
 
@@ -29,6 +48,7 @@ export const tickLab: TickEntityFn<LabEntity> = ({
   }
 
   if (entity.progress === null && progress > 0) {
+    invariant(entity.input)
     invariant(entity.target === null)
 
     entity.target = entity.input.type

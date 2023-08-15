@@ -29,6 +29,7 @@ export function LabEntity({ entity, config }: EntityProps<LabEntity>) {
         itemType: entity.target,
         g,
         position: new Vec2(entity.position).add(new Vec2(2.5, 0.5)),
+        // TODO bitmap text
       })
     },
     [entity],

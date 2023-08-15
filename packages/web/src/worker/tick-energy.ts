@@ -14,6 +14,7 @@ import { BatteryEntity, EntityType } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
 import { World } from '../types.js'
 import { getSmelterState } from './smelter-state.js'
+import { getLabState } from './tick-lab.js'
 
 export function tickEnergy(world: World): { satisfaction: number } {
   let consumption = 0
@@ -34,6 +35,10 @@ export function tickEnergy(world: World): { satisfaction: number } {
       }
       case EntityType.Smelter: {
         consumption += getSmelterState(entity).consumption
+        break
+      }
+      case EntityType.Lab: {
+        consumption += getLabState(entity).consumption
         break
       }
       case EntityType.Generator: {

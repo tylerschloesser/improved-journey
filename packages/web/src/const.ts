@@ -25,6 +25,7 @@ export const COAL_BURN_RATE = new Rate(10, RateType.PerTick)
 export const BELT_CONSUMPTION = new Rate(0.1, RateType.PerTick)
 export const MINER_CONSUMPTION = new Rate(1, RateType.PerTick)
 export const SMELTER_CONSUMPTION = new Rate(1, RateType.PerTick)
+export const LAB_CONSUMPTION = new Rate(5, RateType.PerTick)
 
 // how long does it take for an item to move across a belt
 export const BELT_SPEED = new Rate(1, RateType.PerSecond)
