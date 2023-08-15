@@ -1,10 +1,9 @@
-import * as PIXI from 'pixi.js'
-import { Container, Graphics, Text } from '@pixi/react'
-import { useMemo } from 'react'
+import { Container, Graphics } from '@pixi/react'
 import { SmelterEntity } from '../entity-types.js'
 import { Vec2 } from '../vec2.js'
 import { drawItem } from './draw-item.js'
 import { EntityProps } from './entity-props.js'
+import { ProgressText } from './ProgressText.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
@@ -39,16 +38,11 @@ export function SmelterEntity({ entity, config }: EntityProps<SmelterEntity>) {
     progress = Math.trunc(entity.progress * 100)
   }
 
-  const textStyle = useMemo(
-    () => new PIXI.TextStyle({ fill: 'white', align: 'center', fontSize: 40 }),
-    [],
-  )
-
   return (
     <Container zIndex={ZIndex.entity}>
       <Graphics draw={drawBackground} />
-      <Container x={x} y={y} width={width} height={height} scale={0.01}>
-        {progress !== null && <Text text={`${progress}%`} style={textStyle} />}
+      <Container x={x} y={y} width={width} height={height}>
+        {progress && <ProgressText progress={progress} />}
       </Container>
       <Graphics draw={drawTarget} />
     </Container>
