@@ -84,6 +84,7 @@ export interface StorageEntity extends BaseEntity {
 export interface LabEntity extends BaseEntity {
   type: EntityType.Lab
   input: ItemStack | null
+  target: ItemType | null
   progress: number | null
 }
 

@@ -141,6 +141,7 @@ setTarget$
   })
 
 export const tick$ = world$.pipe(map((world) => world.tick))
+export const research$ = world$.pipe(map((world) => world.research))
 
 export const entities$ = world$.pipe(map((world) => world.entities))
 

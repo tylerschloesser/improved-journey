@@ -123,6 +123,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
         output: new Set(),
       },
       progress: null,
+      target: null,
       input: null,
     }),
     color: 'gold',
