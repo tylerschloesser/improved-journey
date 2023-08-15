@@ -14,7 +14,7 @@ import { ZIndex } from './z-index.js'
 
 const [useEntities] = bind(entities$)
 
-function Entity({ entity, config }: EntityProps<Entity>) {
+function PlaceholderEntity({ entity, config }: EntityProps<Entity>) {
   const draw = useDraw(
     (g) => {
       g.clear()
@@ -54,7 +54,9 @@ export function Entities() {
               <SmelterEntity key={entity.id} entity={entity} config={config} />
             )
         }
-        return <Entity key={entity.id} entity={entity} config={config} />
+        return (
+          <PlaceholderEntity key={entity.id} entity={entity} config={config} />
+        )
       })}
     </Container>
   )
