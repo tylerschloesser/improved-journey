@@ -126,7 +126,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
       target: null,
       input: null,
     }),
-    color: 'gold',
+    color: '#FFD447',
     size: new Vec2(3),
   },
 }
