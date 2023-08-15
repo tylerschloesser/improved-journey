@@ -11,7 +11,10 @@ const container = document.getElementById('root')
 invariant(container)
 const root = createRoot(container)
 
-const development = true
+// strict mode breaks entity 404s, which redirect
+// to '..' on mount. In strict mode this happens twice
+// so we end up navigate up two levels...
+const development = false
 
 const StrictMode = ({ children }: React.PropsWithChildren) => {
   if (development) {

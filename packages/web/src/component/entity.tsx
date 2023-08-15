@@ -6,7 +6,12 @@ import { first, map } from 'rxjs'
 import { serialize } from 'superjson'
 import invariant from 'tiny-invariant'
 import { TARGET_OPTIONS } from '../const.js'
-import { DisplayContentType, EntityId, EntityType } from '../entity-types.js'
+import {
+  DisplayContentType,
+  Entity,
+  EntityId,
+  EntityType,
+} from '../entity-types.js'
 import {
   entities$,
   focus$,
@@ -20,15 +25,15 @@ import { BackButton } from './back-button.js'
 import styles from './entity.module.scss'
 import { useEntityId } from './use-entity-id.js'
 
-const [useEntity] = bind((id: EntityId) =>
-  entities$.pipe(
-    map((entities) => {
-      const entity = entities[id]
-      invariant(entity)
-      return entity
-    }),
-  ),
+const [useEntityOptional] = bind((id: EntityId) =>
+  entities$.pipe(map((entities) => entities[id] ?? null)),
 )
+
+function useEntity(id: EntityId) {
+  const entity = useEntityOptional(id)
+  invariant(entity)
+  return entity
+}
 
 function AddOutputButton({ entityId }: { entityId: EntityId }) {
   const navigate = useNavigate()
@@ -204,14 +209,26 @@ function DisplayContentTypeSelect({ entityId }: { entityId: EntityId }) {
 
 export function Entity() {
   const entityId = useEntityId()
-  const entity = useEntity(entityId)
+  const entity = useEntityOptional(entityId)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    focus$.next({ entityId, mode: FocusMode.Entity })
-  }, [entityId])
+    if (entity === null) {
+      navigate('..')
+    }
+  }, [entity])
+
+  useEffect(() => {
+    if (entity?.id) {
+      focus$.next({ entityId: entity.id, mode: FocusMode.Entity })
+    }
+  }, [entity?.id])
 
   const layout = useMemo(() => {
+    if (entity === null) return { content: null, controls: null }
+
     const buttons: JSX.Element[] = []
+
     buttons.push(<BackButton className={styles.button} />)
 
     if (
@@ -250,7 +267,7 @@ export function Entity() {
         .map((button) => () => button)
         .map((Wrapper, i) => <Wrapper key={i} />),
     }
-  }, [entityId, entity.type])
+  }, [entityId, entity?.type])
 
   return (
     <div className={styles.container}>
