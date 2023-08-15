@@ -25,8 +25,8 @@ export interface World {
   version: number
   tick: number
 
-  chunks: Partial<Record<ChunkId, Chunk>>
-  entities: Partial<Record<EntityId, Entity>>
+  chunks: Record<ChunkId, Chunk>
+  entities: Record<EntityId, Entity>
 
   nextEntityId: number
 }
