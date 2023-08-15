@@ -1,10 +1,9 @@
-import { Container, Graphics, Text } from '@pixi/react'
-import * as PIXI from 'pixi.js'
-import { useMemo } from 'react'
+import { Container, Graphics } from '@pixi/react'
 import { MinerEntity } from '../entity-types.js'
 import { Vec2 } from '../vec2.js'
 import { drawItem } from './draw-item.js'
 import { EntityProps } from './entity-props.js'
+import { ProgressText } from './ProgressText.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
@@ -38,19 +37,14 @@ export function MinerEntity({ entity, config }: EntityProps<MinerEntity>) {
 
   const progress = Math.trunc(entity.progress * 100)
 
-  const textStyle = useMemo(
-    () => new PIXI.TextStyle({ fill: 'white', align: 'center', fontSize: 40 }),
-    [],
-  )
-
   const [x, y] = entity.position
   const [width, height] = entity.size
 
   return (
     <Container zIndex={ZIndex.entity}>
       <Graphics draw={drawBackground} />
-      <Container x={x} y={y} width={width} height={height} scale={0.01}>
-        <Text text={`${progress}%`} style={textStyle} />
+      <Container x={x} y={y} width={width} height={height}>
+        <ProgressText progress={progress} />
       </Container>
       <Graphics draw={drawTarget} />
     </Container>
