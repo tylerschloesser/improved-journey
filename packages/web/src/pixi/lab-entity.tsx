@@ -1,11 +1,28 @@
 import { Container, Graphics } from '@pixi/react'
+import { bind } from '@react-rxjs/core'
 import { LabEntity } from '../entity-types.js'
+import { research$ } from '../game-state.js'
+import { ItemType } from '../item-types.js'
 import { Vec2 } from '../vec2.js'
 import { drawItem } from './draw-item.js'
 import { EntityProps } from './entity-props.js'
 import { ProgressText } from './ProgressText.js'
+import { Text } from './text.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
+
+const [useResearch] = bind(research$)
+
+interface ResearchProps {
+  target: ItemType | null
+}
+
+function Research({ target }: ResearchProps) {
+  const research = useResearch()
+  if (target === null) return null
+  const value = research[target] ?? 0
+  return <Text text={`r: ${value.toLocaleString()}`} />
+}
 
 export function LabEntity({ entity, config }: EntityProps<LabEntity>) {
   const [x, y] = entity.position
@@ -47,6 +64,9 @@ export function LabEntity({ entity, config }: EntityProps<LabEntity>) {
         )}
       </Container>
       <Graphics draw={drawTarget} />
+      <Container x={x} y={y + 2} width={width} height={1}>
+        <Research target={entity.target} />
+      </Container>
     </Container>
   )
 }
