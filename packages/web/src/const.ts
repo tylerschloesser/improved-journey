@@ -2,7 +2,7 @@ import { EntityType } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { Rate, RateType } from './rate.js'
 
-export const WORLD_VERSION = 2
+export const WORLD_VERSION = 4
 
 export const MAX_CELL_SIZE = 32
 export const MIN_CELL_SIZE = 4

@@ -1,4 +1,5 @@
 import { Entity, EntityId } from './entity-types.js'
+import { ItemType } from './item-types.js'
 import { SimpleVec2 } from './vec2.js'
 
 export type ChunkId = string
@@ -27,6 +28,8 @@ export interface World {
 
   chunks: Record<ChunkId, Chunk>
   entities: Record<EntityId, Entity>
+
+  research: Partial<Record<ItemType, number>>
 
   nextEntityId: number
 }
