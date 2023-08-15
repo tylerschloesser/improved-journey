@@ -7,6 +7,7 @@ import { entities$ } from '../game-state.js'
 import { BeltEntity } from './belt-entity.js'
 import { DisplayEntity } from './display-entity.js'
 import { EntityProps } from './entity-props.js'
+import { LabEntity } from './lab-entity.js'
 import { MinerEntity } from './miner-entity.js'
 import { SmelterEntity } from './smelter-entity.js'
 import { useDraw } from './use-draw.js'
@@ -53,6 +54,8 @@ export function Entities() {
             return (
               <SmelterEntity key={entity.id} entity={entity} config={config} />
             )
+          case EntityType.Lab:
+            return <LabEntity key={entity.id} entity={entity} config={config} />
         }
         return (
           <PlaceholderEntity key={entity.id} entity={entity} config={config} />
