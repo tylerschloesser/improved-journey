@@ -2,8 +2,8 @@ import { isEqual } from 'lodash-es'
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { getNodes } from './add-entities.js'
-import { newBelt } from './belt.js'
-import { BeltEntity, Entity } from './entity-types.js'
+import { ENTITY_CONFIG } from './entity-config.js'
+import { BeltEntity, Entity, EntityType } from './entity-types.js'
 import {
   cells$,
   connection$,
@@ -109,13 +109,13 @@ combineLatest([
   let cur = start
 
   do {
-    build.cells.push({
-      entity: newBelt({
-        position: cur.toSimple(),
-        size: new Vec2(1).toSimple(),
-        direction,
-      }),
-    })
+    // TODO cleanup type cast?
+    const belt = ENTITY_CONFIG[EntityType.Belt].init({
+      position: cur.toSimple(),
+    }) as BeltEntity
+    belt.direction = direction
+
+    build.cells.push({ entity: belt })
 
     const valid = !cells.get(toCellId(cur))?.entityId
     build.valid &&= valid

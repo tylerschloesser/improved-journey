@@ -1,8 +1,6 @@
 import { addEntities } from './add-entities.js'
 import { WORLD_VERSION } from './const.js'
-import { newDisplay } from './entity/display.js'
-import { newGenerator } from './entity/generator.js'
-import { newMiner } from './miner.js'
+import { ENTITY_CONFIG } from './entity-config.js'
 import { World } from './types.js'
 import { Vec2 } from './vec2.js'
 
@@ -19,32 +17,16 @@ export function generateWorld(): World {
   }
 
   addEntities(world, [
-    newMiner({
+    ENTITY_CONFIG.miner.init({
       position: new Vec2(1, 2).toSimple(),
-      size: new Vec2(2, 2).toSimple(),
-      target: null,
-      connections: {
-        input: new Set(),
-        output: new Set(),
-      },
     }),
 
-    newGenerator({
+    ENTITY_CONFIG.generator.init({
       position: new Vec2(6, 2).toSimple(),
-      size: new Vec2(3, 2).toSimple(),
-      connections: {
-        input: new Set(),
-        output: new Set(),
-      },
     }),
 
-    newDisplay({
+    ENTITY_CONFIG.display.init({
       position: new Vec2(3, -1).toSimple(),
-      size: new Vec2(2).toSimple(),
-      connections: {
-        input: new Set(),
-        output: new Set(),
-      },
     }),
   ])
 

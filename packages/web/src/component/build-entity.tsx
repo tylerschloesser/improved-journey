@@ -41,15 +41,14 @@ export function BuildEntity() {
   const [valid, setValid] = useState(false)
 
   useEffect(() => {
-    const { size } = config
+    const { initialSize } = config
     const sub = combineLatest([position$, entities$]).subscribe(
       ([position, entities]) => {
         const entity: BuildEntity = config.init({
           position: position
-            .sub(size.sub(new Vec2(1, 1)).div(2))
+            .sub(new Vec2(initialSize).sub(new Vec2(1, 1)).div(2))
             .floor()
             .toSimple(),
-          size: size.toSimple(),
         })
 
         let valid = isValid(entity, Object.values(entities))

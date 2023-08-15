@@ -78,7 +78,7 @@ export interface SmelterEntity extends BaseEntity {
 
 export interface StorageEntity extends BaseEntity {
   type: EntityType.Storage
-  items: Record<ItemType, number>
+  items: Partial<Record<ItemType, number>>
 }
 
 export interface LabEntity extends BaseEntity {
