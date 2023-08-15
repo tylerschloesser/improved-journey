@@ -7,7 +7,7 @@ export function installBitmapFont() {
   const style = new PIXI.TextStyle({
     fontFamily: '"Lucida Console", Monaco, monospace',
     fill: 'white',
-    fontSize: 40,
+    fontSize: 100,
   })
   PIXI.BitmapFont.from(BITMAP_FONT_NAME, style, {
     chars: PIXI.BitmapFont.ASCII,
@@ -33,7 +33,7 @@ export function Text({ text, color = 'black' }: TextProps) {
   }
   return (
     <BitmapText
-      scale={0.01}
+      scale={0.005}
       text={text}
       tint={tint}
       style={{ fontName: BITMAP_FONT_NAME }}

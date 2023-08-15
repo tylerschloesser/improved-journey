@@ -1,11 +1,10 @@
-import { Container, Graphics, Text } from '@pixi/react'
+import { Container, Graphics } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
-import * as PIXI from 'pixi.js'
-import { useMemo } from 'react'
 import invariant from 'tiny-invariant'
 import { DisplayContentType, DisplayEntity } from '../entity-types.js'
 import { satisfaction$ } from '../game-state.js'
 import { EntityProps } from './entity-props.js'
+import { Text } from './text.js'
 import { useDraw } from './use-draw.js'
 
 const [useSatisfaction] = bind(satisfaction$)
@@ -21,15 +20,11 @@ function Placeholder({ entity, config }: EntityProps<DisplayEntity>) {
     },
     [entity, config],
   )
-  const textStyle = useMemo(
-    () => new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 80 }),
-    [],
-  )
   return (
     <>
       <Graphics draw={drawBackground} />
-      <Container x={x} y={y} width={width} height={height} scale={0.01}>
-        <Text text={`Click\nMe...`} style={textStyle} />
+      <Container x={x} y={y} width={width} height={height}>
+        <Text text={`Click\nMe...`} />
       </Container>
     </>
   )
@@ -57,26 +52,11 @@ function Satisfaction({ entity }: EntityProps<DisplayEntity>) {
     [entity, backgroundColor],
   )
 
-  const textStyle = useMemo(
-    () => new PIXI.TextStyle({ fill: 'black', align: 'center', fontSize: 80 }),
-    [],
-  )
-
   return (
     <>
       <Graphics draw={drawBackground} />
-      <Container
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        scale={0.01}
-        // visible={zoomLevel !== ZoomLevel.Low}
-      >
-        <Text
-          text={`sat\n${Math.trunc(satisfaction * 100)}%`}
-          style={textStyle}
-        />
+      <Container x={x} y={y} width={width} height={height}>
+        <Text text={`sat\n${Math.trunc(satisfaction * 100)}%`} />
       </Container>
     </>
   )
