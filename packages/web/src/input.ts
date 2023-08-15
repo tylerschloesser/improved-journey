@@ -56,6 +56,7 @@ function handlePointerMoveTwo(state: PointerState, ev: PointerEvent): void {
     center: center.next,
     drag: center.next.sub(center.prev).mul(-1),
     zoom: dist.next - dist.prev,
+    factor: dist.next / dist.prev,
   })
 }
 

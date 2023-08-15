@@ -1,4 +1,6 @@
+import { clamp, invokeMap } from 'lodash-es'
 import invariant from 'tiny-invariant'
+import { MAX_CELL_SIZE, MIN_CELL_SIZE } from './const.js'
 import { Direction, Entity, EntityId } from './entity-types.js'
 import { Cell, CellId, Chunk, ChunkId, World } from './types.js'
 import { Vec2 } from './vec2.js'
@@ -143,4 +145,19 @@ export function getSelectArea(start: Vec2, end: Vec2) {
     start: new Vec2(Math.min(end.x, start.x), Math.min(end.y, start.y)),
     end: new Vec2(Math.max(end.x, start.x + 1), Math.max(end.y, start.y + 1)),
   }
+}
+
+export function clampCellSize(value: number) {
+  return clamp(value, MIN_CELL_SIZE, MAX_CELL_SIZE)
+}
+
+export function zoomToCellSize(zoom: number) {
+  return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
+}
+
+export function cellSizeToZoom(cellSize: number) {
+  invariant(cellSize >= MIN_CELL_SIZE)
+  invariant(cellSize <= MAX_CELL_SIZE)
+
+  return (cellSize - MIN_CELL_SIZE) / (MAX_CELL_SIZE - MIN_CELL_SIZE)
 }

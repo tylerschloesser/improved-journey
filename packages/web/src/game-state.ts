@@ -20,7 +20,7 @@ import {
 import invariant from 'tiny-invariant'
 import { addEntities } from './add-entities.js'
 import { animateVec2, easeOutCirc } from './animate.js'
-import { MAX_CELL_SIZE, MIN_CELL_SIZE, TARGET_OPTIONS } from './const.js'
+import { TARGET_OPTIONS } from './const.js'
 import { deleteEntities } from './delete-entities.js'
 import {
   BuildEntity,
@@ -34,9 +34,12 @@ import { saveClient } from './storage.js'
 import { Cell, CellId, Chunk, Client, World } from './types.js'
 import {
   cellIndexToPosition,
+  cellSizeToZoom,
   CHUNK_SIZE,
+  clampCellSize,
   intersects,
   toCellId,
+  zoomToCellSize,
 } from './util.js'
 import { Vec2 } from './vec2.js'
 
@@ -172,10 +175,6 @@ export const cells$ = chunks$.pipe(
 
 export const navigate$ = new Subject<{ to: string }>()
 
-function zoomToCellSize(zoom: number) {
-  return MIN_CELL_SIZE + (MAX_CELL_SIZE - MIN_CELL_SIZE) * zoom
-}
-
 export const cellSize$ = zoom$.pipe(map(zoomToCellSize))
 
 move$
@@ -188,20 +187,20 @@ export const pinch$ = new Subject<{
   center: Vec2
   drag: Vec2
   zoom: number
+  factor: number
 }>()
 
-// TODO this is roughly the same as wheel$ below
 pinch$
-  .pipe(withLatestFrom(viewport$, position$, zoom$))
-  .subscribe(([pinch, viewport, position, prevZoom]) => {
-    const zoom = {
-      prev: prevZoom,
-      next: clamp(prevZoom + pinch.zoom / 1_000, 0, 1),
+  .pipe(withLatestFrom(viewport$, position$, zoom$, cellSize$))
+  .subscribe(([pinch, viewport, position, prevZoom, prevCellSize]) => {
+    const scale = {
+      prev: prevCellSize,
+      next: clampCellSize(pinch.factor * prevCellSize),
     }
 
-    const scale = {
-      prev: zoomToCellSize(zoom.prev),
-      next: zoomToCellSize(zoom.next),
+    const zoom = {
+      prev: prevZoom,
+      next: cellSizeToZoom(scale.next),
     }
 
     const anchor = pinch.center.sub(viewport.div(2))
@@ -215,7 +214,6 @@ pinch$
     zoom$.next(zoom.next)
   })
 
-// TODO this is roughly the same as pinch$ above
 wheel$
   .pipe(withLatestFrom(viewport$, position$, zoom$))
   .subscribe(([wheel, viewport, position, prevZoom]) => {
