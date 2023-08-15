@@ -42,7 +42,7 @@ export function SmelterEntity({ entity, config }: EntityProps<SmelterEntity>) {
     <Container zIndex={ZIndex.entity}>
       <Graphics draw={drawBackground} />
       <Container x={x} y={y} width={width} height={height}>
-        {progress && <ProgressText progress={progress} />}
+        {progress !== null && <ProgressText progress={progress} />}
       </Container>
       <Graphics draw={drawTarget} />
     </Container>
