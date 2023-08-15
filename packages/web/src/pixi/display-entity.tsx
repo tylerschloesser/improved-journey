@@ -24,7 +24,7 @@ function Placeholder({ entity, config }: EntityProps<DisplayEntity>) {
     <>
       <Graphics draw={drawBackground} />
       <Container x={x} y={y} width={width} height={height}>
-        <Text text={`Click\nMe...`} />
+        <Text text={`Click\nMe...`} size={2} />
       </Container>
     </>
   )
@@ -56,7 +56,7 @@ function Satisfaction({ entity }: EntityProps<DisplayEntity>) {
     <>
       <Graphics draw={drawBackground} />
       <Container x={x} y={y} width={width} height={height}>
-        <Text text={`sat\n${Math.trunc(satisfaction * 100)}%`} />
+        <Text text={`sat\n${Math.trunc(satisfaction * 100)}%`} size={2} />
       </Container>
     </>
   )

@@ -15,13 +15,15 @@ export function installBitmapFont() {
 }
 
 export type TextColor = 'white' | 'black'
+export type TextSize = 1 | 2
 
 export interface TextProps {
   text: string
   color?: TextColor
+  size?: TextSize
 }
 
-export function Text({ text, color = 'black' }: TextProps) {
+export function Text({ text, color = 'black', size = 1 }: TextProps) {
   let tint
   switch (color) {
     case 'white':
@@ -33,7 +35,7 @@ export function Text({ text, color = 'black' }: TextProps) {
   }
   return (
     <BitmapText
-      scale={0.005}
+      scale={0.005 * size}
       text={text}
       tint={tint}
       style={{ fontName: BITMAP_FONT_NAME }}
