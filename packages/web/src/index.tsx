@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import './index.scss'
-import { installProgressFont } from './pixi/ProgressText.js'
+import { installBitmapFont } from './pixi/text.js'
 import { router } from './router.js'
 
 const container = document.getElementById('root')
@@ -21,7 +21,7 @@ const StrictMode = ({ children }: React.PropsWithChildren) => {
   return <>{children}</>
 }
 
-installProgressFont()
+installBitmapFont()
 
 root.render(
   <StrictMode>
