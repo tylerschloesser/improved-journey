@@ -32,6 +32,8 @@ export function chunkIdToPosition(chunkId: ChunkId): Vec2 {
   const match = chunkId.match(/(-?\d+)\.(-?\d+)/)
   invariant(match?.length === 3)
   const [x, y] = match.slice(1)
+  invariant(x)
+  invariant(y)
   return new Vec2(parseInt(x), parseInt(y))
 }
 

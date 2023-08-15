@@ -36,7 +36,7 @@ export const tickSmelter: TickEntityFn<SmelterEntity> = ({
 
   if (entity.progress === null && state.ready && progress > 0) {
     invariant(entity.input)
-    invariant(entity.input.type === state.recipe.input[0].type)
+    invariant(entity.input.type === state.recipe.input[0]?.type)
     invariant(entity.input.count >= state.recipe.input[0].count)
     entity.input.count -= state.recipe.input[0].count
     if (entity.input.count === 0) {
@@ -50,6 +50,7 @@ export const tickSmelter: TickEntityFn<SmelterEntity> = ({
     invariant(entity.connections.output.size === 1)
 
     const targetEntityId = Array.from(entity.connections.output)[0]
+    invariant(targetEntityId)
     const target = world.entities[targetEntityId]
 
     invariant(target)

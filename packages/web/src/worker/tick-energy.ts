@@ -84,6 +84,7 @@ export function tickEnergy(world: World): { satisfaction: number } {
 
     for (const i of times(batteries.length)) {
       const battery = batteries[i]
+      invariant(battery)
 
       const needed = consumption - production
       const average = Math.min(
@@ -104,6 +105,7 @@ export function tickEnergy(world: World): { satisfaction: number } {
 
     for (const i of times(batteries.length)) {
       const battery = batteries[i]
+      invariant(battery)
 
       const extra = production - consumption
       const average = Math.min(

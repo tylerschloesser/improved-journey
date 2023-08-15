@@ -9,6 +9,7 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
 
   for (let i = 0; i < builds.length; i++) {
     const build = builds[i]
+    invariant(build)
 
     const entityId = `${world.nextEntityId++}`
     invariant(world.entities[entityId] === undefined)

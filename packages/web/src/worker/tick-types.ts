@@ -1,5 +1,5 @@
-import { BeltEntity, Entity } from '../entity-types'
-import { World } from '../types'
+import { BeltEntity, Entity } from '../entity-types.js'
+import { World } from '../types.js'
 
 export interface TickEntityArgs<T extends Entity> {
   entity: T

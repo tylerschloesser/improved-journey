@@ -21,7 +21,7 @@ export function getSmelterState(smelter: SmelterEntity): SmelterState {
   invariant(state.recipe !== null)
   invariant(state.recipe.input.length === 1)
 
-  if (smelter.input && smelter.input.type === state.recipe.input[0].type) {
+  if (smelter.input && smelter.input.type === state.recipe.input[0]?.type) {
     state.ready = Math.floor(smelter.input.count / state.recipe.input[0].count)
   }
 

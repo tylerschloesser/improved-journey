@@ -16,8 +16,8 @@ export const tickMiner: TickEntityFn<MinerEntity> = ({
 
     invariant(entity.connections.output.size === 1)
     const targetEntityId = Array.from(entity.connections.output)[0]
+    invariant(targetEntityId)
     const target = world.entities[targetEntityId]
-
     invariant(target)
     invariant(target.type === EntityType.Belt)
 

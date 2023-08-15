@@ -146,7 +146,9 @@ const onPointerUp = curry((state: PointerState, ev: PointerEvent) => {
 
   for (let i = 1; i < latest.length; i++) {
     const a = latest[i - 1]
+    invariant(a)
     const b = latest[i]
+    invariant(b)
     const dt = b.timeStamp - a.timeStamp
     const dp = toVec2(b).sub(toVec2(a))
     if (dt === 0) {

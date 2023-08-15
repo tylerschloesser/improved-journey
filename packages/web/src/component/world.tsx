@@ -16,12 +16,7 @@ import {
 import { init } from '../init.js'
 import { World as PixiWorld } from '../pixi/world.js'
 import { loadClient, loadWorld, saveWorld } from '../storage.js'
-import {
-  TickRequest,
-  TickResponse,
-  WorkerMessage,
-  WorkerMessageType,
-} from '../types.js'
+import { TickRequest, WorkerMessage, WorkerMessageType } from '../types.js'
 import { Vec2 } from '../vec2.js'
 import { worker } from '../worker.js'
 import styles from './world.module.scss'
@@ -31,6 +26,7 @@ function useResizeObserver(canvas: HTMLCanvasElement | null) {
     if (!canvas) return
 
     const resizeObserver = new ResizeObserver(([entry]) => {
+      invariant(entry)
       viewport$.next(
         new Vec2(entry.contentRect.width, entry.contentRect.height),
       )

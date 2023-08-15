@@ -19,7 +19,9 @@ export const tickBelt: TickEntityFn<BeltEntity> = ({
       let next: Entity | null = null
       if (entity.connections.output.size > 0) {
         invariant(entity.connections.output.size === 1)
-        next = world.entities[Array.from(entity.connections.output)[0]]
+        const first = Array.from(entity.connections.output)[0]
+        invariant(first)
+        next = world.entities[first] ?? null
         invariant(next)
       }
 
