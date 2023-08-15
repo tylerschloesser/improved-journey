@@ -1,11 +1,11 @@
-import { Graphics } from '@pixi/react'
+import { Container, Graphics } from '@pixi/react'
 import { LabEntity } from '../entity-types.js'
 import { EntityProps } from './entity-props.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
 export function LabEntity({ entity, config }: EntityProps<LabEntity>) {
-  const draw = useDraw(
+  const drawBackground = useDraw(
     (g) => {
       g.clear()
 
@@ -16,5 +16,9 @@ export function LabEntity({ entity, config }: EntityProps<LabEntity>) {
     },
     [entity],
   )
-  return <Graphics draw={draw} zIndex={ZIndex.entity} />
+  return (
+    <Container zIndex={ZIndex.entity}>
+      <Graphics draw={drawBackground} zIndex={ZIndex.entity} />
+    </Container>
+  )
 }
