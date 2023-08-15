@@ -35,7 +35,7 @@ export const nodes$ = combineLatest([entity$, world$]).pipe(
       target: [],
     }
 
-    for (const other of Object.values(world.entities) as Entity[]) {
+    for (const other of Object.values(world.entities)) {
       const arr = other === entity ? nodes.source : nodes.target
       arr.push(...getNodes(other))
     }

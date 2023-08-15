@@ -52,7 +52,7 @@ export function BuildEntity() {
           size: size.toSimple(),
         })
 
-        let valid = isValid(entity, Object.values(entities) as Entity[])
+        let valid = isValid(entity, Object.values(entities))
         setValid(valid)
         build$.next({ entity, valid })
       },

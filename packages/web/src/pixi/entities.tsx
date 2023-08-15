@@ -33,7 +33,7 @@ export function Entities() {
   const entities = useEntities()
   return (
     <Container sortableChildren>
-      {(Object.values(entities) as Entity[]).map((entity) => {
+      {Object.values(entities).map((entity) => {
         const config = ENTITY_CONFIG[entity.type]
         invariant(config)
         switch (entity.type) {

@@ -278,7 +278,7 @@ tap$
     const a1 = world
     const b1 = world.add(new Vec2(1, 1))
 
-    for (const entity of Object.values(entities) as Entity[]) {
+    for (const entity of Object.values(entities)) {
       const a2 = new Vec2(entity.position)
       const b2 = new Vec2(entity.position).add(new Vec2(entity.size))
 

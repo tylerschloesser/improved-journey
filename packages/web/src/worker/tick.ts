@@ -1,4 +1,4 @@
-import { BeltEntity, Entity, EntityType } from '../entity-types.js'
+import { BeltEntity, EntityType } from '../entity-types.js'
 import { TickStats, World } from '../types.js'
 import { tickBelt } from './tick-belt.js'
 import { tickEnergy } from './tick-energy.js'
@@ -19,7 +19,7 @@ export function tickWorld(world: World): TickStats {
   // we don't move items twice in one tick
   const moved = new Set<BeltEntity['items'][0]>()
 
-  for (const entity of Object.values(world.entities) as Entity[]) {
+  for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.Miner: {
         tickMiner({ entity, world, satisfaction, moved })

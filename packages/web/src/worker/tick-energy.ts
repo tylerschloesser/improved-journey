@@ -10,7 +10,7 @@ import {
   MINER_CONSUMPTION,
   SOLAR_PANEL_RATE,
 } from '../const.js'
-import { BatteryEntity, Entity, EntityType } from '../entity-types.js'
+import { BatteryEntity, EntityType } from '../entity-types.js'
 import { ItemType } from '../item-types.js'
 import { World } from '../types.js'
 import { getSmelterState } from './smelter-state.js'
@@ -20,7 +20,7 @@ export function tickEnergy(world: World): { satisfaction: number } {
   let production = 0
   let batteries: BatteryEntity[] = []
 
-  for (const entity of Object.values(world.entities) as Entity[]) {
+  for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.Belt: {
         consumption += BELT_CONSUMPTION.perTick()
