@@ -46,7 +46,8 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
       case EntityType.Generator:
       case EntityType.Smelter:
       case EntityType.Storage:
-      case EntityType.Lab: {
+      case EntityType.Lab:
+      case EntityType.Assembler: {
         const nodes = getNodes(entity)
         const neighbors = nodes
           .map((node) => {
@@ -79,7 +80,8 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
           switch (prev.type) {
             case EntityType.Miner:
             case EntityType.Smelter:
-            case EntityType.Belt: {
+            case EntityType.Belt:
+            case EntityType.Assembler: {
               prev.connections.output.add(entity.id)
               entity.connections.input.add(prev.id)
               break
@@ -92,7 +94,8 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
             case EntityType.Belt:
             case EntityType.Generator:
             case EntityType.Storage:
-            case EntityType.Lab: {
+            case EntityType.Lab:
+            case EntityType.Assembler: {
               entity.connections.output.add(next.id)
               next.connections.input.add(entity.id)
               break
