@@ -20,12 +20,11 @@ import { Vec2 } from './vec2.js'
 const DEFAULT_STATE: EntityState = { type: EntityStateType.Build, input: {} }
 
 type InitEntityFn<T extends Entity> = (
-  args: Partial<Omit<T, 'id'>> & Pick<T, 'position'>,
+  args: Partial<Omit<T, 'id' | 'type'>> & Pick<T, 'position'>,
 ) => Omit<T, 'id'>
 
 const initMiner: InitEntityFn<MinerEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.Miner,
   progress: 0,
   output: null,
@@ -35,11 +34,11 @@ const initMiner: InitEntityFn<MinerEntity> = (args) => ({
     output: new Set(),
   },
   size: ENTITY_CONFIG[EntityType.Miner].initialSize,
+  ...args,
 })
 
 const initGenerator: InitEntityFn<GeneratorEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.Generator,
   fuel: null,
   burning: null,
@@ -48,22 +47,22 @@ const initGenerator: InitEntityFn<GeneratorEntity> = (args) => ({
     output: new Set(),
   },
   size: ENTITY_CONFIG[EntityType.Generator].initialSize,
+  ...args,
 })
 
 const initSolarPanel: InitEntityFn<SolarPanelEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.SolarPanel,
   connections: {
     input: new Set(),
     output: new Set(),
   },
   size: ENTITY_CONFIG[EntityType.SolarPanel].initialSize,
+  ...args,
 })
 
 const initBattery: InitEntityFn<BatteryEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.Battery,
   charge: 0,
   connections: {
@@ -71,23 +70,23 @@ const initBattery: InitEntityFn<BatteryEntity> = (args) => ({
     output: new Set(),
   },
   size: ENTITY_CONFIG[EntityType.Battery].initialSize,
+  ...args,
 })
 
 const initDisplay: InitEntityFn<DisplayEntity> = (args) => ({
   state: DEFAULT_STATE,
   content: null,
-  ...args,
   type: EntityType.Display,
   connections: {
     input: new Set(),
     output: new Set(),
   },
   size: ENTITY_CONFIG[EntityType.Display].initialSize,
+  ...args,
 })
 
 const initSmelter: InitEntityFn<SmelterEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.Smelter,
   progress: 0,
   connections: {
@@ -98,11 +97,11 @@ const initSmelter: InitEntityFn<SmelterEntity> = (args) => ({
   input: null,
   output: null,
   size: ENTITY_CONFIG[EntityType.Smelter].initialSize,
+  ...args,
 })
 
 const initBelt: InitEntityFn<BeltEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.Belt,
   items: [],
   connections: {
@@ -111,11 +110,11 @@ const initBelt: InitEntityFn<BeltEntity> = (args) => ({
   },
   direction: 'right',
   size: ENTITY_CONFIG[EntityType.Belt].initialSize,
+  ...args,
 })
 
 const initStorage: InitEntityFn<StorageEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.Storage,
   connections: {
     input: new Set(),
@@ -123,11 +122,11 @@ const initStorage: InitEntityFn<StorageEntity> = (args) => ({
   },
   items: {},
   size: ENTITY_CONFIG[EntityType.Storage].initialSize,
+  ...args,
 })
 
 const initLab: InitEntityFn<LabEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.Lab,
   connections: {
     input: new Set(),
@@ -137,11 +136,11 @@ const initLab: InitEntityFn<LabEntity> = (args) => ({
   target: null,
   input: null,
   size: ENTITY_CONFIG[EntityType.Lab].initialSize,
+  ...args,
 })
 
 const initRobotStation: InitEntityFn<RobotStationEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.RobotStation,
   connections: {
     input: new Set(),
@@ -149,11 +148,11 @@ const initRobotStation: InitEntityFn<RobotStationEntity> = (args) => ({
   },
   robotIds: new Set(),
   size: ENTITY_CONFIG[EntityType.RobotStation].initialSize,
+  ...args,
 })
 
 const initAssembler: InitEntityFn<AssemblerEntity> = (args) => ({
   state: DEFAULT_STATE,
-  ...args,
   type: EntityType.Assembler,
   connections: {
     input: new Set(),
@@ -162,6 +161,7 @@ const initAssembler: InitEntityFn<AssemblerEntity> = (args) => ({
   input: {},
   progress: null,
   size: ENTITY_CONFIG[EntityType.Assembler].initialSize,
+  ...args,
 })
 
 export const ENTITY_CONFIG = {

@@ -1,7 +1,12 @@
 import { addEntities } from './add-entities.js'
 import { WORLD_VERSION } from './const.js'
 import { ENTITY_CONFIG } from './entity-config.js'
-import { DisplayContentType, EntityStateType } from './entity-types.js'
+import {
+  BuildEntity,
+  DisplayContentType,
+  EntityStateType,
+} from './entity-types.js'
+import { ItemType } from './item-types.js'
 import { World } from './types.js'
 import { Vec2 } from './vec2.js'
 
@@ -18,15 +23,20 @@ export function generateWorld(): World {
     robots: {},
   }
 
-  addEntities(world, [
+  const builds: BuildEntity[] = [
     ENTITY_CONFIG.miner.init({
       state: { type: EntityStateType.Active },
       position: new Vec2(1, 2).toSimple(),
+      target: ItemType.Coal,
     }),
 
     ENTITY_CONFIG.generator.init({
       state: { type: EntityStateType.Active },
       position: new Vec2(6, 2).toSimple(),
+      fuel: {
+        type: ItemType.Coal,
+        count: 1,
+      },
     }),
 
     ENTITY_CONFIG.display.init({
@@ -36,7 +46,19 @@ export function generateWorld(): World {
         type: DisplayContentType.Satisfaction,
       },
     }),
-  ])
+  ]
+
+  for (let x = 3; x <= 5; x++) {
+    builds.push(
+      ENTITY_CONFIG.belt.init({
+        state: { type: EntityStateType.Active },
+        position: new Vec2(x, 2).toSimple(),
+        direction: 'right',
+      }),
+    )
+  }
+
+  addEntities(world, builds)
 
   return world
 }

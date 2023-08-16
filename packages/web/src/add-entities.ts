@@ -52,9 +52,19 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
 
         for (const neighbor of neighbors) {
           if (neighbor.type === EntityType.Belt) {
-            // TODO only do this if the belt is facing the right direction
-            neighbor.connections.output.add(entity.id)
-            entity.connections.input.add(neighbor.id)
+            // if the belt is facing toward this entity, set the belt output
+            // to be this entity
+            if (
+              getEntity(
+                new Vec2(neighbor.position).add(
+                  directionToVec2(neighbor.direction),
+                ),
+                world,
+              ) === entity
+            ) {
+              neighbor.connections.output.add(entity.id)
+              entity.connections.input.add(neighbor.id)
+            }
           }
         }
         break
