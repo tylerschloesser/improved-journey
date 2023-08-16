@@ -1,3 +1,4 @@
+import { Duration } from './duration.js'
 import { Entity, EntityId, RobotId } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { SimpleVec2 } from './vec2.js'
@@ -5,6 +6,7 @@ import { SimpleVec2 } from './vec2.js'
 export type ChunkId = string
 export type NodeId = string
 export type CellId = string
+
 export type ConnectionId = string
 
 export interface Node {
@@ -20,10 +22,51 @@ export interface Chunk {
   cells: (Cell | null)[]
 }
 
+export type RobotTaskId = string
+
+export enum RobotTaskType {
+  Pickup = 'pickup',
+  Deliver = 'deliver',
+  Wander = 'wander',
+}
+
+export interface BaseRobotTask {
+  id: RobotTaskId
+}
+
+export interface PickupRobotTask extends BaseRobotTask {
+  type: RobotTaskType.Pickup
+  target: {
+    entityId: EntityId
+    position: SimpleVec2
+  }
+  itemType: ItemType
+}
+
+export interface DeliverRobotTask extends BaseRobotTask {
+  type: RobotTaskType.Deliver
+  target: {
+    entityId: EntityId
+    position: SimpleVec2
+  }
+  itemType: ItemType
+}
+
+export interface WanderRobotTask extends BaseRobotTask {
+  type: RobotTaskType.Wander
+  target: {
+    position: SimpleVec2
+  }
+  waitTicks: number
+}
+
+export type RobotTask = PickupRobotTask | DeliverRobotTask | WanderRobotTask
+
 export interface Robot {
   id: RobotId
   position: SimpleVec2
   stationId: EntityId | null
+  task: RobotTask | null
 }
 
 export interface World {

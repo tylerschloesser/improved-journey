@@ -78,6 +78,7 @@ export function generateWorld(): World {
       id: 'robot0',
       position: new Vec2(0).toSimple(),
       stationId: station.id,
+      task: null,
     },
   ])
 
