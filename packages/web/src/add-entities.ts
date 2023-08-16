@@ -31,13 +31,6 @@ export function addEntities(world: World, builds: BuildEntity[]): Entity[] {
         })
       }
     }
-
-    if (
-      [EntityType.Miner, EntityType.Generator, EntityType.Smelter].includes(
-        entity.type,
-      )
-    ) {
-    }
   }
 
   for (const entity of result) {
