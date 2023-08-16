@@ -21,6 +21,7 @@ export interface Chunk {
 }
 
 export interface Robot {
+  id: RobotId
   position: SimpleVec2
   stationId: EntityId | null
 }

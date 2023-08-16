@@ -1,10 +1,13 @@
+import invariant from 'tiny-invariant'
 import { addEntities } from './add-entities.js'
+import { addRobots } from './add-robots.js'
 import { WORLD_VERSION } from './const.js'
 import { ENTITY_CONFIG } from './entity-config.js'
 import {
   BuildEntity,
   DisplayContentType,
   EntityStateType,
+  EntityType,
 } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { World } from './types.js'
@@ -64,6 +67,19 @@ export function generateWorld(): World {
   }
 
   addEntities(world, builds)
+
+  const station = Object.values(world.entities).find(
+    (entity) => entity.type === EntityType.RobotStation,
+  )
+  invariant(station)
+
+  addRobots(world, [
+    {
+      id: 'robot0',
+      position: new Vec2(0).toSimple(),
+      stationId: station.id,
+    },
+  ])
 
   return world
 }
