@@ -1,9 +1,18 @@
 import { bind } from '@react-rxjs/core'
+import { cloneDeep } from 'lodash-es'
 import { useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { take } from 'rxjs'
-import { EntityId } from '../entity-types.js'
-import { chunks$, deleteEntities$, position$, select$ } from '../game-state.js'
+import invariant from 'tiny-invariant'
+import { EntityId, EntityStateType } from '../entity-types.js'
+import {
+  chunks$,
+  deleteEntities$,
+  entities$,
+  position$,
+  select$,
+  world$,
+} from '../game-state.js'
 import { getCell, getSelectArea } from '../util.js'
 import { SimpleVec2, Vec2 } from '../vec2.js'
 import { BackButton } from './back-button.js'
@@ -11,6 +20,7 @@ import styles from './select.module.scss'
 
 const [useSelect] = bind(select$)
 const [useChunks] = bind(chunks$)
+const [useEntities] = bind(entities$)
 
 export function Select() {
   const select = useSelect()
@@ -65,7 +75,12 @@ export function Select() {
           End
         </button>
       )}
-      {select.start && select.end && <DeleteButton select={select} />}
+      {select.start && select.end && (
+        <>
+          <DeleteButton select={select} />
+          <ForceActiveButton select={select} />
+        </>
+      )}
     </div>
   )
 }
@@ -112,4 +127,38 @@ function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
   )
 }
 
-// function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
+function ForceActiveButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
+  const entityIds = useSelectedEntityIds(select)
+  const entities = useEntities()
+
+  let disabled = true
+  for (const entityId of entityIds) {
+    const entity = entities[entityId]
+    invariant(entity)
+    if (entity.state.type === EntityStateType.Build) {
+      disabled = false
+      break
+    }
+  }
+
+  return (
+    <button
+      className={styles.button}
+      disabled={disabled}
+      onPointerUp={() => {
+        if (disabled) return
+        world$.pipe(take(1)).subscribe((world) => {
+          world = cloneDeep(world)
+          for (const entityId of entityIds) {
+            const entity = world.entities[entityId]
+            invariant(entity)
+            entity.state = { type: EntityStateType.Active }
+          }
+          world$.next(world)
+        })
+      }}
+    >
+      Force Active
+    </button>
+  )
+}
