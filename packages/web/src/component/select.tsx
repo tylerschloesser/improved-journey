@@ -65,24 +65,35 @@ export function Select() {
           End
         </button>
       )}
-      {select.start && select.end && <DeleteButton select={select as any} />}
+      {select.start && select.end && <DeleteButton select={select} />}
     </div>
   )
 }
 
-function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
+function useSelectedEntityIds(select: { start: Vec2; end: Vec2 }) {
   const chunks = useChunks()
-  const area = getSelectArea(select.start, select.end)
-  const entityIds = new Set<EntityId>()
+  const area = useMemo(() => getSelectArea(select.start, select.end), [select])
 
-  for (let x = area.start.x; x <= area.end.x; x++) {
-    for (let y = area.start.y; y < area.end.y; y++) {
-      const cell = getCell(new Vec2(x, y), chunks)
-      if (cell?.entityId) {
-        entityIds.add(cell.entityId)
+  const entityIds = useMemo(() => {
+    const set = new Set<EntityId>()
+
+    for (let x = area.start.x; x <= area.end.x; x++) {
+      for (let y = area.start.y; y < area.end.y; y++) {
+        const cell = getCell(new Vec2(x, y), chunks)
+        if (cell?.entityId) {
+          set.add(cell.entityId)
+        }
       }
     }
-  }
+
+    return set
+  }, [chunks, area])
+
+  return entityIds
+}
+
+function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
+  const entityIds = useSelectedEntityIds(select)
 
   const disabled = entityIds.size === 0
 
@@ -100,3 +111,5 @@ function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {
     </button>
   )
 }
+
+// function DeleteButton({ select }: { select: { start: Vec2; end: Vec2 } }) {

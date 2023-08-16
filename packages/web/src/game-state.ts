@@ -390,7 +390,11 @@ export type Select =
     }
   | {
       start: Vec2
-      end: Vec2 | null
+      end: null
+    }
+  | {
+      start: Vec2
+      end: Vec2
     }
 
 export const select$ = new BehaviorSubject<Select | null>(null)
