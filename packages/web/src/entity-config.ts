@@ -1,15 +1,28 @@
-import { BuildEntity, EntityType } from './entity-types.js'
+import {
+  BuildEntity,
+  EntityState,
+  EntityStateType,
+  EntityType,
+} from './entity-types.js'
 import { SimpleVec2, Vec2 } from './vec2.js'
 
 export interface EntityConfig<T = BuildEntity> {
-  init(args: Omit<T, 'type' | 'connections' | 'size'>): T
+  init(
+    args: Omit<T, 'type' | 'connections' | 'size' | 'state'> & {
+      // state is optional, and will default to build state
+      state?: EntityState
+    },
+  ): T
   color: string
   initialSize: SimpleVec2
 }
 
+const DEFAULT_STATE: EntityState = { type: EntityStateType.Build, input: {} }
+
 export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
   [EntityType.Miner]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Miner,
       progress: 0,
@@ -27,6 +40,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.Generator]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Generator,
       fuel: null,
@@ -43,6 +57,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.SolarPanel]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.SolarPanel,
       connections: {
@@ -57,6 +72,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.Battery]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Battery,
       charge: 0,
@@ -72,6 +88,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.Display]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Display,
       content: null,
@@ -87,6 +104,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.Smelter]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Smelter,
       progress: 0,
@@ -105,6 +123,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.Belt]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Belt,
       items: [],
@@ -121,6 +140,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.Storage]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Storage,
       connections: {
@@ -136,6 +156,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.Lab]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Lab,
       connections: {
@@ -153,6 +174,7 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
 
   [EntityType.Assembler]: {
     init: (args) => ({
+      state: DEFAULT_STATE,
       ...args,
       type: EntityType.Assembler,
       connections: {

@@ -23,37 +23,53 @@ export interface EntityConnections {
   output: Set<EntityId>
 }
 
-export interface BaseEntity {
+export enum EntityStateType {
+  Build = 'build',
+  Active = 'active',
+}
+
+export interface BuildEntityState {
+  type: EntityStateType.Build
+  input: Partial<Record<ItemType, number>>
+}
+
+export interface ActiveEntityState {
+  type: EntityStateType.Active
+}
+
+export type EntityState = BuildEntityState | ActiveEntityState
+
+export type BaseEntity = {
   id: EntityId
   position: SimpleVec2
   size: SimpleVec2
   connections: EntityConnections
+  state: EntityState
 }
-
-export interface MinerEntity extends BaseEntity {
+export type MinerEntity = BaseEntity & {
   type: EntityType.Miner
   target: ItemType | null
   progress: number
   output: ItemStack | null
 }
 
-export interface BeltEntity extends BaseEntity {
+export type BeltEntity = BaseEntity & {
   type: EntityType.Belt
   items: { type: ItemType; progress: number }[]
   direction: Direction
 }
 
-export interface GeneratorEntity extends BaseEntity {
+export type GeneratorEntity = BaseEntity & {
   type: EntityType.Generator
   fuel: ItemStack | null
   burning: { type: ItemType; progress: number } | null
 }
 
-export interface SolarPanelEntity extends BaseEntity {
+export type SolarPanelEntity = BaseEntity & {
   type: EntityType.SolarPanel
 }
 
-export interface BatteryEntity extends BaseEntity {
+export type BatteryEntity = BaseEntity & {
   type: EntityType.Battery
   charge: number
 }
@@ -62,14 +78,14 @@ export enum DisplayContentType {
   Satisfaction = 'satisfaction',
 }
 
-export interface DisplayEntity extends BaseEntity {
+export type DisplayEntity = BaseEntity & {
   type: EntityType.Display
   content: {
     type: DisplayContentType
   } | null
 }
 
-export interface SmelterEntity extends BaseEntity {
+export type SmelterEntity = BaseEntity & {
   type: EntityType.Smelter
   progress: number | null
   target: ItemType | null
@@ -77,19 +93,19 @@ export interface SmelterEntity extends BaseEntity {
   output: ItemStack | null
 }
 
-export interface StorageEntity extends BaseEntity {
+export type StorageEntity = BaseEntity & {
   type: EntityType.Storage
   items: Partial<Record<ItemType, number>>
 }
 
-export interface LabEntity extends BaseEntity {
+export type LabEntity = BaseEntity & {
   type: EntityType.Lab
   input: ItemStack | null
   target: ItemType | null
   progress: number | null
 }
 
-export interface AssemblerEntity extends BaseEntity {
+export type AssemblerEntity = BaseEntity & {
   type: EntityType.Assembler
   input: Partial<Record<ItemType, number>>
   progress: number | null

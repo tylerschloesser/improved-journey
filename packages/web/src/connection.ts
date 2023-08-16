@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from 'rxjs'
 import invariant from 'tiny-invariant'
 import { getNodes } from './add-entities.js'
 import { ENTITY_CONFIG } from './entity-config.js'
-import { BeltEntity, Entity, EntityType } from './entity-types.js'
+import { BeltEntity, Entity, EntityState, EntityType } from './entity-types.js'
 import {
   cells$,
   connection$,
