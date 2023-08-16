@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { MINE_RATE } from '../const.js'
-import { EntityType, MinerEntity } from '../entity-types.js'
+import { EntityStateType, EntityType, MinerEntity } from '../entity-types.js'
 import { TickEntityFn } from './tick-types.js'
 
 export const tickMiner: TickEntityFn<MinerEntity> = ({
@@ -17,22 +17,25 @@ export const tickMiner: TickEntityFn<MinerEntity> = ({
     invariant(entity.connections.output.size === 1)
     const targetEntityId = Array.from(entity.connections.output)[0]
     invariant(targetEntityId)
+
     const target = world.entities[targetEntityId]
     invariant(target)
     invariant(target.type === EntityType.Belt)
 
-    const item = {
-      type: entity.output.type,
-      progress: 0,
+    if (target.state.type === EntityStateType.Active) {
+      const item = {
+        type: entity.output.type,
+        progress: 0,
+      }
+      target.items.push(item)
+      entity.output.count -= 1
+      if (entity.output.count === 0) {
+        entity.output = null
+      }
+      // make sure we don't also move the new item
+      // during the same tick
+      moved.add(item)
     }
-    target.items.push(item)
-    entity.output.count -= 1
-    if (entity.output.count === 0) {
-      entity.output = null
-    }
-    // make sure we don't also move the new item
-    // during the same tick
-    moved.add(item)
   }
 
   entity.progress += MINE_RATE.perTick() * satisfaction

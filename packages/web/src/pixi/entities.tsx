@@ -2,7 +2,7 @@ import { Container, Graphics } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
 import invariant from 'tiny-invariant'
 import { ENTITY_CONFIG } from '../entity-config.js'
-import { Entity, EntityType } from '../entity-types.js'
+import { Entity, EntityStateType, EntityType } from '../entity-types.js'
 import { entities$ } from '../game-state.js'
 import { BeltEntity } from './belt-entity.js'
 import { DisplayEntity } from './display-entity.js'
@@ -30,6 +30,22 @@ function PlaceholderEntity({ entity, config }: EntityProps<Entity>) {
   return <Graphics draw={draw} zIndex={ZIndex.entity} />
 }
 
+function BuildEntity({ entity, config }: EntityProps<Entity>) {
+  const draw = useDraw(
+    (g) => {
+      g.clear()
+
+      g.beginFill(config.color)
+      g.alpha = 0.5
+      const [x, y] = entity.position
+      const [width, height] = entity.size
+      g.drawRect(x, y, width, height)
+    },
+    [entity],
+  )
+  return <Graphics draw={draw} zIndex={ZIndex.entity} />
+}
+
 export function Entities() {
   const entities = useEntities()
   return (
@@ -37,6 +53,11 @@ export function Entities() {
       {Object.values(entities).map((entity) => {
         const config = ENTITY_CONFIG[entity.type]
         invariant(config)
+
+        if (entity.state.type === EntityStateType.Build) {
+          return <BuildEntity key={entity.id} entity={entity} config={config} />
+        }
+
         switch (entity.type) {
           case EntityType.Display:
             return (

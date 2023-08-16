@@ -1,4 +1,4 @@
-import { BeltEntity, EntityType } from '../entity-types.js'
+import { BeltEntity, EntityStateType, EntityType } from '../entity-types.js'
 import { TickStats, World } from '../types.js'
 import { tickBelt } from './tick-belt.js'
 import { tickEnergy } from './tick-energy.js'
@@ -20,6 +20,10 @@ export function tickWorld(world: World): TickStats {
   const moved = new Set<BeltEntity['items'][0]>()
 
   for (const entity of Object.values(world.entities)) {
+    if (entity.state.type === EntityStateType.Build) {
+      continue
+    }
+
     switch (entity.type) {
       case EntityType.Miner: {
         tickMiner({ entity, world, satisfaction, moved })

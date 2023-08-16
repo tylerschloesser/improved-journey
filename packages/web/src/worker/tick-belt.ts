@@ -1,6 +1,11 @@
 import invariant from 'tiny-invariant'
 import { BELT_SPEED } from '../const.js'
-import { BeltEntity, Entity, EntityType } from '../entity-types.js'
+import {
+  BeltEntity,
+  Entity,
+  EntityStateType,
+  EntityType,
+} from '../entity-types.js'
 import { TickEntityFn } from './tick-types.js'
 
 export const tickBelt: TickEntityFn<BeltEntity> = ({
@@ -25,7 +30,7 @@ export const tickBelt: TickEntityFn<BeltEntity> = ({
         invariant(next)
       }
 
-      if (next === null) {
+      if (next === null || next.state.type !== EntityStateType.Active) {
         item.progress = 1
       } else {
         remove.add(item)
