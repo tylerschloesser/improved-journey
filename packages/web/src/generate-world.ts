@@ -46,6 +46,11 @@ export function generateWorld(): World {
         type: DisplayContentType.Satisfaction,
       },
     }),
+
+    ENTITY_CONFIG['robot-station'].init({
+      state: { type: EntityStateType.Active },
+      position: new Vec2(1, 6).toSimple(),
+    }),
   ]
 
   for (let x = 3; x <= 5; x++) {
