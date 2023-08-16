@@ -150,4 +150,20 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
     color: '#FFD447',
     initialSize: new Vec2(3).toSimple(),
   },
+
+  [EntityType.Assembler]: {
+    init: (args) => ({
+      ...args,
+      type: EntityType.Assembler,
+      connections: {
+        input: new Set(),
+        output: new Set(),
+      },
+      input: {},
+      progress: null,
+      size: ENTITY_CONFIG[EntityType.Assembler].initialSize,
+    }),
+    color: '#BC9CB0',
+    initialSize: new Vec2(3).toSimple(),
+  },
 }

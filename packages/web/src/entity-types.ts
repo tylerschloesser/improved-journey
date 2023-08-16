@@ -13,6 +13,7 @@ export enum EntityType {
   Smelter = 'smelter',
   Storage = 'storage',
   Lab = 'lab',
+  Assembler = 'assembler',
 }
 
 export type Direction = 'up' | 'right' | 'down' | 'left'
@@ -88,6 +89,12 @@ export interface LabEntity extends BaseEntity {
   progress: number | null
 }
 
+export interface AssemblerEntity extends BaseEntity {
+  type: EntityType.Assembler
+  input: Partial<Record<ItemType, number>>
+  progress: number | null
+}
+
 export type Entity =
   | MinerEntity
   | BeltEntity
@@ -98,6 +105,7 @@ export type Entity =
   | SmelterEntity
   | StorageEntity
   | LabEntity
+  | AssemblerEntity
 
 export type BuildEntity =
   | Omit<MinerEntity, 'id'>
@@ -109,3 +117,4 @@ export type BuildEntity =
   | Omit<SmelterEntity, 'id'>
   | Omit<StorageEntity, 'id'>
   | Omit<LabEntity, 'id'>
+  | Omit<AssemblerEntity, 'id'>
