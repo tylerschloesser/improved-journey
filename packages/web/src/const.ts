@@ -55,3 +55,11 @@ export const RECIPES: Partial<Record<ItemType, Recipe>> = {
     speed: new Rate(1, RateType.PerSecond),
   },
 }
+
+export type EntityRecipe = Partial<Record<ItemType, number>>
+
+export const ENTITY_RECIPES: Partial<Record<EntityType, EntityRecipe>> = {
+  [EntityType.Miner]: {
+    [ItemType.IronPlate]: 100,
+  },
+}
