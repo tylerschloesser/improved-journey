@@ -188,4 +188,20 @@ export const ENTITY_CONFIG: Record<EntityType, EntityConfig> = {
     color: '#BC9CB0',
     initialSize: new Vec2(3).toSimple(),
   },
+
+  [EntityType.RobotStation]: {
+    init: (args) => ({
+      state: DEFAULT_STATE,
+      ...args,
+      type: EntityType.RobotStation,
+      connections: {
+        input: new Set(),
+        output: new Set(),
+      },
+      robotIds: new Set(),
+      size: ENTITY_CONFIG[EntityType.RobotStation].initialSize,
+    }),
+    color: '#854D27',
+    initialSize: new Vec2(4).toSimple(),
+  },
 }

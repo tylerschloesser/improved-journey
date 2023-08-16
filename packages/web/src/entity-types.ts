@@ -2,6 +2,7 @@ import { ItemStack, ItemType } from './item-types.js'
 import { SimpleVec2 } from './vec2.js'
 
 export type EntityId = string
+export type RobotId = string
 
 export enum EntityType {
   Miner = 'miner',
@@ -14,6 +15,7 @@ export enum EntityType {
   Storage = 'storage',
   Lab = 'lab',
   Assembler = 'assembler',
+  RobotStation = 'robot-station',
 }
 
 export type Direction = 'up' | 'right' | 'down' | 'left'
@@ -111,6 +113,11 @@ export type AssemblerEntity = BaseEntity & {
   progress: number | null
 }
 
+export type RobotStationEntity = BaseEntity & {
+  type: EntityType.RobotStation
+  robotIds: Set<RobotId>
+}
+
 export type Entity =
   | MinerEntity
   | BeltEntity
@@ -122,6 +129,7 @@ export type Entity =
   | StorageEntity
   | LabEntity
   | AssemblerEntity
+  | RobotStationEntity
 
 export type BuildEntity =
   | Omit<MinerEntity, 'id'>
@@ -134,3 +142,4 @@ export type BuildEntity =
   | Omit<StorageEntity, 'id'>
   | Omit<LabEntity, 'id'>
   | Omit<AssemblerEntity, 'id'>
+  | Omit<RobotStationEntity, 'id'>
