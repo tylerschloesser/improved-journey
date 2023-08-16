@@ -7,19 +7,19 @@ import { ProgressText } from './ProgressText.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
-export function MinerEntity({ entity, config }: EntityProps<MinerEntity>) {
+export function MinerEntity({ entity, color }: EntityProps<MinerEntity>) {
   const drawBackground = useDraw(
     (g) => {
       g.clear()
 
-      g.beginFill(config.color)
+      g.beginFill(color)
 
       const [x, y] = entity.position
       const [width, height] = entity.size
 
       g.drawRect(x, y, width, height)
     },
-    [entity],
+    [entity, color],
   )
 
   const drawTarget = useDraw(

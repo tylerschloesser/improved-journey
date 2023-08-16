@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { combineLatest } from 'rxjs'
 import invariant from 'tiny-invariant'
-import { EntityConfig, ENTITY_CONFIG } from '../entity-config.js'
+import { ENTITY_CONFIG } from '../entity-config.js'
 import { BuildEntity, Entity, EntityType } from '../entity-types.js'
 import { addEntities$, build$, entities$, position$ } from '../game-state.js'
 import { intersects } from '../util.js'
@@ -26,7 +26,7 @@ function isValid(
   return true
 }
 
-function useEntityConfig(): EntityConfig {
+function useEntityConfig() {
   const params = useParams<{ type: EntityType }>()
   invariant(params.type)
   const config = ENTITY_CONFIG[params.type]

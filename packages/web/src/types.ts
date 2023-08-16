@@ -1,4 +1,4 @@
-import { Entity, EntityId } from './entity-types.js'
+import { Entity, EntityId, RobotId } from './entity-types.js'
 import { ItemType } from './item-types.js'
 import { SimpleVec2 } from './vec2.js'
 
@@ -20,6 +20,11 @@ export interface Chunk {
   cells: (Cell | null)[]
 }
 
+export interface Robot {
+  position: SimpleVec2
+  stationId: EntityId | null
+}
+
 export interface World {
   start: number
 
@@ -28,6 +33,7 @@ export interface World {
 
   chunks: Record<ChunkId, Chunk>
   entities: Record<EntityId, Entity>
+  robots: Record<RobotId, Robot>
 
   research: Partial<Record<ItemType, number>>
 

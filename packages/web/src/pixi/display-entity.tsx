@@ -9,16 +9,16 @@ import { useDraw } from './use-draw.js'
 
 const [useSatisfaction] = bind(satisfaction$)
 
-function Placeholder({ entity, config }: EntityProps<DisplayEntity>) {
+function Placeholder({ entity, color }: EntityProps<DisplayEntity>) {
   const [x, y] = entity.position
   const [width, height] = entity.size
   const drawBackground = useDraw(
     (g) => {
       g.clear()
-      g.beginFill(config.color)
+      g.beginFill(color)
       g.drawRect(x, y, width, height)
     },
-    [entity, config],
+    [entity, color],
   )
   return (
     <>

@@ -1,7 +1,7 @@
 import { addEntities } from './add-entities.js'
 import { WORLD_VERSION } from './const.js'
 import { ENTITY_CONFIG } from './entity-config.js'
-import { EntityStateType } from './entity-types.js'
+import { DisplayContentType, EntityStateType } from './entity-types.js'
 import { World } from './types.js'
 import { Vec2 } from './vec2.js'
 
@@ -15,6 +15,7 @@ export function generateWorld(): World {
     entities: {},
     chunks: {},
     research: {},
+    robots: {},
   }
 
   addEntities(world, [
@@ -31,6 +32,9 @@ export function generateWorld(): World {
     ENTITY_CONFIG.display.init({
       state: { type: EntityStateType.Active },
       position: new Vec2(3, -1).toSimple(),
+      content: {
+        type: DisplayContentType.Satisfaction,
+      },
     }),
   ])
 

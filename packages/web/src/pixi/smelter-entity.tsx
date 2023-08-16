@@ -7,17 +7,17 @@ import { ProgressText } from './ProgressText.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
-export function SmelterEntity({ entity, config }: EntityProps<SmelterEntity>) {
+export function SmelterEntity({ entity, color }: EntityProps<SmelterEntity>) {
   const [x, y] = entity.position
   const [width, height] = entity.size
   const drawBackground = useDraw(
     (g) => {
       g.clear()
 
-      g.beginFill(config.color)
+      g.beginFill(color)
       g.drawRect(x, y, width, height)
     },
-    [entity],
+    [entity, color],
   )
 
   const drawTarget = useDraw(

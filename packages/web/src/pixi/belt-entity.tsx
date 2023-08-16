@@ -8,14 +8,14 @@ import { EntityProps } from './entity-props.js'
 import { useDraw } from './use-draw.js'
 import { ZIndex } from './z-index.js'
 
-export function BeltEntity({ entity, config }: EntityProps<BeltEntity>) {
+export function BeltEntity({ entity, color }: EntityProps<BeltEntity>) {
   const drawBelt = useDraw(
     (g) => {
       g.clear()
-      g.beginFill(config.color)
+      g.beginFill(color)
       g.drawRect(0, 0, 1, 1)
     },
-    [config],
+    [color],
   )
 
   const drawItems = useDraw(

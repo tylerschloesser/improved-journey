@@ -24,14 +24,14 @@ function Research({ target }: ResearchProps) {
   return <Text text={`r: ${value.toLocaleString()}`} />
 }
 
-export function LabEntity({ entity, config }: EntityProps<LabEntity>) {
+export function LabEntity({ entity, color }: EntityProps<LabEntity>) {
   const [x, y] = entity.position
   const [width, height] = entity.size
 
   const drawBackground = useDraw(
     (g) => {
       g.clear()
-      g.beginFill(config.color)
+      g.beginFill(color)
       g.drawRect(x, y, width, height)
     },
     [entity],

@@ -1,6 +1,5 @@
 import { Container, Graphics } from '@pixi/react'
 import { bind } from '@react-rxjs/core'
-import invariant from 'tiny-invariant'
 import { ENTITY_CONFIG } from '../entity-config.js'
 import { Entity, EntityStateType, EntityType } from '../entity-types.js'
 import { entities$ } from '../game-state.js'
@@ -15,12 +14,12 @@ import { ZIndex } from './z-index.js'
 
 const [useEntities] = bind(entities$)
 
-function PlaceholderEntity({ entity, config }: EntityProps<Entity>) {
+function PlaceholderEntity({ entity, color }: EntityProps<Entity>) {
   const draw = useDraw(
     (g) => {
       g.clear()
 
-      g.beginFill(config.color)
+      g.beginFill(color)
       const [x, y] = entity.position
       const [width, height] = entity.size
       g.drawRect(x, y, width, height)
@@ -30,12 +29,12 @@ function PlaceholderEntity({ entity, config }: EntityProps<Entity>) {
   return <Graphics draw={draw} zIndex={ZIndex.entity} />
 }
 
-function BuildEntity({ entity, config }: EntityProps<Entity>) {
+function BuildEntity({ entity, color }: EntityProps<Entity>) {
   const draw = useDraw(
     (g) => {
       g.clear()
 
-      g.beginFill(config.color)
+      g.beginFill(color)
       g.alpha = 0.5
       const [x, y] = entity.position
       const [width, height] = entity.size
@@ -51,35 +50,30 @@ export function Entities() {
   return (
     <Container sortableChildren>
       {Object.values(entities).map((entity) => {
-        const config = ENTITY_CONFIG[entity.type]
-        invariant(config)
+        const { color } = ENTITY_CONFIG[entity.type]
 
         if (entity.state.type === EntityStateType.Build) {
-          return <BuildEntity key={entity.id} entity={entity} config={config} />
+          return <BuildEntity key={entity.id} entity={entity} color={color} />
         }
 
         switch (entity.type) {
           case EntityType.Display:
             return (
-              <DisplayEntity key={entity.id} entity={entity} config={config} />
+              <DisplayEntity key={entity.id} entity={entity} color={color} />
             )
           case EntityType.Belt:
-            return (
-              <BeltEntity key={entity.id} entity={entity} config={config} />
-            )
+            return <BeltEntity key={entity.id} entity={entity} color={color} />
           case EntityType.Miner:
-            return (
-              <MinerEntity key={entity.id} entity={entity} config={config} />
-            )
+            return <MinerEntity key={entity.id} entity={entity} color={color} />
           case EntityType.Smelter:
             return (
-              <SmelterEntity key={entity.id} entity={entity} config={config} />
+              <SmelterEntity key={entity.id} entity={entity} color={color} />
             )
           case EntityType.Lab:
-            return <LabEntity key={entity.id} entity={entity} config={config} />
+            return <LabEntity key={entity.id} entity={entity} color={color} />
         }
         return (
-          <PlaceholderEntity key={entity.id} entity={entity} config={config} />
+          <PlaceholderEntity key={entity.id} entity={entity} color={color} />
         )
       })}
     </Container>
