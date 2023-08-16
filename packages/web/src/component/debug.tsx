@@ -2,6 +2,7 @@ import { bind } from '@react-rxjs/core'
 import {
   position$,
   research$,
+  robots$,
   satisfaction$,
   tick$,
   worldSize$,
@@ -16,6 +17,7 @@ const [useZoom] = bind(zoom$)
 const [useSatisfaction] = bind(satisfaction$)
 const [useWorldSize] = bind(worldSize$)
 const [useResearch] = bind(research$)
+const [useRobots] = bind(robots$)
 
 export function Debug() {
   const tick = useTick()
@@ -24,6 +26,7 @@ export function Debug() {
   const satisfaction = useSatisfaction()
   const worldSize = useWorldSize()
   const research = useResearch()
+  const robots = useRobots()
 
   const rows = [
     { key: 'tick', value: `${tick}` },
@@ -53,6 +56,9 @@ export function Debug() {
         </table>
         <pre className={styles.research}>
           research: {JSON.stringify(research, null, 2)}
+        </pre>
+        <pre className={styles.research}>
+          robots: {JSON.stringify(robots, null, 2)}
         </pre>
       </div>
       <div className={styles.controls}>

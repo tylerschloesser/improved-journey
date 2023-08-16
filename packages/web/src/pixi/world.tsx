@@ -8,6 +8,7 @@ import { Grid } from './grid.js'
 import { Entities } from './entities.js'
 import * as PIXI from 'pixi.js'
 import { Select } from './select.js'
+import { Robots } from './robots.js'
 
 const [usePosition] = bind(position$)
 const [useCellSize] = bind(cellSize$)
@@ -64,6 +65,7 @@ export function World({ canvas }: WorldProps) {
           <Grid />
           <Transform>
             <Entities />
+            <Robots />
             <Build />
             <Connection />
             <Select />

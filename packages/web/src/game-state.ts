@@ -413,3 +413,5 @@ navigationType$
       positionBeforeFocus$.next(null)
     }
   })
+
+export const robots$ = world$.pipe(map((world) => Object.values(world.robots)))
