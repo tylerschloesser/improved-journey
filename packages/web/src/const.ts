@@ -63,3 +63,5 @@ export const ENTITY_RECIPES: Partial<Record<EntityType, EntityRecipe>> = {
     [ItemType.IronPlate]: 100,
   },
 }
+
+export const ROBOT_SPEED = new Rate(0.5, RateType.PerSecond)
