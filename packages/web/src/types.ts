@@ -1,5 +1,5 @@
 import { Entity, EntityId, RobotId } from './entity-types.js'
-import { ItemType } from './item-types.js'
+import { ItemStack, ItemType } from './item-types.js'
 import { SimpleVec2 } from './vec2.js'
 
 export type ChunkId = string
@@ -48,7 +48,6 @@ export interface DeliverRobotTask extends BaseRobotTask {
     entityId: EntityId
     position: SimpleVec2
   }
-  itemType: ItemType
 }
 
 export interface WanderRobotTask extends BaseRobotTask {
@@ -65,6 +64,7 @@ export interface Robot {
   id: RobotId
   position: SimpleVec2
   stationId: EntityId | null
+  contents: ItemStack | null
   task: RobotTask | null
 }
 

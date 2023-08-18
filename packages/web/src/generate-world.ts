@@ -79,6 +79,7 @@ export function generateWorld(): World {
       position: new Vec2(0).toSimple(),
       stationId: station.id,
       task: null,
+      contents: null,
     },
   ])
 
