@@ -1,6 +1,13 @@
 import invariant from 'tiny-invariant'
-import { CHUNK_SIZE, ENTITY_RECIPES, ROBOT_SPEED, TICK_RATE } from './const.js'
 import {
+  CHUNK_SIZE,
+  EntityRecipe,
+  ENTITY_RECIPES,
+  ROBOT_SPEED,
+  TICK_RATE,
+} from './const.js'
+import {
+  BuildEntityState,
   Entity,
   EntityStateType,
   EntityType,
@@ -116,6 +123,24 @@ function moveTo(args: MoveToArgs): {
   }
 }
 
+function isBuildComplete(
+  state: BuildEntityState,
+  recipe: EntityRecipe,
+): boolean {
+  for (const entry of Object.entries(recipe)) {
+    const [itemType, count] = entry as [ItemType, number]
+    invariant(count > 0)
+    if (state.input[itemType] === null) {
+      return false
+    }
+    invariant(state.input[itemType]! <= count)
+    if (state.input[itemType]! < count) {
+      return false
+    }
+  }
+  return true
+}
+
 export function tickRobots(args: TickRobotsArgs): void {
   const { world, build, storage } = args
   for (const robot of Object.values(world.robots)) {
@@ -189,6 +214,11 @@ export function tickRobots(args: TickRobotsArgs): void {
 
           robot.contents = null
           robot.task = null
+
+          // check if the entity is finished
+          if (isBuildComplete(entity.state, recipe)) {
+            entity.state = { type: EntityStateType.Active }
+          }
         }
         break
       }
