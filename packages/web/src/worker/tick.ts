@@ -6,6 +6,7 @@ import {
   EntityType,
   StorageEntity,
 } from '../entity-types.js'
+import { tickRobots } from '../tick-robots.js'
 import { RobotTaskType, TickStats, World } from '../types.js'
 import { Vec2 } from '../vec2.js'
 import { tickBelt } from './tick-belt.js'
@@ -60,20 +61,7 @@ export function tickWorld(world: World): TickStats {
     }
   }
 
-  for (const robot of Object.values(world.robots)) {
-    if (robot.task === null) {
-      robot.task = {
-        id: '0',
-        type: RobotTaskType.Wander,
-        target: {
-          position: new Vec2(robot.position)
-            .add(new Vec2(1, 0).mul(4))
-            .toSimple(),
-        },
-        waitTicks: 10 /* seconds */ * TICK_RATE,
-      }
-    }
-  }
+  tickRobots(world)
 
   world.tick += 1
 
