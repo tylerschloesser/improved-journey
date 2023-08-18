@@ -64,4 +64,4 @@ export const ENTITY_RECIPES: Partial<Record<EntityType, EntityRecipe>> = {
   },
 }
 
-export const ROBOT_SPEED = new Rate(0.5, RateType.PerSecond)
+export const ROBOT_SPEED = new Rate(1, RateType.PerSecond)

@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { ROBOT_SPEED, TICK_RATE } from './const.js'
+import { CHUNK_SIZE, ROBOT_SPEED, TICK_RATE } from './const.js'
 import { RobotTaskType, World } from './types.js'
 import { Vec2 } from './vec2.js'
 
@@ -10,9 +10,10 @@ export function tickRobots(world: World): void {
         id: '0',
         type: RobotTaskType.Wander,
         target: {
-          position: new Vec2(robot.position)
-            .add(new Vec2(1, 0).mul(4))
-            .toSimple(),
+          position: new Vec2(
+            Math.random() * CHUNK_SIZE,
+            Math.random() * CHUNK_SIZE,
+          ).toSimple(),
         },
         waitTicks: 10 /* seconds */ * TICK_RATE,
       }
