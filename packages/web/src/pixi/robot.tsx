@@ -10,8 +10,9 @@ export interface RobotProps {
 export function Robot({ robot }: RobotProps) {
   const drawBackground = useDraw((g) => {
     g.clear()
-    g.beginFill('white')
-    g.drawRect(0, 0, 1, 1)
+    g.lineStyle(0.1, 'hsl(0, 0%, 80%)')
+    g.beginFill('hsl(0, 0%, 30%)')
+    g.drawCircle(0, 0, 0.5)
   }, [])
 
   const [x, y] = robot.position
