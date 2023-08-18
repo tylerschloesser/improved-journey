@@ -1,4 +1,3 @@
-import { TICK_RATE } from '../const.js'
 import {
   BeltEntity,
   Entity,
@@ -7,8 +6,7 @@ import {
   StorageEntity,
 } from '../entity-types.js'
 import { tickRobots } from '../tick-robots.js'
-import { RobotTaskType, TickStats, World } from '../types.js'
-import { Vec2 } from '../vec2.js'
+import { TickStats, World } from '../types.js'
 import { tickBelt } from './tick-belt.js'
 import { tickEnergy } from './tick-energy.js'
 import { tickLab } from './tick-lab.js'
@@ -61,7 +59,11 @@ export function tickWorld(world: World): TickStats {
     }
   }
 
-  tickRobots(world)
+  tickRobots({
+    world,
+    build,
+    storage,
+  })
 
   world.tick += 1
 

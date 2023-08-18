@@ -1,9 +1,16 @@
 import invariant from 'tiny-invariant'
 import { CHUNK_SIZE, ROBOT_SPEED, TICK_RATE } from './const.js'
+import { Entity, StorageEntity } from './entity-types.js'
 import { RobotTaskType, World } from './types.js'
 import { Vec2 } from './vec2.js'
 
-export function tickRobots(world: World): void {
+export interface TickRobotsArgs {
+  world: World
+  build: Set<Entity>
+  storage: Set<StorageEntity>
+}
+
+export function tickRobots({ world, build, storage }: TickRobotsArgs): void {
   for (const robot of Object.values(world.robots)) {
     if (robot.task === null) {
       robot.task = {
